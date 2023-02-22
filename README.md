@@ -1,6 +1,6 @@
 # Style-Checker
 
-barebones extension that displays "Welcome to Style Checker Extension" message\
+barebones extension that displays "Welcome to Style Checker Extension" message
 
 index.html contains the text that is displayed when the extension icon is clicked\
 manifest.json sets up the default icon, what html page is shown, and other specs\
