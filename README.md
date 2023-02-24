@@ -1,6 +1,6 @@
 # Style-Checker
 
-Updated basic extension to have some functionality for retrieving background colors from web pages. Using a js file it gets the current tab and executes a script which queries all elements and if they have a valid background colors, prints it in a new popup window. Does not account for duplicate entries and may not display background colors for all webpages (still examining).
+Updated basic extension to have some functionality for retrieving background colors from web pages. Using a js file it gets the current tab and executes a script which queries all elements and if they have a valid background colors, prints it in a new popup window. Does not account for duplicate entries and may not display background colors for all webpages (still examining). Mainly just a start at getting content from a webpage - will need to correct the functionality so that the content retrieved is not just fixed to the background color.
 
 To test it on a site that I used during testing go to:
 https://ravimashru.dev/blog/2021-04-14-executescript-chrome-extension/ 
