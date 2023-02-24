@@ -6,7 +6,7 @@ To test it on a site that I used during testing go to:
 https://ravimashru.dev/blog/2021-04-14-executescript-chrome-extension/ 
 
 this is the output I got when I clicked on the extension:
-![Colors](background-colors-extension.png)
+![Background colors returned by the site](background-colors-extension.png)
 
 Anyone can feel free to edit this if you find a more efficient way of fetching this info, have another idea, or want to extend the js file to have more functionality
 
