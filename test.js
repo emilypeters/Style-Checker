@@ -21,6 +21,7 @@ btn1.addEventListener("click", async () => {
 })
 
 // Button to allow user to highlight an element, and when they click it will open window with CSS
+// TODO: Clicking or pressing button again will deactivate highlighting
 btn2.addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
@@ -32,12 +33,13 @@ btn2.addEventListener("click", async () => {
             
             var prevHighlight = null;
 
+            // TODO: Highlighting behavior not consistent
             document.addEventListener('mousemove', function (e) { // On mouse over
                 let targetHighlight = e.target;
 
                 if (prevHighlight != targetHighlight) {
                     if (prevHighlight != null) {
-                        prevHighlight.classList.remove('highlight'); // Remove highlight from element user's mouse "left"
+                        prevHighlight.classList.remove('highlight'); // Remove highlight from element that user's mouse "left"
                     }
 
                     targetHighlight.classList.add('highlight'); // Add highlighting to current element
