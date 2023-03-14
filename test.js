@@ -1,6 +1,7 @@
 // Get button
 let btn1 = document.getElementById("btn1")
 let btn2 = document.getElementById("btn2")
+let btn3 = document.getElementById("btn3")
 
 // Run on click
 btn1.addEventListener("click", async () => {
@@ -21,29 +22,31 @@ btn1.addEventListener("click", async () => {
 })
 
 // Button to allow user to highlight an element, and when they click it will open window with CSS
-// TODO: Clicking or pressing button again will deactivate highlighting
 btn2.addEventListener("click", async () => {
+    // TODO: Issue with button visualization, see btn3 below
+    btn3.hidden = false;
+    btn2.hidden = true;
+
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
+
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: () => {
             // Highlighting referenced from https://hospodarets.com/highlight_element_with_page_fading
             // Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
-            
+
             var prevHighlight = null;
 
-            // TODO: Highlighting behavior not consistent
-            document.addEventListener('mousemove', function (e) { // On mouse over
+            document.addEventListener('mousemove', function (e) {
                 let targetHighlight = e.target;
-
+                        
                 if (prevHighlight != targetHighlight) {
                     if (prevHighlight != null) {
                         prevHighlight.classList.remove('highlight'); // Remove highlight from element that user's mouse "left"
                     }
-
+            
                     targetHighlight.classList.add('highlight'); // Add highlighting to current element
-
+            
                     prevHighlight = targetHighlight;
                 }
             }, false);
@@ -68,6 +71,37 @@ btn2.addEventListener("click", async () => {
                     myWindow.document.querySelector('div').innerHTML = "<p> STYLING: <br>" + cssOutput + "</p>"; // Print styling to window
                 }
             }, false);
+        }
+    });
+});
+
+// Button to cancel styling capture
+// TODO: Stop highlighting behavior on button press
+btn3.addEventListener("click", async () => {
+    btn3.hidden = true;
+    btn2.hidden = false;
+
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: () => {
+            // Remove all highlighting
+            document.querySelectorAll('*').forEach((element) => {
+                element.classList.remove('highlight')
+            });
+
+            // The method below stopped the highlighting but also prevented it from being reactivated
+            
+            // document.addEventListener('mousemove', (e) => {
+            //     e.stopImmediatePropagation();
+            //     e.stopPropagation();
+            // }, true);
+
+            // document.addEventListener('click', (e) => {
+            //     e.stopImmediatePropagation();
+            //     e.stopPropagation();
+            // }, true);
         }
     });
 });
