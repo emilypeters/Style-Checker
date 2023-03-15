@@ -67,7 +67,6 @@ btn2.addEventListener("click", async () => {
             // Highlighting listener (if mouse moves over element)
             document.addEventListener('mousemove', highlighter, false);
 
-            // TODO: List of CSS styling is too long, also it uses computed styling which might not be ideal
             document.addEventListener('click', function (e) {
                 let element = e.target;
 
@@ -75,18 +74,61 @@ btn2.addEventListener("click", async () => {
                 myWindow.document.body.innerHTML += "<div style='font-family: sans-serif;'></div>"
 
                 if (element != null) {
-                    const styling = window.getComputedStyle(element, null); // Extract styling
-
                     var cssOutput = "";
 
-                    for (var j = 0; j < styling.length; j++) {
-                        cssOutput += styling[j] + ": " + styling.getPropertyValue(styling[j]) + "<br>"; // Put styling in readable format
+                    // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
+                    // TODO: need to fetch inherited styling of parent as well (see below)
+                    // ***********************************************************************************************************
+
+                    // TODO: This might not be needed (could be simplified)
+                    var slice = Function.call.bind(Array.prototype.slice);
+                    
+                    var elementMatchCSSRule = function(element, cssRule) {
+                      return element.matches(cssRule.selectorText);
+                    };
+                    
+                    var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
+                      return rules.concat(slice(styleSheet.cssRules));
+                    }, []);
+                    
+                    function getAppliedCss(element) {
+                        var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
+                        var rules =[];
+
+                        if (elementRules.length > 0) {
+                            for (i = 0; i < elementRules.length; i++) {
+                                var e = elementRules[i];
+                                rules.push(e.cssText)
+                            }		
+                        }
+                        
+                        if (element.getAttribute('style')) {
+                            rules.push(element.getAttribute('style'))
+                        }
+
+                        return rules;
                     }
 
-                    myWindow.document.querySelector('div').innerHTML = "<p> STYLING: <br>" + cssOutput + "</p>"; // Print styling to window
+                    // ***********************************************************************************************************
+                    
+                    // TODO: Try using this to get styling of all parents as well
+                    // while (element) {
+                        
+                    //     element = element.parentNode;
+                    // }
+
+
+                    var rules = getAppliedCss(element);
+                    
+                    for (i = 0; i < rules.length; i++) {
+                        cssOutput += rules[i] + "<br><br>"; 
+                    }		
+
+                    myWindow.document.querySelector('div').innerHTML = "<p> STYLING: <br><br>" + cssOutput + "</p>"; // Print styling to window
                 }
 
                 // Remove all visible highlighting from page and enable mouse clicks again
+                // TODO: Might have to do this before fetching the CSS, to prevent highlighting from appearing in style list
                 document.querySelectorAll("*").forEach((element) => {
                     element.classList.remove('highlight')
                     element.removeEventListener('click', stopclicks, false);
