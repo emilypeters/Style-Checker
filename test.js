@@ -35,9 +35,21 @@ btn2.addEventListener("click", async () => {
             // Highlighting referenced from https://hospodarets.com/highlight_element_with_page_fading
             // Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
 
+            // Function to disable mouse clicks (or any other behavior)
+            function stopclicks(e) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Disable mouse clicks on all elements
+            document.querySelectorAll("*").forEach((element) => {
+                element.addEventListener('click', stopclicks, false);
+            });
+
             var prevHighlight = null;
 
-            document.addEventListener('mousemove', function (e) {
+            // Function that define highlighting behavior
+            function highlighter(e) {
                 let targetHighlight = e.target;
                         
                 if (prevHighlight != targetHighlight) {
@@ -48,10 +60,12 @@ btn2.addEventListener("click", async () => {
                     targetHighlight.classList.add('highlight'); // Add highlighting to current element
             
                     prevHighlight = targetHighlight;
-                }
-            }, false);
+                } 
+            }
 
-            // TODO: Make it so clicking wont activate buttons or hyperlinks on the website
+            // Highlighting listener (if mouse moves over element)
+            document.addEventListener('mousemove', highlighter, false);
+
             // TODO: List of CSS styling is too long, also it uses computed styling which might not be ideal
             document.addEventListener('click', function (e) {
                 let element = e.target;
@@ -70,13 +84,22 @@ btn2.addEventListener("click", async () => {
 
                     myWindow.document.querySelector('div').innerHTML = "<p> STYLING: <br>" + cssOutput + "</p>"; // Print styling to window
                 }
-            }, false);
+
+                // Remove all visible highlighting from page and enable mouse clicks again
+                document.querySelectorAll("*").forEach((element) => {
+                    element.classList.remove('highlight')
+                    element.removeEventListener('click', stopclicks, false);
+                });
+
+                // Remove highlighting listener
+                document.removeEventListener('mousemove', highlighter, false);
+            }, { once: true }, false);
         }
     });
 });
 
 // Button to cancel styling capture
-// TODO: Stop highlighting behavior on button press
+// TODO: Cancel button disappears/resets if user closes then reopens extension window, need a global variable to keep track of highlighting state
 btn3.addEventListener("click", async () => {
     btn3.hidden = true;
     btn2.hidden = false;
@@ -86,13 +109,16 @@ btn3.addEventListener("click", async () => {
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: () => {
-            // Remove all highlighting
-            document.querySelectorAll('*').forEach((element) => {
-                element.classList.remove('highlight')
-            });
+            // Remove all highlighting (not needed if using reload technique, see below)
+            // document.querySelectorAll("*").forEach((element) => {
+            //     element.classList.remove('highlight')
+            // });
+            
+            // Reloading the webpage to cancel the highlighting works but seems a bit hacky
+            location.reload();
 
             // The method below stopped the highlighting but also prevented it from being reactivated
-            
+
             // document.addEventListener('mousemove', (e) => {
             //     e.stopImmediatePropagation();
             //     e.stopPropagation();
