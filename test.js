@@ -49,6 +49,7 @@ btn2.addEventListener("click", async () => {
             var prevHighlight = null;
 
             // Function that define highlighting behavior
+            // TODO: Highlighting behavior is a bit wonky/jarring (also not great on webpages with dark backgrounds), could use tweaking/rework
             function highlighter(e) {
                 let targetHighlight = e.target;
                         
