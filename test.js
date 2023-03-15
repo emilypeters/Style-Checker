@@ -36,14 +36,14 @@ btn2.addEventListener("click", async () => {
             // Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
 
             // Function to disable mouse clicks (or any other behavior)
-            function stopclicks(e) {
+            function stopClicks(e) {
                 e.preventDefault();
                 return false;
             }
 
             // Disable mouse clicks on all elements
             document.querySelectorAll("*").forEach((element) => {
-                element.addEventListener('click', stopclicks, false);
+                element.addEventListener('click', stopClicks, false);
             });
 
             var prevHighlight = null;
@@ -74,13 +74,9 @@ btn2.addEventListener("click", async () => {
                 myWindow.document.body.innerHTML += "<div style='font-family: sans-serif;'></div>"
 
                 if (element != null) {
-                    var cssOutput = "";
-
                     // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
-                    // TODO: need to fetch inherited styling of parent as well (see below)
                     // ***********************************************************************************************************
 
-                    // TODO: This might not be needed (could be simplified)
                     var slice = Function.call.bind(Array.prototype.slice);
                     
                     var elementMatchCSSRule = function(element, cssRule) {
@@ -91,6 +87,7 @@ btn2.addEventListener("click", async () => {
                       return rules.concat(slice(styleSheet.cssRules));
                     }, []);
                     
+                    // Returns applied CSS of element (both from CSS files and from inline styles)
                     function getAppliedCss(element) {
                         var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
                         var rules =[];
@@ -109,29 +106,41 @@ btn2.addEventListener("click", async () => {
                         return rules;
                     }
 
-                    // ***********************************************************************************************************
-                    
-                    // TODO: Try using this to get styling of all parents as well
-                    // while (element) {
-                        
-                    //     element = element.parentNode;
-                    // }
+                    // ***********************************************************************************************************	
 
+                    // Get styling of element
+
+                    var cssOutputMain = "";
 
                     var rules = getAppliedCss(element);
                     
                     for (i = 0; i < rules.length; i++) {
-                        cssOutput += rules[i] + "<br><br>"; 
+                        cssOutputMain += rules[i] + "<br><br>"; 
                     }		
 
-                    myWindow.document.querySelector('div').innerHTML = "<p> STYLING: <br><br>" + cssOutput + "</p>"; // Print styling to window
+                    // Get styling of element's parents 
+
+                    var cssOutputParents = "";
+
+                    element = element.parentElement;
+                    while (element) {
+                        var rules = getAppliedCss(element);
+                    
+                        for (i = 0; i < rules.length; i++) {
+                            cssOutputParents += rules[i] + "<br><br>"; 
+                        }		
+                        
+                        element = element.parentElement;
+                    }	
+
+                    // TODO: Display styling in more true to life form
+                    myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
                 }
 
                 // Remove all visible highlighting from page and enable mouse clicks again
-                // TODO: Might have to do this before fetching the CSS, to prevent highlighting from appearing in style list
                 document.querySelectorAll("*").forEach((element) => {
                     element.classList.remove('highlight')
-                    element.removeEventListener('click', stopclicks, false);
+                    element.removeEventListener('click', stopClicks, false);
                 });
 
                 // Remove highlighting listener
