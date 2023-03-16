@@ -1,25 +1,6 @@
-// Get button
-let btn1 = document.getElementById("btn1")
+// Get buttons
 let btn2 = document.getElementById("btn2")
 let btn3 = document.getElementById("btn3")
-
-// Run on click
-btn1.addEventListener("click", async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true }) // Find current tab
-
-    chrome.scripting.executeScript({ // Run the following script on our tab
-        target: { tabId: tab.id },
-        function: () => {
-            var myWindow = window.open("", "", "width=400,height=400"); //open a new window for displaying styles
-            let elems = document.querySelectorAll("*"); // Grab all elements
-            for (var i = 0; i < elems.length; i++) {
-                if (!(elems[i].style.backgroundColor === undefined) && !(elems[i].style.backgroundColor === null) && !(elems[i].style.backgroundColor === '')) { //don't grab empty values
-                    myWindow.document.write("<p> color: " + elems[i].style.backgroundColor + "</p>"); //write info to window
-                }
-            }
-        }
-    })
-})
 
 // Button to allow user to highlight an element, and when they click it will open window with CSS
 btn2.addEventListener("click", async () => {
@@ -48,7 +29,7 @@ btn2.addEventListener("click", async () => {
 
             var prevHighlight = null;
 
-            // Function that define highlighting behavior
+            // Function that defines highlighting behavior
             // TODO: Highlighting behavior is a bit wonky/jarring (also not great on webpages with dark backgrounds), could use tweaking/rework
             function highlighter(e) {
                 let targetHighlight = e.target;
@@ -73,6 +54,11 @@ btn2.addEventListener("click", async () => {
                 var myWindow = window.open("", "", "width=400,height=400"); // Open new window
                 myWindow.document.body.innerHTML += "<div style='font-family: sans-serif;'></div>"
 
+                // Remove all visible highlighting from page
+                document.querySelectorAll("*").forEach((element) => {
+                    element.classList.remove('highlight')
+                });
+
                 if (element != null) {
                     // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
                     // ***********************************************************************************************************
@@ -92,14 +78,14 @@ btn2.addEventListener("click", async () => {
                         var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
                         var rules =[];
 
-                        if (elementRules.length > 0) {
-                            for (i = 0; i < elementRules.length; i++) {
+                        if (elementRules.length > 0) { // Get styling from external stylesheets
+                            for (var i = 0; i < elementRules.length; i++) {
                                 var e = elementRules[i];
                                 rules.push(e.cssText)
                             }		
                         }
                         
-                        if (element.getAttribute('style')) {
+                        if (element.getAttribute('style')) { // Get styling from inline styles
                             rules.push(element.getAttribute('style'))
                         }
 
@@ -114,7 +100,7 @@ btn2.addEventListener("click", async () => {
 
                     var rules = getAppliedCss(element);
                     
-                    for (i = 0; i < rules.length; i++) {
+                    for (var i = 0; i < rules.length; i++) {
                         cssOutputMain += rules[i] + "<br><br>"; 
                     }		
 
@@ -126,7 +112,7 @@ btn2.addEventListener("click", async () => {
                     while (element) {
                         var rules = getAppliedCss(element);
                     
-                        for (i = 0; i < rules.length; i++) {
+                        for (var i = 0; i < rules.length; i++) {
                             cssOutputParents += rules[i] + "<br><br>"; 
                         }		
                         
@@ -137,9 +123,8 @@ btn2.addEventListener("click", async () => {
                     myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
                 }
 
-                // Remove all visible highlighting from page and enable mouse clicks again
+                // Enable mouse clicks again
                 document.querySelectorAll("*").forEach((element) => {
-                    element.classList.remove('highlight')
                     element.removeEventListener('click', stopClicks, false);
                 });
 
@@ -160,26 +145,9 @@ btn3.addEventListener("click", async () => {
     
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: () => {
-            // Remove all highlighting (not needed if using reload technique, see below)
-            // document.querySelectorAll("*").forEach((element) => {
-            //     element.classList.remove('highlight')
-            // });
-            
+        function: () => {            
             // Reloading the webpage to cancel the highlighting works but seems a bit hacky
             location.reload();
-
-            // The method below stopped the highlighting but also prevented it from being reactivated
-
-            // document.addEventListener('mousemove', (e) => {
-            //     e.stopImmediatePropagation();
-            //     e.stopPropagation();
-            // }, true);
-
-            // document.addEventListener('click', (e) => {
-            //     e.stopImmediatePropagation();
-            //     e.stopPropagation();
-            // }, true);
         }
     });
 });
