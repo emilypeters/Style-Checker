@@ -221,7 +221,7 @@ btn4.addEventListener("click", async() => {
     chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
         const allKeys = Object.keys(items);
         for (key in allKeys) {
-            const keyCopy = allKeys[key]; // "key" is actually the index of of the key in allKeys, keyCopy is actual key (bit weird)
+            const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
             chrome.storage.local.get([keyCopy]).then((result) => {
                 const resultParsed = JSON.parse(result[keyCopy]); // Parse JSON result
 
