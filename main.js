@@ -227,6 +227,7 @@ btn4.addEventListener("click", async() => {
 
                 // Create div with the style's name
                 const styleDiv = document.createElement("div");
+                styleDiv.style = "display: flex;";
                 const text = document.createElement("p");
                 text.innerHTML = resultParsed.name
                 styleDiv.appendChild(text);
