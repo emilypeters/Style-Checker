@@ -119,7 +119,7 @@ btn2.addEventListener("click", async () => {
                     // Get styling of element
 
                     var cssOutputMain = "";
-                    var cssOutputRaw = "";
+                    var cssOutputRaw = ""; // Output raw is what is actually saved
 
                     var rules = getAppliedCss(element);
                     
@@ -144,29 +144,42 @@ btn2.addEventListener("click", async () => {
                         parentElement = parentElement.parentElement;
                     }
 
-                    capturePopup.document.getElementById('styling').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
+                    // Output styling
+                    capturePopup.document.getElementById('styling').innerHTML = `
+                        <p>
+                            <p style='font-weight: bold;'>STYLING:</p>
+                            ${cssOutputMain}
+                            <p style='font-weight: bold;'>STYLING FROM PARENTS:</p>
+                            ${cssOutputParents}
+                        </p>
+                    `;
 
+                    // Button to save styling
                     let saveButton = capturePopup.document.getElementById("save-style");
                     
                     saveButton.addEventListener('click', async() => {
                         let styleName = capturePopup.document.getElementById("name").value;
                         let currentDate = new Date().toISOString();
 
+                        // Store style info in JSON
                         let style = { name: styleName, dateSaved: currentDate, cssRaw: cssOutputRaw };
         
                         chrome.storage.local.get(null, function(items) {
                             var allKeys = Object.keys(items);
                             
+                            // Get unique key for style (basically like autoincrement in SQL)
                             let maxKey = 0;
                             for (key in allKeys) {
                                 const keyInt = parseInt(allKeys[key]);
                                 if (keyInt > maxKey) maxKey = keyInt;
                             }
 
+                            // Save style
                             var obj= {};
                             obj[maxKey+1] = JSON.stringify(style);
                             chrome.storage.local.set(obj);
     
+                            // Clear input
                             capturePopup.document.getElementById("name").value = "";
                         });
                     });                   
@@ -201,21 +214,24 @@ btn3.addEventListener("click", async () => {
     });
 });
 
+// Button to veiw saved styles (really basic right now)
 btn4.addEventListener("click", async() => {
     const display = document.getElementById("saved-styles");
 
-    chrome.storage.local.get(null, function(items) {
+    chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
         const allKeys = Object.keys(items);
         for (key in allKeys) {
-            const keyCopy = allKeys[key];
+            const keyCopy = allKeys[key]; // "key" is actually the index of of the key in allKeys, keyCopy is actual key (bit weird)
             chrome.storage.local.get([keyCopy]).then((result) => {
-                const resultParsed = JSON.parse(result[keyCopy]);
+                const resultParsed = JSON.parse(result[keyCopy]); // Parse JSON result
 
+                // Create div with the style's name
                 const styleDiv = document.createElement("div");
                 const text = document.createElement("p");
                 text.innerHTML = resultParsed.name
                 styleDiv.appendChild(text);
 
+                // Add a copy to clipboard button to the siv
                 const button = document.createElement("button");
                 button.innerText = "Copy";
                 button.addEventListener("click", async() => {
@@ -229,6 +245,7 @@ btn4.addEventListener("click", async() => {
     });
 });
 
+// Debug button to clear storage
 btn9.addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
