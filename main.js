@@ -1,6 +1,9 @@
 // Get buttons
-let btn2 = document.getElementById("btn2")
-let btn3 = document.getElementById("btn3")
+let btn2 = document.getElementById("btn2");
+let btn3 = document.getElementById("btn3");
+let btn4 = document.getElementById("btn4");
+
+let btn9 = document.getElementById("btn9");
 
 // Button to allow user to highlight an element, and when they click it will open window with CSS
 btn2.addEventListener("click", async () => {
@@ -51,8 +54,27 @@ btn2.addEventListener("click", async () => {
             document.addEventListener('click', function (e) {
                 let element = e.target;
 
-                var myWindow = window.open("", "", "width=400,height=400"); // Open new window
-                myWindow.document.body.innerHTML += "<div style='font-family: sans-serif;'></div>"
+                var capturePopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                capturePopup.document.body.innerHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>Capture Style</title>
+                        <meta charset="utf-8">
+                        <style>
+                            * {
+                                font-family: Helvetica, sans-serif;
+                            }
+                        </style>
+                    </head>
+                    <div id="styling">
+                    </div>
+                    <div>
+                        <input id="name" type="text">
+                        <button id="save-style">Save Styling</button>
+                    </div>
+                    </html>
+                `;
 
                 // Remove all visible highlighting from page
                 document.querySelectorAll("*").forEach((element) => {
@@ -97,11 +119,13 @@ btn2.addEventListener("click", async () => {
                     // Get styling of element
 
                     var cssOutputMain = "";
+                    var cssOutputRaw = "";
 
                     var rules = getAppliedCss(element);
                     
                     for (var i = 0; i < rules.length; i++) {
                         cssOutputMain += rules[i] + "<br><br>"; 
+                        cssOutputRaw += rules[i];
                     }		
 
                     // Get styling of element's parents 
@@ -114,13 +138,38 @@ btn2.addEventListener("click", async () => {
                     
                         for (var i = 0; i < rules.length; i++) {
                             cssOutputParents += rules[i] + "<br><br>"; 
+                            cssOutputRaw += rules[i];
                         }		
                         
                         parentElement = parentElement.parentElement;
                     }
 
-                    // TODO: Display styling in more true to life form
-                    myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
+                    capturePopup.document.getElementById('styling').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
+
+                    let saveButton = capturePopup.document.getElementById("save-style");
+                    
+                    saveButton.addEventListener('click', async() => {
+                        let styleName = capturePopup.document.getElementById("name").value;
+                        let currentDate = new Date().toISOString();
+
+                        let style = { name: styleName, dateSaved: currentDate, cssRaw: cssOutputRaw };
+        
+                        chrome.storage.local.get(null, function(items) {
+                            var allKeys = Object.keys(items);
+                            
+                            let maxKey = 0;
+                            for (key in allKeys) {
+                                const keyInt = parseInt(allKeys[key]);
+                                if (keyInt > maxKey) maxKey = keyInt;
+                            }
+
+                            var obj= {};
+                            obj[maxKey+1] = JSON.stringify(style);
+                            chrome.storage.local.set(obj);
+    
+                            capturePopup.document.getElementById("name").value = "";
+                        });
+                    });                   
                 }
 
                 // Enable mouse clicks again
@@ -148,6 +197,45 @@ btn3.addEventListener("click", async () => {
         function: () => {            
             // Reloading the webpage to cancel the highlighting works but seems a bit hacky
             location.reload();
+        }
+    });
+});
+
+btn4.addEventListener("click", async() => {
+    const display = document.getElementById("saved-styles");
+
+    chrome.storage.local.get(null, function(items) {
+        const allKeys = Object.keys(items);
+        for (key in allKeys) {
+            const keyCopy = allKeys[key];
+            chrome.storage.local.get([keyCopy]).then((result) => {
+                const resultParsed = JSON.parse(result[keyCopy]);
+
+                const styleDiv = document.createElement("div");
+                const text = document.createElement("p");
+                text.innerHTML = resultParsed.name
+                styleDiv.appendChild(text);
+
+                const button = document.createElement("button");
+                button.innerText = "Copy";
+                button.addEventListener("click", async() => {
+                    navigator.clipboard.writeText(resultParsed.cssRaw);
+                });
+
+                styleDiv.appendChild(button);
+                display.appendChild(styleDiv);
+            });
+        }
+    });
+});
+
+btn9.addEventListener("click", async () => {
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: () => {            
+            chrome.storage.local.clear();
         }
     });
 });
