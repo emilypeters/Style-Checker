@@ -1,18 +1,36 @@
 * {
   font-family: Helvetica, sans-serif;
+  --padding: 5px;
+}
+
+.button-simple {
   padding: 5px;
+  background-color: white;
+  border-radius: 6px;
+  border-width: 0;
+  border-style: none;
 }
 
-button {
-  background-color: teal;
-  border-style: outset;
-  border-radius: 3px;
-  border-color: teal;
+.button-simple:hover {
+  background-color: rgb(222, 222, 222);
+}
+
+.button-simple:active {
+  background-color: rgb(198, 198, 198);
+}
+
+.active {
+  background-color: rgb(198, 198, 198);
+}
+
+.navbar {
+  display: flex;
+  width: 200px;
+  align-items: center;
+  justify-content: center;
   color: white;
-  margin: 5px;
 }
 
-button:active {
-  background-color: rgb(0, 100, 100);
-  border-style: inset;
+body {
+  padding: 5px;
 }
