@@ -2,6 +2,8 @@
 let captureButton = document.getElementById("btn2");
 let libraryButton = document.getElementById("btn3");
 
+chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
+
 chrome.storage.session.get(["highlightingActive"]).then((result) => {
     if (result.highlightingActive) {
         captureButton.classList.add('active');
@@ -210,7 +212,7 @@ captureButton.addEventListener("click", async () => {
                         // Remove highlighting listener
                         document.removeEventListener('mousemove', highlighter, false);
 
-                        // TODO: Change btn2 to be non-active and update session storage highlightingActive
+                        chrome.storage.session.set({ highlightingActive: false });
                     }, { once: true }, false);
                 }
             });
