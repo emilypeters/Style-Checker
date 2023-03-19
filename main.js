@@ -209,6 +209,8 @@ captureButton.addEventListener("click", async () => {
         
                         // Remove highlighting listener
                         document.removeEventListener('mousemove', highlighter, false);
+
+                        // TODO: Change btn2 to be non-active and update session storage highlightingActive
                     }, { once: true }, false);
                 }
             });
