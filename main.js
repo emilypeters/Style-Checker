@@ -294,8 +294,7 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             deleteButton.classList.add("button-simple");
             deleteButton.addEventListener("click", async() => {
                 chrome.storage.local.remove([keyCopy]);
-                // TODO: Hide deleted style in list
-                styleDiv.hidden = true;
+                styleDiv.remove();
             });
 
             styleDiv.appendChild(text);
