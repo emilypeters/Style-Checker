@@ -14,7 +14,7 @@ btn2.addEventListener("click", async () => {
         target: { tabId: tab.id },
         function: () => {
             // Highlighting referenced from https://hospodarets.com/highlight_element_with_page_fading
-            // Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
+            // Also Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
 
             // Function to disable mouse clicks (or any other behavior)
             function stopClicks(e) {
@@ -66,11 +66,11 @@ btn2.addEventListener("click", async () => {
                     var slice = Function.call.bind(Array.prototype.slice);
                     
                     var elementMatchCSSRule = function(element, cssRule) {
-                      return element.matches(cssRule.selectorText);
+                        return element.matches(cssRule.selectorText);
                     };
                     
                     var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
-                      return rules.concat(slice(styleSheet.cssRules));
+                        return rules.concat(slice(styleSheet.cssRules));
                     }, []);
                     
                     // Returns applied CSS of element (both from CSS files and from inline styles)
@@ -108,16 +108,16 @@ btn2.addEventListener("click", async () => {
 
                     var cssOutputParents = "";
 
-                    element = element.parentElement;
-                    while (element) {
-                        var rules = getAppliedCss(element);
+                    let parentElement = element.parentElement;
+                    while (parentElement) {
+                        var rules = getAppliedCss(parentElement);
                     
                         for (var i = 0; i < rules.length; i++) {
                             cssOutputParents += rules[i] + "<br><br>"; 
                         }		
                         
-                        element = element.parentElement;
-                    }	
+                        parentElement = parentElement.parentElement;
+                    }
 
                     // TODO: Display styling in more true to life form
                     myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
