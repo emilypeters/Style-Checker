@@ -1,3 +1,5 @@
+
+
 // Get buttons
 let btn2 = document.getElementById("btn2")
 let btn3 = document.getElementById("btn3")
@@ -51,8 +53,26 @@ btn2.addEventListener("click", async () => {
             document.addEventListener('click', function (e) {
                 let element = e.target;
 
-                var myWindow = window.open("", "", "width=400,height=400"); // Open new window
-                myWindow.document.body.innerHTML += "<div style='font-family: sans-serif;'></div>"
+                var myWindow = window.open("", "", "width=400,height=400");
+                myWindow.document.body.innerHTML += "<div class = 'container' style='\
+                font-family: sans-serif;\
+                background-color: #e7e7e7;\
+                padding: 10px;\
+                border: 1px solid #ccc;\
+                text-align: center;\
+                '></div>";
+                
+
+
+                //This block of code is supposed to allow for the window.css file to be used but for some reason I can't get the window to access it
+                // myWindow.document.head.innerHTML += "<link rel = 'stylesheet' href = './window.css'>"; 
+
+                // var link = myWindow.document.createElement("link");
+                // link.setAttribute("rel", "stylesheet");
+                // link.setAttribute("type","text/css");
+                // link.setAttribute("href",'window.css');
+                // link.rel = "stylesheet";
+                // myWindow.document.head.appendChild(link);
 
                 // Remove all visible highlighting from page
                 document.querySelectorAll("*").forEach((element) => {
