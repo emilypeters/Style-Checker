@@ -2,8 +2,13 @@
 let captureButton = document.getElementById("btn2");
 let libraryButton = document.getElementById("btn3");
 
+// Display for saved styles (button unhides it)
+const display = document.getElementById("saved-styles");
+display.hidden = true;
+
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
+// Check session storage for whether highlighting is active
 chrome.storage.session.get(["highlightingActive"]).then((result) => {
     if (result.highlightingActive) {
         captureButton.classList.add('active');
@@ -234,46 +239,68 @@ captureButton.addEventListener("click", async () => {
 //     });
 // });
 
-// Button to veiw saved styles (really basic right now)
+// Button to veiw saved styles
 btn4.addEventListener("click", async() => {
-    const display = document.getElementById("saved-styles");
-
-    chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
-        const allKeys = Object.keys(items);
-        for (key in allKeys) {
-            const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
-            chrome.storage.local.get([keyCopy]).then((result) => {
-                const resultParsed = JSON.parse(result[keyCopy]); // Parse JSON result
-
-                // Create div with the style's name
-                const styleDiv = document.createElement("div");
-                styleDiv.style = "display: flex;";
-                const text = document.createElement("p");
-                text.innerHTML = resultParsed.name
-                styleDiv.appendChild(text);
-
-                // Add a copy to clipboard button to the siv
-                const button = document.createElement("button");
-                button.innerText = "Copy";
-                button.addEventListener("click", async() => {
-                    navigator.clipboard.writeText(resultParsed.cssRaw);
-                });
-
-                styleDiv.appendChild(button);
-                display.appendChild(styleDiv);
-            });
-        }
-    });
+    if (display.hidden) {
+        display.hidden = false;
+        btn4.classList.add('active');
+    } else {
+        display.hidden = true;
+        btn4.classList.remove('active');
+    }
 });
 
-// Debug button to clear storage
-// btn9.addEventListener("click", async () => {
-//     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-//     chrome.scripting.executeScript({
-//         target: { tabId: tab.id },
-//         function: () => {            
-//             chrome.storage.local.clear();
-//         }
-//     });
-// });
+// Put saved styles in saved style div
+chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
+    const allKeys = Object.keys(items);
+    for (key in allKeys) {
+        const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
+        chrome.storage.local.get([keyCopy]).then((result) => {
+            const resultParsed = JSON.parse(result[keyCopy]); // Parse JSON result
+
+            // Create div with the style's name
+            const styleDiv = document.createElement("div");
+            styleDiv.style = "display: flex;";
+            
+            const text = document.createElement("p");
+            text.innerHTML = resultParsed.name
+            text.style = "text-align: left; display: inline-block; width: 50%;";
+
+            const buttonContainer = document.createElement("div");
+            buttonContainer.style = "text-align: right; display: inline-block; width: 50%;";
+
+            // Add a copy to clipboard button to the div
+            const copyButton = document.createElement("button");
+            copyButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                </svg>
+            `;
+            copyButton.classList.add("button-simple");
+            copyButton.addEventListener("click", async() => {
+                navigator.clipboard.writeText(resultParsed.cssRaw);
+            });
+
+            // Add a delete button to the div
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                </svg>
+            `;
+            deleteButton.classList.add("button-simple");
+            deleteButton.addEventListener("click", async() => {
+                chrome.storage.local.remove([keyCopy]);
+            });
+
+            styleDiv.appendChild(text);
+            buttonContainer.appendChild(copyButton);
+            buttonContainer.appendChild(deleteButton);
+            styleDiv.appendChild(buttonContainer);
+            display.appendChild(styleDiv);
+        });
+    }
+});
+
+
