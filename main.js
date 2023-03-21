@@ -1,10 +1,12 @@
 // Get buttons
-let captureButton = document.getElementById("btn2");
-let libraryButton = document.getElementById("btn3");
+let captureButton = document.getElementById("capturebutton");
+let libraryButton = document.getElementById("librarybutton");
+let searchButton = document.getElementById("searchbutton");
+let sortButton = document.getElementById("sortbutton");
 
 // Display for saved styles (button unhides it)
-const display = document.getElementById("saved-styles");
-display.hidden = true;
+const library = document.getElementById("library");
+const styleDisplay = document.getElementById("saved-styles");
 
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
@@ -225,32 +227,18 @@ captureButton.addEventListener("click", async () => {
     });
 });
 
-// Button to cancel styling capture
-// TODO: Cancel button disappears/resets if user closes then reopens extension window, need a global variable to keep track of highlighting state
-// btn3.addEventListener("click", async () => {
-//     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-//     chrome.scripting.executeScript({
-//         target: { tabId: tab.id },
-//         function: () => {            
-//             // Reloading the webpage to cancel the highlighting works but seems a bit hacky
-//             location.reload();
-//         }
-//     });
-// });
-
 // Button to view saved styles
-btn4.addEventListener("click", async() => {
-    if (display.hidden) {
-        display.hidden = false;
-        btn4.classList.add('active');
+libraryButton.addEventListener("click", async() => {
+    if (library.hidden) {
+        library.hidden = false;
+        libraryButton.classList.add('active');
     } else {
-        display.hidden = true;
-        btn4.classList.remove('active');
+        library.hidden = true;
+        libraryButton.classList.remove('active');
     }
 });
 
-// Put saved styles in saved style div
+// Display styles that match search term
 chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
     const allKeys = Object.keys(items);
     for (key in allKeys) {
@@ -260,11 +248,13 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
 
             // Create div with the style's name
             const styleDiv = document.createElement("div");
+            styleDiv.classList.add("style");
             styleDiv.style = "display: flex;";
             
             // Add style name
+            // TODO: extrapolate this and other styling to the dedicated CSS file
             const text = document.createElement("p");
-            text.innerHTML = resultParsed.name
+            text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
 
             const buttonContainer = document.createElement("div");
@@ -290,7 +280,6 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
                     <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
                 </svg>
             `;
-
             deleteButton.classList.add("button-simple");
             deleteButton.addEventListener("click", async() => {
                 chrome.storage.local.remove([keyCopy]);
@@ -301,9 +290,23 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             buttonContainer.appendChild(copyButton);
             buttonContainer.appendChild(deleteButton);
             styleDiv.appendChild(buttonContainer);
-            display.appendChild(styleDiv);
+            styleDisplay.appendChild(styleDiv);
         });
     }
 });
 
+// Search button
+searchButton.addEventListener("click", async() => {
+    const searchBar = document.getElementById("searchbar");
+    const searchTerm = searchBar.value;
+    searchBar.value = "";
 
+    styleDisplay.querySelectorAll("div.style").forEach((element) => {
+        // Hide styles with name that does not include search term
+        if (!element.querySelector("p").innerText.toLowerCase().includes(searchTerm.toLowerCase())) {
+            element.style.display = "none";
+        } else {
+            element.style.display = "flex";
+        }
+    });
+});

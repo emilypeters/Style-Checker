@@ -20,15 +20,36 @@
 }
 
 .active {
-  background-color: rgb(198, 198, 198);
+  background-color: rgb(222, 222, 222);
 }
 
 .navbar {
   display: flex;
-  width: 200px;
+  width: 220px;
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.searchsort {
+  display: flex;
+  padding: 5px 0px 5px 0px;
+}
+
+.searchbar {
+  border-color: black;
+  border-radius: 3px;
+  border-width: 1px;
+
+  text-align: left;
+  display: inline-block;
+  width: 70%;
+}
+
+.searchsortbuttons {
+  text-align: right;
+  display: inline-block;
+  width: 30%;
 }
 
 body {
