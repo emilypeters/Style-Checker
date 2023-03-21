@@ -140,7 +140,18 @@ btn2.addEventListener("click", async () => {
                     }
 
                     // TODO: Display styling in more true to life form
-                    myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>" + cssOutputMain + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; // Print styling to window
+                    //console.log(cssOutputMain)
+                    realCss = [];
+                    for (const match of cssOutputMain.matchAll(/((\S*):\s*"*\w*[,*\w ]*"*;)/mg)) {
+                        console.log(match[0]);
+                        realCss.push(match[0]);
+                      }
+                    //console.log(realcssMain);
+                    myWindow.document.querySelector('div').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>";
+                    realCss.forEach((s,i)=>{
+                        myWindow.document.querySelector('div').innerHTML = myWindow.document.querySelector('div').innerHTML + (s + "\n");
+                    });
+                    myWindow.document.querySelector('div').innerHTML = myWindow.document.querySelector('div').innerHTML + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; 
                 }
 
                 // Enable mouse clicks again
