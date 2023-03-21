@@ -25,7 +25,6 @@
 
 .navbar {
   display: flex;
-  width: 220px;
   align-items: center;
   justify-content: center;
   color: white;
@@ -40,18 +39,15 @@
   border-color: black;
   border-radius: 3px;
   border-width: 1px;
-
-  text-align: left;
-  display: inline-block;
-  width: 70%;
+  width: 100%;
 }
 
-.searchsortbuttons {
-  text-align: right;
-  display: inline-block;
-  width: 30%;
+.saved-styles {
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 body {
   padding: 5px;
+  width: 220px;
 }

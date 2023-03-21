@@ -1,12 +1,12 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
-let searchButton = document.getElementById("searchbutton");
 let sortButton = document.getElementById("sortbutton");
 
 // Display for saved styles (button unhides it)
 const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
+const searchBar = document.getElementById("searchbar");
 
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
@@ -295,11 +295,9 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
     }
 });
 
-// Search button
-searchButton.addEventListener("click", async() => {
-    const searchBar = document.getElementById("searchbar");
+// Search bar (acts as a live search bar)
+searchBar.addEventListener("input", async() => {
     const searchTerm = searchBar.value;
-    searchBar.value = "";
 
     styleDisplay.querySelectorAll("div.style").forEach((element) => {
         // Hide styles with name that does not include search term
