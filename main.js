@@ -310,3 +310,7 @@ searchButton.addEventListener("click", async() => {
         }
     });
 });
+
+sortButton.addEventListener("click", async() => {
+    
+});
