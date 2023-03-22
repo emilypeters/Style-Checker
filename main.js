@@ -289,6 +289,7 @@ function displayStylesSorted(target, direction) {
             buttonContainer.style = "text-align: right; display: inline-block; width: 50%;";
 
             // Add a copy to clipboard button to the div
+            // TODO: Give confirmational message after copying
             const copyButton = document.createElement("button");
             copyButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
@@ -302,6 +303,8 @@ function displayStylesSorted(target, direction) {
             });
 
             // Add a delete button to the div
+            // TODO: Ask for confirmation of deletion, just popup window in center of screen or something
+            // TODO: Give confirmational message after deletion
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -312,6 +315,8 @@ function displayStylesSorted(target, direction) {
             deleteButton.addEventListener("click", async() => {
                 chrome.storage.local.remove([key]);
                 styleDiv.remove();
+
+                // TODO: blur background, pop up window and cancel mouse input, remove blur and hide window after user makes selection
             });
 
             styleDiv.appendChild(text);
@@ -323,8 +328,8 @@ function displayStylesSorted(target, direction) {
     });
 }
 
-// Initial display of styles when extension window is opened, with no sorting of styles
-displayStylesSorted(null, null);
+// Initial display of styles when extension window is opened (sorted by most recent first)
+displayStylesSorted("dateSaved", "desc");
 
 // Search bar (acts as a live search bar)
 searchBar.addEventListener("input", async() => {
