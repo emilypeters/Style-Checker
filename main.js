@@ -2,6 +2,10 @@
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
 let sortButton = document.getElementById("sortbutton");
+let nameSortAscButton = document.getElementById("namesortascbutton");
+let dateSortAscButton = document.getElementById("datesortascbutton");
+let nameSortDescButton = document.getElementById("namesortdescbutton");
+let dateSortDescButton = document.getElementById("datesortdescbutton");
 
 // Display for saved styles (button unhides it)
 const library = document.getElementById("library");
@@ -229,13 +233,7 @@ captureButton.addEventListener("click", async () => {
 
 // Button to view saved styles
 libraryButton.addEventListener("click", async() => {
-    if (library.hidden) {
-        library.hidden = false;
-        libraryButton.classList.add('active');
-    } else {
-        library.hidden = true;
-        libraryButton.classList.remove('active');
-    }
+    libraryButton.classList.toggle('active');
 });
 
 // Display styles that match search term
@@ -309,6 +307,7 @@ searchBar.addEventListener("input", async() => {
     });
 });
 
-sortButton.addEventListener("click", async() => {
-    
+sortButton.addEventListener("click", async(e) => {
+    e.stopPropagation(); // TODO: may not be needed
+    document.getElementById("dropdown").classList.toggle("show");
 });
