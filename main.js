@@ -234,11 +234,15 @@ captureButton.addEventListener("click", async () => {
 // Button to view saved styles
 libraryButton.addEventListener("click", async() => {
     libraryButton.classList.toggle('active');
+    library.hidden = library.hidden ? false : true;
 });
 
 // Display styles that match search term
 chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
     const allKeys = Object.keys(items);
+
+    // TODO: const results = [];
+
     for (key in allKeys) {
         const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
         chrome.storage.local.get([keyCopy]).then((result) => {
@@ -291,6 +295,11 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             styleDisplay.appendChild(styleDiv);
         });
     }
+
+    // TODO: Sort
+
+    // TODO: display
+
 });
 
 // Search bar (acts as a live search bar)
@@ -310,4 +319,8 @@ searchBar.addEventListener("input", async() => {
 sortButton.addEventListener("click", async(e) => {
     e.stopPropagation(); // TODO: may not be needed
     document.getElementById("dropdown").classList.toggle("show");
+});
+
+nameSortAscButton.addEventListener("click", async() => {
+    // TODO
 });
