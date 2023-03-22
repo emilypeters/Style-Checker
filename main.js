@@ -237,17 +237,40 @@ libraryButton.addEventListener("click", async() => {
     library.hidden = library.hidden ? false : true;
 });
 
-// Display styles that match search term
-chrome.storage.local.get(null, function(items) { // Start by getting all the keys of the database
-    const allKeys = Object.keys(items);
+async function getStyleAsync (key) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get([key], function (result) {
+        const resultParsed = JSON.parse(result[key]);
+        resolve(resultParsed);
+      });
+    });
+};
 
-    // TODO: const results = [];
+function displayStylesSorted(target, direction) {
+    chrome.storage.local.get(null, async function(items) { // Start by getting all the keys of the database
+        // Empty style display div
+        styleDisplay.innerHTML = "";
+        
+        const allKeys = Object.keys(items);
 
-    for (key in allKeys) {
-        const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
-        chrome.storage.local.get([keyCopy]).then((result) => {
-            const resultParsed = JSON.parse(result[keyCopy]); // Parse JSON result
+        const results = [];
 
+        // Get all styles
+        for (key in allKeys) {
+            const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
+            const result = await getStyleAsync(keyCopy);
+            results.push(result);
+        }
+
+        // Sort the styles
+        if (direction === "asc") {
+            results.sort((a, b) => a[target].localeCompare(b[target]));
+        } else if (direction === "desc") {
+            results.sort((a, b) => b[target].localeCompare(a[target]));
+        }
+    
+        // Display the styles
+        for (const result of results) {
             // Create div with the style's name
             const styleDiv = document.createElement("div");
             styleDiv.classList.add("style");
@@ -256,7 +279,7 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             // Add style name
             // TODO: extrapolate this and other styling to the dedicated CSS file
             const text = document.createElement("p");
-            text.innerText = resultParsed.name
+            text.innerText = result.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
 
             const buttonContainer = document.createElement("div");
@@ -272,10 +295,11 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(resultParsed.cssRaw);
+                navigator.clipboard.writeText(result.cssRaw);
             });
 
             // Add a delete button to the div
+            // TODO: keyCopy no longer available so this doesn't work
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -293,14 +317,12 @@ chrome.storage.local.get(null, function(items) { // Start by getting all the key
             buttonContainer.appendChild(deleteButton);
             styleDiv.appendChild(buttonContainer);
             styleDisplay.appendChild(styleDiv);
-        });
-    }
+        }
+    });
+}
 
-    // TODO: Sort
-
-    // TODO: display
-
-});
+// Initial display of styles when extension window is opened, with no sorting of styles
+displayStylesSorted(null, null);
 
 // Search bar (acts as a live search bar)
 searchBar.addEventListener("input", async() => {
@@ -322,5 +344,21 @@ sortButton.addEventListener("click", async(e) => {
 });
 
 nameSortAscButton.addEventListener("click", async() => {
-    // TODO
+    displayStylesSorted("name", "asc");
+    document.getElementById("dropdown").classList.toggle("show");
+});
+
+dateSortAscButton.addEventListener("click", async() => {
+    displayStylesSorted("dateSaved", "asc");
+    document.getElementById("dropdown").classList.toggle("show");
+});
+
+nameSortDescButton.addEventListener("click", async() => {
+    displayStylesSorted("name", "desc");
+    document.getElementById("dropdown").classList.toggle("show");
+});
+
+dateSortDescButton.addEventListener("click", async() => {
+    displayStylesSorted("dateSaved", "desc");
+    document.getElementById("dropdown").classList.toggle("show");
 });
