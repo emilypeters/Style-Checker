@@ -241,7 +241,6 @@ async function getStyleAsync (key) {
     return new Promise((resolve) => {
       chrome.storage.local.get([key], function (result) {
         const resultParsed = {key:key, result:result[key]}
-        //const resultParsed = JSON.parse(result[key]);
         resolve(resultParsed);
       });
     });
