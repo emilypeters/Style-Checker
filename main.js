@@ -240,7 +240,8 @@ libraryButton.addEventListener("click", async() => {
 async function getStyleAsync (key) {
     return new Promise((resolve) => {
       chrome.storage.local.get([key], function (result) {
-        const resultParsed = JSON.parse(result[key]);
+        const resultParsed = {key:key, result:result[key]}
+        //const resultParsed = JSON.parse(result[key]);
         resolve(resultParsed);
       });
     });
@@ -262,15 +263,18 @@ function displayStylesSorted(target, direction) {
             results.push(result);
         }
 
-        // Sort the styles
+        //Sort the styles
         if (direction === "asc") {
-            results.sort((a, b) => a[target].localeCompare(b[target]));
+            results.sort((a, b) => JSON.parse(a.result)[target].localeCompare(JSON.parse(b.result)[target]));
         } else if (direction === "desc") {
-            results.sort((a, b) => b[target].localeCompare(a[target]));
+            results.sort((a, b) => JSON.parse(b.result)[target].localeCompare(JSON.parse(a.result)[target]));
         }
     
         // Display the styles
         for (const result of results) {
+            const resultParsed = JSON.parse(result.result);
+            const key = result.key;
+
             // Create div with the style's name
             const styleDiv = document.createElement("div");
             styleDiv.classList.add("style");
@@ -279,7 +283,7 @@ function displayStylesSorted(target, direction) {
             // Add style name
             // TODO: extrapolate this and other styling to the dedicated CSS file
             const text = document.createElement("p");
-            text.innerText = result.name
+            text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
 
             const buttonContainer = document.createElement("div");
@@ -295,11 +299,10 @@ function displayStylesSorted(target, direction) {
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(result.cssRaw);
+                navigator.clipboard.writeText(resultParsed.cssRaw);
             });
 
             // Add a delete button to the div
-            // TODO: keyCopy no longer available so this doesn't work
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -308,7 +311,7 @@ function displayStylesSorted(target, direction) {
             `;
             deleteButton.classList.add("button-simple");
             deleteButton.addEventListener("click", async() => {
-                chrome.storage.local.remove([keyCopy]);
+                chrome.storage.local.remove([key]);
                 styleDiv.remove();
             });
 
@@ -338,26 +341,31 @@ searchBar.addEventListener("input", async() => {
     });
 });
 
+// Reveal sorting dropdown on sort button click
 sortButton.addEventListener("click", async(e) => {
     e.stopPropagation(); // TODO: may not be needed
     document.getElementById("dropdown").classList.toggle("show");
 });
 
+// Sort by name asc. (a-z)
 nameSortAscButton.addEventListener("click", async() => {
     displayStylesSorted("name", "asc");
     document.getElementById("dropdown").classList.toggle("show");
 });
 
+// Sort by date asc. (old-new)
 dateSortAscButton.addEventListener("click", async() => {
     displayStylesSorted("dateSaved", "asc");
     document.getElementById("dropdown").classList.toggle("show");
 });
 
+// Sort by name desc. (z-a)
 nameSortDescButton.addEventListener("click", async() => {
     displayStylesSorted("name", "desc");
     document.getElementById("dropdown").classList.toggle("show");
 });
 
+// Sort by date desc. (new-old)
 dateSortDescButton.addEventListener("click", async() => {
     displayStylesSorted("dateSaved", "desc");
     document.getElementById("dropdown").classList.toggle("show");
