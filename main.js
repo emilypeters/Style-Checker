@@ -68,7 +68,6 @@ captureButton.addEventListener("click", async () => {
                     var prevHighlight = null;
         
                     // Function that defines highlighting behavior
-                    // TODO: Highlighting behavior is a bit wonky/jarring (also not great on webpages with dark backgrounds), could use tweaking/rework
                     function highlighter(e) {
                         let targetHighlight = e.target;
                                 
@@ -242,15 +241,6 @@ libraryButton.addEventListener("click", async() => {
     library.hidden = library.hidden ? false : true;
 });
 
-async function getStyleAsync (key) {
-    return new Promise((resolve) => {
-      chrome.storage.local.get([key], function (result) {
-        const resultParsed = {key:key, result:result[key]}
-        resolve(resultParsed);
-      });
-    });
-};
-
 function displayStylesSorted(target, direction) {
     chrome.storage.local.get(null, async function(items) { // Start by getting all the keys of the database
         // Empty style display div
@@ -261,9 +251,9 @@ function displayStylesSorted(target, direction) {
         const results = [];
 
         // Get all styles
-        for (key in allKeys) {
-            const keyCopy = allKeys[key]; // "key" is actually the index of the key in allKeys, keyCopy is actual key (bit weird)
-            const result = await getStyleAsync(keyCopy);
+        for (const key in allKeys) {
+            const keyCopy = allKeys[key];
+            const result = { key: keyCopy, result: items[keyCopy] }
             results.push(result);
         }
 
