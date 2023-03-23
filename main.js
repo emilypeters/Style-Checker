@@ -16,6 +16,7 @@ const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
+const copyPopup = document.getElementById("copypopup");
 
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
@@ -284,7 +285,6 @@ function displayStylesSorted(target, direction) {
             buttonContainer.style = "text-align: right; display: inline-block; width: 50%;";
 
             // Add a copy to clipboard button to the div
-            // TODO: Give confirmational message after copying
             const copyButton = document.createElement("button");
             copyButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
@@ -295,9 +295,9 @@ function displayStylesSorted(target, direction) {
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
                 navigator.clipboard.writeText(resultParsed.cssRaw);
-                document.getElementById("copypopup").classList.add("show");
+                copyPopup.classList.add("show");
                 setTimeout(() => {
-                    document.getElementById("copypopup").classList.remove("show");  
+                    copyPopup.classList.remove("show");  
                 }, 1500);
             });
 
