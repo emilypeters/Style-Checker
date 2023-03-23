@@ -11,13 +11,14 @@ let dateSortDescButton = document.getElementById("datesortdescbutton");
 let confirmDeleteButton = document.getElementById("confirmdeletebutton");
 let cancelDeleteButton = document.getElementById("canceldeletebutton");
 
-// Display for saved styles (button unhides it)
+// Various display windows
 const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
 const copyPopup = document.getElementById("copypopup");
 
+// Allow access to session storage
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
 // Check session storage for whether highlighting is active
