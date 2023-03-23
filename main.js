@@ -1,16 +1,21 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
+
 let sortButton = document.getElementById("sortbutton");
 let nameSortAscButton = document.getElementById("namesortascbutton");
 let dateSortAscButton = document.getElementById("datesortascbutton");
 let nameSortDescButton = document.getElementById("namesortdescbutton");
 let dateSortDescButton = document.getElementById("datesortdescbutton");
 
+let confirmDeleteButton = document.getElementById("confirmdeletebutton");
+let cancelDeleteButton = document.getElementById("canceldeletebutton");
+
 // Display for saved styles (button unhides it)
 const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
+const deletePopup = document.getElementById("deletepopup");
 
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
@@ -303,8 +308,7 @@ function displayStylesSorted(target, direction) {
             });
 
             // Add a delete button to the div
-            // TODO: Ask for confirmation of deletion, just popup window in center of screen or something
-            // TODO: Give confirmational message after deletion
+            // TODO: Perhaps stop mouse input when delete confirmation window is open
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -313,10 +317,17 @@ function displayStylesSorted(target, direction) {
             `;
             deleteButton.classList.add("button-simple");
             deleteButton.addEventListener("click", async() => {
-                chrome.storage.local.remove([key]);
-                styleDiv.remove();
+                confirmDeleteButton.addEventListener("click", async() => {
+                    chrome.storage.local.remove([key]);
+                    styleDiv.remove();
+                    deletePopup.classList.remove("show");
+                });
 
-                // TODO: blur background, pop up window and cancel mouse input, remove blur and hide window after user makes selection
+                cancelDeleteButton.addEventListener("click", async() => {
+                    deletePopup.classList.remove("show");
+                });
+
+                deletePopup.classList.add("show");
             });
 
             styleDiv.appendChild(text);
