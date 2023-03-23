@@ -1,3 +1,5 @@
+//adding features for preview...
+
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
