@@ -295,6 +295,10 @@ function displayStylesSorted(target, direction) {
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
                 navigator.clipboard.writeText(resultParsed.cssRaw);
+                document.getElementById("copypopup").classList.add("show");
+                setTimeout(() => {
+                    document.getElementById("copypopup").classList.remove("show");  
+                }, 1500);
             });
 
             // Add a delete button to the div

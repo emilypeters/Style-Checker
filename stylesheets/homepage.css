@@ -93,6 +93,13 @@ body {
   font-weight: bold;
 }
 
+.dropdown-copy {
+  width: 80px;
+  margin-top: 2%;
+  margin-left: 65px;
+  text-align: center;
+}
+
 .show {
   transform: translateY(0rem);
   visibility: visible;
