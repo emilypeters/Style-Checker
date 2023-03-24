@@ -277,7 +277,7 @@ function displayStylesSorted(target, direction) {
             styleDiv.style = "display: flex;";
             
             // Add style name
-            // TODO: extrapolate this and other styling to the dedicated CSS file
+            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const text = document.createElement("p");
             text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
@@ -353,7 +353,7 @@ searchBar.addEventListener("input", async() => {
 
 // Reveal sorting dropdown on sort button click
 sortButton.addEventListener("click", async(e) => {
-    e.stopPropagation(); // TODO: may not be needed
+    e.stopPropagation();
     document.getElementById("dropdown").classList.toggle("show");
 });
 
