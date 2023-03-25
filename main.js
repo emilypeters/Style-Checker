@@ -101,14 +101,22 @@ captureButton.addEventListener("click", async () => {
                                     * {
                                         font-family: Helvetica, sans-serif;
                                     }
+                                    body {
+                                        background-color: #e7e7e7;
+                                        padding: 10px;
+                                        border: 1px solid #ccc;
+                                        text-align: center;
+                                    }
                                 </style>
                             </head>
-                            <div id="styling">
-                            </div>
-                            <div>
-                                <input id="name" type="text">
-                                <button id="save-style">Save Styling</button>
-                            </div>
+                            <body>
+                                <div id="styling">
+                                </div>
+                                <div>
+                                    <input id="name" type="text">
+                                    <button id="save-style">Save Styling</button>
+                                </div>
+                            </body>
                             </html>
                         `;
         
