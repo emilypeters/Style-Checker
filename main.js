@@ -159,61 +159,58 @@ captureButton.addEventListener("click", async () => {
                             }
         
                             // ***********************************************************************************************************	
+                            
+                            let pureCssMain = []; // CSS descriptors of selected element
+                            let pureCssParents = []; // CSS descriptors of parent elements
+                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+
+                            // Regex for matching CSS descriptors
+                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
         
                             // Get styling of element
-        
-                            var cssOutputMain = "";
-                            var cssOutputRaw = ""; // Output raw is what is actually saved
-        
                             var rules = getAppliedCss(element);
-                            
                             for (var i = 0; i < rules.length; i++) {
-                                cssOutputMain += rules[i] + "<br><br>"; 
-                                cssOutputRaw += rules[i];
-                            }		
+                                // Extract only the CSS descriptors
+                                for (const match of rules[i].matchAll(regex)) {
+                                    pureCssMain.push(match[0]);
+                                    pureCssRich += match[0] + "\n";
+                                }
+                            }
         
-                            // Get styling of element's parents 
-        
-                            var cssOutputParents = "";
-        
+                            // Get styling of element's parents
                             let parentElement = element.parentElement;
                             while (parentElement) {
                                 var rules = getAppliedCss(parentElement);
                             
                                 for (var i = 0; i < rules.length; i++) {
-                                    cssOutputParents += rules[i] + "<br><br>"; 
-                                    cssOutputRaw += rules[i];
+                                    // Extract only the CSS descriptors
+                                    for (const match of rules[i].matchAll(regex)) {
+                                        pureCssParents.push(match[0]);
+                                        pureCssRich += match[0] + "\n";
+                                    }
                                 }		
                                 
                                 parentElement = parentElement.parentElement;
                             }
 
-                            // TODO: Display styling in more true to life form
-                            // Using a regex to turn cssOutputMain into an array of matched tags
-                            let realCss = [];
-                            let regex = /[^\s]+: [^;]+;/gm; ///((\S*):\s*"*\w*[,*\w ]*"*;)/mg
-                            for (const match of cssOutputRaw.matchAll(regex)) {
-                                realCss.push(match[0]);
-                            }
+                            // Output CSS to window
+
+                            const cssDisplay = capturePopup.document.getElementById('styling');
+
+                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>STYLING:</p>";
                             
-                            capturePopup.document.getElementById('styling').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>";
-                            
-                            realCss.forEach((s,i)=>{
-                                capturePopup.document.getElementById('styling').innerHTML = capturePopup.document.getElementById('styling').innerHTML + (s + "<br>");
+                            pureCssMain.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
                             });
                             
-                            capturePopup.document.getElementById('styling').innerHTML = capturePopup.document.getElementById('styling').innerHTML + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; 
-        
-                            // Output styling
-                            // capturePopup.document.getElementById('styling').innerHTML = `
-                            //     <p>
-                            //         <p style='font-weight: bold;'>STYLING:</p>
-                            //         ${cssOutputMain}
-                            //         <p style='font-weight: bold;'>STYLING FROM PARENTS:</p>
-                            //         ${cssOutputParents}
-                            //     </p>
-                            // `;
-        
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>"; 
+                            
+                            pureCssParents.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            });
+
+                            cssDisplay.innerHTML += "</p>"; 
+
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
                             
@@ -222,7 +219,7 @@ captureButton.addEventListener("click", async () => {
                                 let currentDate = new Date().toISOString();
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: cssOutputRaw };
+                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
