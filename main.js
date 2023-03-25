@@ -187,16 +187,32 @@ captureButton.addEventListener("click", async () => {
                                 
                                 parentElement = parentElement.parentElement;
                             }
+
+                            // TODO: Display styling in more true to life form
+                            // Using a regex to turn cssOutputMain into an array of matched tags
+                            let realCss = [];
+                            let regex = /[^\s]+: [^;]+;/gm; ///((\S*):\s*"*\w*[,*\w ]*"*;)/mg
+                            for (const match of cssOutputRaw.matchAll(regex)) {
+                                realCss.push(match[0]);
+                            }
+                            
+                            capturePopup.document.getElementById('styling').innerHTML = "<p> <p style='font-weight: bold;'>STYLING:</p>";
+                            
+                            realCss.forEach((s,i)=>{
+                                capturePopup.document.getElementById('styling').innerHTML = capturePopup.document.getElementById('styling').innerHTML + (s + "<br>");
+                            });
+                            
+                            capturePopup.document.getElementById('styling').innerHTML = capturePopup.document.getElementById('styling').innerHTML + "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>" + cssOutputParents + "</p>"; 
         
                             // Output styling
-                            capturePopup.document.getElementById('styling').innerHTML = `
-                                <p>
-                                    <p style='font-weight: bold;'>STYLING:</p>
-                                    ${cssOutputMain}
-                                    <p style='font-weight: bold;'>STYLING FROM PARENTS:</p>
-                                    ${cssOutputParents}
-                                </p>
-                            `;
+                            // capturePopup.document.getElementById('styling').innerHTML = `
+                            //     <p>
+                            //         <p style='font-weight: bold;'>STYLING:</p>
+                            //         ${cssOutputMain}
+                            //         <p style='font-weight: bold;'>STYLING FROM PARENTS:</p>
+                            //         ${cssOutputParents}
+                            //     </p>
+                            // `;
         
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
