@@ -1,7 +1,5 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
-let libraryButton = document.getElementById("librarybutton");
-
 let sortButton = document.getElementById("sortbutton");
 let nameSortAscButton = document.getElementById("namesortascbutton");
 let dateSortAscButton = document.getElementById("datesortascbutton");
@@ -12,7 +10,6 @@ let confirmDeleteButton = document.getElementById("confirmdeletebutton");
 let cancelDeleteButton = document.getElementById("canceldeletebutton");
 
 // Various display windows
-const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
@@ -258,12 +255,6 @@ captureButton.addEventListener("click", async () => {
     });
 });
 
-// Button to view saved styles
-libraryButton.addEventListener("click", async() => {
-    libraryButton.classList.toggle('active');
-    library.hidden = library.hidden ? false : true;
-});
-
 function displayStylesSorted(target, direction) {
     chrome.storage.local.get(null, async function(items) { // Start by getting all the keys of the database
         // Empty style display div
@@ -278,6 +269,11 @@ function displayStylesSorted(target, direction) {
             const keyCopy = allKeys[key];
             const result = { key: keyCopy, result: items[keyCopy] }
             results.push(result);
+        }
+
+        if (results.length === 0) {
+            styleDisplay.innerHTML = "<p style='text-align: center;'>No saved styles</p>"
+            return;
         }
 
         //Sort the styles
