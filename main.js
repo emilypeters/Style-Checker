@@ -168,12 +168,13 @@ captureButton.addEventListener("click", async () => {
                             let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
         
                             // Get styling of element
+                            // TODO: For now the styling of main element is marked w/ !important tag so that parent styling will not override it
                             var rules = getAppliedCss(element);
                             for (var i = 0; i < rules.length; i++) {
                                 // Extract only the CSS descriptors
                                 for (const match of rules[i].matchAll(regex)) {
                                     pureCssMain.push(match[0]);
-                                    pureCssRich += match[0] + "\n";
+                                    pureCssRich += match[0].slice(0, match[0].length - 1) + " !important;\n";
                                 }
                             }
         
@@ -217,22 +218,16 @@ captureButton.addEventListener("click", async () => {
                               
                                 return retval
                             }
+                        
+                            // TODO: This gets computed styling from html tag, which other codes misses
+                            let computedStyles = getAppliedComputedStyles(document.documentElement);
 
-                            // let testCss = [];
-
-                            // let ell = element;
-                            // while (ell) {
-                            //     var computedStyles = getAppliedComputedStyles(ell);
-
-                            //     for (const key in computedStyles){
-                            //         testCss.push(computedStyles[key]);
-                            //     }
-
-                            //     ell = ell.parentElement;
-                            // }
-                              
-                            console.log(getAppliedComputedStyles(document.body));
-                            console.log(getAppliedComputedStyles(document.documentElement));
+                            for (const key in computedStyles){
+                                pureCssRich += `${key}: ${computedStyles[key]};\n`;
+                            }
+                    
+                            //console.log(getAppliedComputedStyles(document.body));
+                            //console.log(getAppliedComputedStyles(document.documentElement));
 
                             // Output CSS to window
 
