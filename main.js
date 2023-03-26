@@ -13,13 +13,14 @@ let dateSortDescButton = document.getElementById("datesortdescbutton");
 let confirmDeleteButton = document.getElementById("confirmdeletebutton");
 let cancelDeleteButton = document.getElementById("canceldeletebutton");
 
-// Display for saved styles (button unhides it)
+// Various display windows
 const library = document.getElementById("library");
 const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
 const copyPopup = document.getElementById("copypopup");
 
+// Allow access to session storage
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
 
 // Check session storage for whether highlighting is active
@@ -102,14 +103,22 @@ captureButton.addEventListener("click", async () => {
                                     * {
                                         font-family: Helvetica, sans-serif;
                                     }
+                                    body {
+                                        background-color: #e7e7e7;
+                                        padding: 10px;
+                                        border: 1px solid #ccc;
+                                        text-align: center;
+                                    }
                                 </style>
                             </head>
-                            <div id="styling">
-                            </div>
-                            <div>
-                                <input id="name" type="text">
-                                <button id="save-style">Save Styling</button>
-                            </div>
+                            <body>
+                                <div id="styling">
+                                </div>
+                                <div>
+                                    <input id="name" type="text">
+                                    <button id="save-style">Save Styling</button>
+                                </div>
+                            </body>
                             </html>
                         `;
         
@@ -152,45 +161,58 @@ captureButton.addEventListener("click", async () => {
                             }
         
                             // ***********************************************************************************************************	
+                            
+                            let pureCssMain = []; // CSS descriptors of selected element
+                            let pureCssParents = []; // CSS descriptors of parent elements
+                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+
+                            // Regex for matching CSS descriptors
+                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
         
                             // Get styling of element
-        
-                            var cssOutputMain = "";
-                            var cssOutputRaw = ""; // Output raw is what is actually saved
-        
                             var rules = getAppliedCss(element);
-                            
                             for (var i = 0; i < rules.length; i++) {
-                                cssOutputMain += rules[i] + "<br><br>"; 
-                                cssOutputRaw += rules[i];
-                            }		
+                                // Extract only the CSS descriptors
+                                for (const match of rules[i].matchAll(regex)) {
+                                    pureCssMain.push(match[0]);
+                                    pureCssRich += match[0] + "\n";
+                                }
+                            }
         
-                            // Get styling of element's parents 
-        
-                            var cssOutputParents = "";
-        
+                            // Get styling of element's parents
                             let parentElement = element.parentElement;
                             while (parentElement) {
                                 var rules = getAppliedCss(parentElement);
                             
                                 for (var i = 0; i < rules.length; i++) {
-                                    cssOutputParents += rules[i] + "<br><br>"; 
-                                    cssOutputRaw += rules[i];
+                                    // Extract only the CSS descriptors
+                                    for (const match of rules[i].matchAll(regex)) {
+                                        pureCssParents.push(match[0]);
+                                        pureCssRich += match[0] + "\n";
+                                    }
                                 }		
                                 
                                 parentElement = parentElement.parentElement;
                             }
-        
-                            // Output styling
-                            capturePopup.document.getElementById('styling').innerHTML = `
-                                <p>
-                                    <p style='font-weight: bold;'>STYLING:</p>
-                                    ${cssOutputMain}
-                                    <p style='font-weight: bold;'>STYLING FROM PARENTS:</p>
-                                    ${cssOutputParents}
-                                </p>
-                            `;
-        
+
+                            // Output CSS to window
+
+                            const cssDisplay = capturePopup.document.getElementById('styling');
+
+                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>STYLING:</p>";
+                            
+                            pureCssMain.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            });
+                            
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>"; 
+                            
+                            pureCssParents.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            });
+
+                            cssDisplay.innerHTML += "</p>"; 
+
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
                             
@@ -199,7 +221,7 @@ captureButton.addEventListener("click", async () => {
                                 let currentDate = new Date().toISOString();
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: cssOutputRaw };
+                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
@@ -278,7 +300,7 @@ function displayStylesSorted(target, direction) {
             styleDiv.style = "display: flex;";
             
             // Add style name
-            // TODO: extrapolate this and other styling to the dedicated CSS file
+            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const text = document.createElement("p");
             text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
@@ -354,7 +376,7 @@ searchBar.addEventListener("input", async() => {
 
 // Reveal sorting dropdown on sort button click
 sortButton.addEventListener("click", async(e) => {
-    e.stopPropagation(); // TODO: may not be needed
+    e.stopPropagation();
     document.getElementById("dropdown").classList.toggle("show");
 });
 
