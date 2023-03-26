@@ -193,6 +193,47 @@ captureButton.addEventListener("click", async () => {
                                 parentElement = parentElement.parentElement;
                             }
 
+                            function getAppliedComputedStyles(element) {
+                                var styles = window.getComputedStyle(element)
+                                var inlineStyles = element.getAttribute('style')
+                              
+                                var retval = {}
+                                for (var i = 0; i < styles.length; i++) {
+                                    var key = styles[i]
+                                    var value = styles.getPropertyValue(key)
+                              
+                                    element.style.setProperty(key, 'unset')
+                              
+                                    var unsetValue = styles.getPropertyValue(key)
+                              
+                                    if (inlineStyles)
+                                        element.setAttribute('style', inlineStyles)
+                                    else
+                                        element.removeAttribute('style')
+                              
+                                    if (unsetValue !== value)
+                                        retval[key] = value
+                                }
+                              
+                                return retval
+                            }
+
+                            // let testCss = [];
+
+                            // let ell = element;
+                            // while (ell) {
+                            //     var computedStyles = getAppliedComputedStyles(ell);
+
+                            //     for (const key in computedStyles){
+                            //         testCss.push(computedStyles[key]);
+                            //     }
+
+                            //     ell = ell.parentElement;
+                            // }
+                              
+                            console.log(getAppliedComputedStyles(document.body));
+                            console.log(getAppliedComputedStyles(document.documentElement));
+
                             // Output CSS to window
 
                             const cssDisplay = capturePopup.document.getElementById('styling');
@@ -309,13 +350,40 @@ function displayStylesSorted(target, direction) {
             //Add a preview button to the div
             const previewButton = document.createElement("button");
             previewButton.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image-fill" viewBox="0 0 16 16">
-                   <path d="M.002 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2V3zm1 9v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12zm5-6.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
                 </svg>
             `;
             previewButton.classList.add("button-simple");
             previewButton.addEventListener("click", async () => {
-                //when the preview button is clicked, do something
+                // When the preview button is clicked, show preview window
+                var previewPopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                previewPopup.document.body.innerHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>Preview Style</title>
+                        <meta charset="utf-8">
+                        <style>
+                            body {
+                                padding: 20px;
+                                margin: 20px;
+                            }
+                            div {
+                                ${resultParsed.cssRaw}
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            This is some text
+                            <input placeholder="This is an input" type="text">
+                            <button> This is a button </button>
+                        </div>
+                    </body>
+                    </html>
+                `;
             });
 
             // Add a copy to clipboard button to the div
