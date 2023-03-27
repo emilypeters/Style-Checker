@@ -105,7 +105,7 @@ captureButton.addEventListener("click", async () => {
                                         background-color: #e7e7e7;
                                         padding: 10px;
                                         border: 1px solid #ccc;
-                                        text-align: center;
+                                        text-align: left;
                                     }
                                 </style>
                             </head>
@@ -160,40 +160,6 @@ captureButton.addEventListener("click", async () => {
         
                             // ***********************************************************************************************************	
                             
-                            let pureCssMain = []; // CSS descriptors of selected element
-                            let pureCssParents = []; // CSS descriptors of parent elements
-                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
-
-                            // Regex for matching CSS descriptors
-                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
-        
-                            // Get styling of element
-                            // TODO: For now the styling of main element is marked w/ !important tag so that parent styling will not override it
-                            var rules = getAppliedCss(element);
-                            for (var i = 0; i < rules.length; i++) {
-                                // Extract only the CSS descriptors
-                                for (const match of rules[i].matchAll(regex)) {
-                                    pureCssMain.push(match[0]);
-                                    pureCssRich += match[0].slice(0, match[0].length - 1) + " !important;\n";
-                                }
-                            }
-        
-                            // Get styling of element's parents
-                            let parentElement = element.parentElement;
-                            while (parentElement) {
-                                var rules = getAppliedCss(parentElement);
-                            
-                                for (var i = 0; i < rules.length; i++) {
-                                    // Extract only the CSS descriptors
-                                    for (const match of rules[i].matchAll(regex)) {
-                                        pureCssParents.push(match[0]);
-                                        pureCssRich += match[0] + "\n";
-                                    }
-                                }		
-                                
-                                parentElement = parentElement.parentElement;
-                            }
-
                             function getAppliedComputedStyles(element) {
                                 var styles = window.getComputedStyle(element)
                                 var inlineStyles = element.getAttribute('style')
@@ -218,16 +184,60 @@ captureButton.addEventListener("click", async () => {
                               
                                 return retval
                             }
-                        
-                            // TODO: This gets computed styling from html tag, which other codes misses
-                            let computedStyles = getAppliedComputedStyles(document.documentElement);
 
-                            for (const key in computedStyles){
-                                pureCssRich += `${key}: ${computedStyles[key]};\n`;
+                            let pureCssMain = []; // CSS descriptors of selected element
+                            let pureCssParents = []; // CSS descriptors of parent elements
+                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+
+                            let descriptorNames = []; // Keeps track of descriptor names so that the CSS of the main element will take priority
+
+                            // Regex for matching CSS descriptors
+                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
+        
+                            // Get styling of element
+                            var rules = getAppliedCss(element);
+                            for (var i = 0; i < rules.length; i++) {
+                                // Extract only the CSS descriptors
+                                for (const match of rules[i].matchAll(regex)) {
+                                    let cssDescriptor = match[0];
+                                    if (!pureCssMain.includes(cssDescriptor)) {
+                                        pureCssMain.push(cssDescriptor);
+                                        descriptorNames.push(cssDescriptor.slice(0, cssDescriptor.indexOf(':')));
+                                        pureCssRich += cssDescriptor + "\n";
+                                    }
+                                }
                             }
-                    
-                            //console.log(getAppliedComputedStyles(document.body));
-                            //console.log(getAppliedComputedStyles(document.documentElement));
+        
+                            // Get styling of element's parents
+                            let parentElement = element.parentElement;
+                            while (parentElement) {
+                                var rules = getAppliedCss(parentElement);
+                            
+                                for (var i = 0; i < rules.length; i++) {
+                                    // Extract only the CSS descriptors
+                                    for (const match of rules[i].matchAll(regex)) {
+                                        let cssDescriptor = match[0];
+                                        if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(cssDescriptor.slice(0, cssDescriptor.indexOf(':')))) {
+                                            pureCssParents.push(cssDescriptor);
+                                            pureCssRich += cssDescriptor + "\n";
+                                        }
+                                    }
+                                }		
+                                
+                                parentElement = parentElement.parentElement;
+                            }
+                        
+                            // TODO: This gets computed styling from html tag, which other codes misses. The same issue applies to the body tag
+                            // let computedStyles = getAppliedComputedStyles(document.documentElement);
+
+                            // for (const key in computedStyles){
+                            //     let cssDescriptor = `${key}: ${computedStyles[key]};`;
+
+                            //     if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(key)) {
+                            //         pureCssParents.push(cssDescriptor);
+                            //         pureCssRich += cssDescriptor + "\n";
+                            //     }
+                            // }
 
                             // Output CSS to window
 
