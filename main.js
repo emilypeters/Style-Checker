@@ -226,18 +226,6 @@ captureButton.addEventListener("click", async () => {
                                 
                                 parentElement = parentElement.parentElement;
                             }
-                        
-                            // TODO: This gets computed styling from html tag, which other codes misses. The same issue applies to the body tag
-                            // let computedStyles = getAppliedComputedStyles(document.documentElement);
-
-                            // for (const key in computedStyles){
-                            //     let cssDescriptor = `${key}: ${computedStyles[key]};`;
-
-                            //     if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(key)) {
-                            //         pureCssParents.push(cssDescriptor);
-                            //         pureCssRich += cssDescriptor + "\n";
-                            //     }
-                            // }
 
                             // Output CSS to window
 
