@@ -126,82 +126,6 @@ captureButton.addEventListener("click", async () => {
                         });
         
                         if (element != null) {
-                            // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
-                            // ***********************************************************************************************************
-        
-                            // var slice = Function.call.bind(Array.prototype.slice);
-                            
-                            // var elementMatchCSSRule = function(element, cssRule) {
-                            //     return element.matches(cssRule.selectorText);
-                            // };
-                            
-                            // var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
-                            //     return rules.concat(slice(styleSheet.cssRules));
-                            // }, []);
-                            
-                            // // Returns applied CSS of element (both from CSS files and from inline styles)
-                            // function getAppliedCss(element) {
-                            //     var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
-                            //     var rules =[];
-        
-                            //     if (elementRules.length > 0) { // Get styling from external stylesheets
-                            //         for (var i = 0; i < elementRules.length; i++) {
-                            //             var e = elementRules[i];
-                            //             rules.push(e.cssText)
-                            //         }		
-                            //     }
-                                
-                            //     if (element.getAttribute('style')) { // Get styling from inline styles
-                            //         rules.push(element.getAttribute('style'))
-                            //     }
-        
-                            //     return rules;
-                            // }
-        
-                            // ***********************************************************************************************************	
-
-                            // let pureCssMain = []; // CSS descriptors of selected element
-                            // let pureCssParents = []; // CSS descriptors of parent elements
-                            // let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
-
-                            // let descriptorNames = []; // Keeps track of descriptor names so that the CSS of the main element will take priority
-
-                            // // Regex for matching CSS descriptors
-                            // let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
-        
-                            // // Get styling of element
-                            // var rules = getAppliedCss(element);
-                            // for (var i = 0; i < rules.length; i++) {
-                            //     // Extract only the CSS descriptors
-                            //     for (const match of rules[i].matchAll(regex)) {
-                            //         let cssDescriptor = match[0];
-                            //         if (!pureCssMain.includes(cssDescriptor)) {
-                            //             pureCssMain.push(cssDescriptor);
-                            //             descriptorNames.push(cssDescriptor.slice(0, cssDescriptor.indexOf(':')));
-                            //             pureCssRich += cssDescriptor + "\n";
-                            //         }
-                            //     }
-                            // }
-        
-                            // // Get styling of element's parents
-                            // let parentElement = element.parentElement;
-                            // while (parentElement) {
-                            //     var rules = getAppliedCss(parentElement);
-                            
-                            //     for (var i = 0; i < rules.length; i++) {
-                            //         // Extract only the CSS descriptors
-                            //         for (const match of rules[i].matchAll(regex)) {
-                            //             let cssDescriptor = match[0];
-                            //             if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(cssDescriptor.slice(0, cssDescriptor.indexOf(':')))) {
-                            //                 pureCssParents.push(cssDescriptor);
-                            //                 pureCssRich += cssDescriptor + "\n";
-                            //             }
-                            //         }
-                            //     }		
-                                
-                            //     parentElement = parentElement.parentElement;
-                            // }
-
                             var styles = window.getComputedStyle(element);
                             //var inlineStyles = element.getAttribute('style')
 
@@ -223,27 +147,68 @@ captureButton.addEventListener("click", async () => {
                                 cssDescriptors[key] = value;
                             }
 
-                            let fontCss = [];
-                            let coloringCss = [];
-                            let borderCss = [];
+                            // function thing(p) {
+                            //     let borderTop = cssDescriptors[`border-top-${p}`];
+                            //     return borderTop === cssDescriptors[`border-bottom-${p}`] &&
+                            //     borderTop === cssDescriptors[`border-left-${p}`] &&
+                            //     borderTop === cssDescriptors[`border-right-${p}`] &&
+                            //     borderTop === cssDescriptors[`border-block-end-${p}`] && 
+                            //     borderTop === cssDescriptors[`border-block-start-${p}`] &&
+                            //     borderTop === cssDescriptors[`border-inline-end-${p}`] &&
+                            //     borderTop === cssDescriptors[`border-inline-start-${p}`];
+                            // }
+
+                            let fontCss = [
+                                `font-family: ${cssDescriptors["font-family"]};`,
+                                `font-size: ${cssDescriptors["font-size"]};`,
+                                `font-style: ${cssDescriptors["font-style"]};`,
+                                `font-weight: ${cssDescriptors["font-weight"]};`
+                            ];
+
+                            let coloringCss = [
+                                `background-color: ${cssDescriptors["background-color"]};`,
+                                `color: ${cssDescriptors["color"]};`
+                            ];
+
+                            let borderCss = [
+                                `border-width: ${cssDescriptors["border-top-width"]};`,
+                                `border-color: ${cssDescriptors["border-top-color"]};`,
+                                `border-style: ${cssDescriptors["border-top-style"]};`,
+                                `border-radius: ${cssDescriptors["border-top-right-radius"]};`
+                            ];
+
                             let positioningCss = [];
                             let pureCss = "";
 
-                            let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;
+                            // if (thing("width")) {
+                            //     borderWidth = true;
+                            //     borderCss.push(`border-width: ${cssDescriptors["border-top-width"]};`);
+                            // }
+
+                            // if (thing("style")) {
+                            //     borderStyle = true;
+                            //     borderCss.push(`border-style: ${cssDescriptors["border-top-style"]};`);
+                            // }
+
+                            // if (thing("color")) {
+                            //     borderColor = true;
+                            //     borderCss.push(`border-color: ${cssDescriptors["border-top-color"]};`);
+                            // }
+
+                            //let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;
                             let positioningregex = /^align-[^\s]+$|^margin-[^\s]+$|^padding-[^\s]+$|^justify-[^\s]+$|^text-align$|^display$/m;
 
                             for (const key in cssDescriptors){
                                 let descriptor = `${key}: ${cssDescriptors[key]};`;
                                 let value = cssDescriptors[key];
                                
-                                if (key === "font-size" || key === "font-family" || key === "font-weight" || key === "font-style") {
+                                if (false) {
                                     fontCss.push(descriptor);
                                     pureCss += descriptor + "\n";
-                                } else if (key === "background-color" || key === "color") {
+                                } else if (false) {
                                     coloringCss.push(descriptor);
                                     pureCss += descriptor + "\n";
-                                } else if (borderregex.test(key)) {
-                                    // TODO: Coalesce duplicates
+                                } else if (false) {
                                     borderCss.push(descriptor);
                                     pureCss += descriptor + "\n";
                                 } else if (positioningregex.test(key)) {
@@ -251,7 +216,7 @@ captureButton.addEventListener("click", async () => {
                                        continue;
                                     }
                                     positioningCss.push(descriptor);
-                                    pureCss += descriptor + "\n";
+                                    //pureCss += descriptor + "\n";
                                 }
                             }
 
@@ -263,24 +228,28 @@ captureButton.addEventListener("click", async () => {
                             
                             fontCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                pureCss += cssDescriptor + "\n";
                             });
                             
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
                             
                             coloringCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                pureCss += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
                             
                             borderCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                pureCss += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
                             
                             positioningCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                pureCss += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "</p>"; 
