@@ -230,15 +230,11 @@ captureButton.addEventListener("click", async () => {
                             let pureCss = "";
 
                             let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;
-                            let positioningregex = /^align-[^\s]+$|^margin-[^\s]+$|^padding-[^\s]+$|^justify-[^\s]+$|^text-align$|^display$|^width$|^height$/m;
+                            let positioningregex = /^align-[^\s]+$|^margin-[^\s]+$|^padding-[^\s]+$|^justify-[^\s]+$|^text-align$|^display$/m;
 
                             for (const key in cssDescriptors){
                                 let descriptor = `${key}: ${cssDescriptors[key]};`;
                                 let value = cssDescriptors[key];
-
-                                if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") {
-                                    continue;
-                                }
                                
                                 if (key === "font-size" || key === "font-family" || key === "font-weight" || key === "font-style") {
                                     fontCss.push(descriptor);
@@ -247,15 +243,17 @@ captureButton.addEventListener("click", async () => {
                                     coloringCss.push(descriptor);
                                     pureCss += descriptor + "\n";
                                 } else if (borderregex.test(key)) {
+                                    // TODO: Coalesce duplicates
                                     borderCss.push(descriptor);
                                     pureCss += descriptor + "\n";
                                 } else if (positioningregex.test(key)) {
+                                    if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") {
+                                       continue;
+                                    }
                                     positioningCss.push(descriptor);
                                     pureCss += descriptor + "\n";
                                 }
                             }
-
-                            // TODO: Use applied CSS to narrow down styles?
 
                             // Output CSS to window
 
