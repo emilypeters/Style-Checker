@@ -283,6 +283,9 @@ captureButton.addEventListener("click", async () => {
                                     // Clear input
                                     capturePopup.document.getElementById("name").value = "";
                                 });
+
+                                //close window
+                                capturePopup.close()
                             });                   
                         }
         
