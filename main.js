@@ -129,123 +129,166 @@ captureButton.addEventListener("click", async () => {
                             // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
                             // ***********************************************************************************************************
         
-                            var slice = Function.call.bind(Array.prototype.slice);
+                            // var slice = Function.call.bind(Array.prototype.slice);
                             
-                            var elementMatchCSSRule = function(element, cssRule) {
-                                return element.matches(cssRule.selectorText);
-                            };
+                            // var elementMatchCSSRule = function(element, cssRule) {
+                            //     return element.matches(cssRule.selectorText);
+                            // };
                             
-                            var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
-                                return rules.concat(slice(styleSheet.cssRules));
-                            }, []);
+                            // var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
+                            //     return rules.concat(slice(styleSheet.cssRules));
+                            // }, []);
                             
-                            // Returns applied CSS of element (both from CSS files and from inline styles)
-                            function getAppliedCss(element) {
-                                var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
-                                var rules =[];
+                            // // Returns applied CSS of element (both from CSS files and from inline styles)
+                            // function getAppliedCss(element) {
+                            //     var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
+                            //     var rules =[];
         
-                                if (elementRules.length > 0) { // Get styling from external stylesheets
-                                    for (var i = 0; i < elementRules.length; i++) {
-                                        var e = elementRules[i];
-                                        rules.push(e.cssText)
-                                    }		
-                                }
+                            //     if (elementRules.length > 0) { // Get styling from external stylesheets
+                            //         for (var i = 0; i < elementRules.length; i++) {
+                            //             var e = elementRules[i];
+                            //             rules.push(e.cssText)
+                            //         }		
+                            //     }
                                 
-                                if (element.getAttribute('style')) { // Get styling from inline styles
-                                    rules.push(element.getAttribute('style'))
-                                }
+                            //     if (element.getAttribute('style')) { // Get styling from inline styles
+                            //         rules.push(element.getAttribute('style'))
+                            //     }
         
-                                return rules;
-                            }
+                            //     return rules;
+                            // }
         
                             // ***********************************************************************************************************	
-                            
-                            function getAppliedComputedStyles(element) {
-                                var styles = window.getComputedStyle(element)
-                                var inlineStyles = element.getAttribute('style')
-                              
-                                var retval = {}
-                                for (var i = 0; i < styles.length; i++) {
-                                    var key = styles[i]
-                                    var value = styles.getPropertyValue(key)
-                              
-                                    element.style.setProperty(key, 'unset')
-                              
-                                    var unsetValue = styles.getPropertyValue(key)
-                              
-                                    if (inlineStyles)
-                                        element.setAttribute('style', inlineStyles)
-                                    else
-                                        element.removeAttribute('style')
-                              
-                                    if (unsetValue !== value)
-                                        retval[key] = value
-                                }
-                              
-                                return retval
-                            }
 
-                            let pureCssMain = []; // CSS descriptors of selected element
-                            let pureCssParents = []; // CSS descriptors of parent elements
-                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+                            // let pureCssMain = []; // CSS descriptors of selected element
+                            // let pureCssParents = []; // CSS descriptors of parent elements
+                            // let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
 
-                            let descriptorNames = []; // Keeps track of descriptor names so that the CSS of the main element will take priority
+                            // let descriptorNames = []; // Keeps track of descriptor names so that the CSS of the main element will take priority
 
-                            // Regex for matching CSS descriptors
-                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
+                            // // Regex for matching CSS descriptors
+                            // let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
         
-                            // Get styling of element
-                            var rules = getAppliedCss(element);
-                            for (var i = 0; i < rules.length; i++) {
-                                // Extract only the CSS descriptors
-                                for (const match of rules[i].matchAll(regex)) {
-                                    let cssDescriptor = match[0];
-                                    if (!pureCssMain.includes(cssDescriptor)) {
-                                        pureCssMain.push(cssDescriptor);
-                                        descriptorNames.push(cssDescriptor.slice(0, cssDescriptor.indexOf(':')));
-                                        pureCssRich += cssDescriptor + "\n";
-                                    }
-                                }
-                            }
+                            // // Get styling of element
+                            // var rules = getAppliedCss(element);
+                            // for (var i = 0; i < rules.length; i++) {
+                            //     // Extract only the CSS descriptors
+                            //     for (const match of rules[i].matchAll(regex)) {
+                            //         let cssDescriptor = match[0];
+                            //         if (!pureCssMain.includes(cssDescriptor)) {
+                            //             pureCssMain.push(cssDescriptor);
+                            //             descriptorNames.push(cssDescriptor.slice(0, cssDescriptor.indexOf(':')));
+                            //             pureCssRich += cssDescriptor + "\n";
+                            //         }
+                            //     }
+                            // }
         
-                            // Get styling of element's parents
-                            let parentElement = element.parentElement;
-                            while (parentElement) {
-                                var rules = getAppliedCss(parentElement);
+                            // // Get styling of element's parents
+                            // let parentElement = element.parentElement;
+                            // while (parentElement) {
+                            //     var rules = getAppliedCss(parentElement);
                             
-                                for (var i = 0; i < rules.length; i++) {
-                                    // Extract only the CSS descriptors
-                                    for (const match of rules[i].matchAll(regex)) {
-                                        let cssDescriptor = match[0];
-                                        if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(cssDescriptor.slice(0, cssDescriptor.indexOf(':')))) {
-                                            pureCssParents.push(cssDescriptor);
-                                            pureCssRich += cssDescriptor + "\n";
-                                        }
-                                    }
-                                }		
+                            //     for (var i = 0; i < rules.length; i++) {
+                            //         // Extract only the CSS descriptors
+                            //         for (const match of rules[i].matchAll(regex)) {
+                            //             let cssDescriptor = match[0];
+                            //             if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(cssDescriptor.slice(0, cssDescriptor.indexOf(':')))) {
+                            //                 pureCssParents.push(cssDescriptor);
+                            //                 pureCssRich += cssDescriptor + "\n";
+                            //             }
+                            //         }
+                            //     }		
                                 
-                                parentElement = parentElement.parentElement;
+                            //     parentElement = parentElement.parentElement;
+                            // }
+
+                            var styles = window.getComputedStyle(element);
+                            //var inlineStyles = element.getAttribute('style')
+
+                            var cssDescriptors = {};
+                            for (var i = 0; i < styles.length; i++) {
+                                var key = styles[i];
+                                var value = styles.getPropertyValue(key);
+
+                                //element.style.setProperty(key, 'unset')
+
+                                // var unsetValue = styles.getPropertyValue(key)
+
+                                // if (inlineStyles)
+                                //     element.setAttribute('style', inlineStyles)
+                                // else
+                                //     element.removeAttribute('style')
+
+                                // if (unsetValue !== value)
+                                cssDescriptors[key] = value;
                             }
+
+                            let fontCss = [];
+                            let coloringCss = [];
+                            let borderCss = [];
+                            let positioningCss = [];
+                            let pureCss = "";
+
+                            let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;
+                            let positioningregex = /^align-[^\s]+$|^margin-[^\s]+$|^padding-[^\s]+$|^justify-[^\s]+$|^text-align$|^display$|^width$|^height$/m;
+
+                            for (const key in cssDescriptors){
+                                let descriptor = `${key}: ${cssDescriptors[key]};`;
+                                let value = cssDescriptors[key];
+
+                                if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") {
+                                    continue;
+                                }
+                               
+                                if (key === "font-size" || key === "font-family" || key === "font-weight" || key === "font-style") {
+                                    fontCss.push(descriptor);
+                                    pureCss += descriptor + "\n";
+                                } else if (key === "background-color" || key === "color") {
+                                    coloringCss.push(descriptor);
+                                    pureCss += descriptor + "\n";
+                                } else if (borderregex.test(key)) {
+                                    borderCss.push(descriptor);
+                                    pureCss += descriptor + "\n";
+                                } else if (positioningregex.test(key)) {
+                                    positioningCss.push(descriptor);
+                                    pureCss += descriptor + "\n";
+                                }
+                            }
+
+                            // TODO: Use applied CSS to narrow down styles?
 
                             // Output CSS to window
 
                             const cssDisplay = capturePopup.document.getElementById('styling');
 
-                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>STYLING:</p>";
+                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
                             
-                            pureCssMain.forEach((cssDescriptor) => {
+                            fontCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
                             });
                             
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>"; 
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
                             
-                            pureCssParents.forEach((cssDescriptor) => {
+                            coloringCss.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            });
+
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
+                            
+                            borderCss.forEach((cssDescriptor) => {
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            });
+
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
+                            
+                            positioningCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
                             });
 
                             cssDisplay.innerHTML += "</p>"; 
 
                             // Button to save styling
+                            // TODO: Close window on save
                             let saveButton = capturePopup.document.getElementById("save-style");
                             
                             saveButton.addEventListener('click', async() => {
@@ -253,7 +296,7 @@ captureButton.addEventListener("click", async () => {
                                 let currentDate = new Date().toISOString();
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich };
+                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCss };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
