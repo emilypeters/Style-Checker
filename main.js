@@ -244,7 +244,9 @@ captureButton.addEventListener("click", async () => {
                                     // Clear input
                                     capturePopup.document.getElementById("name").value = "";
                                 });
-                                capturePopup.close();
+
+                                //close window
+                                capturePopup.close()
                             });                   
                         }
         
