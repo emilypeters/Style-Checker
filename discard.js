@@ -68,6 +68,8 @@ btn1.addEventListener("click", async () => {
 
 /* End code block */
 
+/* Begin code block - Code to get applied styles (like from stylesheets), only works on certain webpages */
+
 // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
 // ***********************************************************************************************************
 
@@ -143,3 +145,20 @@ btn1.addEventListener("click", async () => {
     
 //     parentElement = parentElement.parentElement;
 // }
+
+/* End code block */
+
+/* Begin code block - Code to filter by specific styling */
+
+// function thing(p) {
+//     let borderTop = cssDescriptors[`border-top-${p}`];
+//     return borderTop === cssDescriptors[`border-bottom-${p}`] &&
+//     borderTop === cssDescriptors[`border-left-${p}`] &&
+//     borderTop === cssDescriptors[`border-right-${p}`] &&
+//     borderTop === cssDescriptors[`border-block-end-${p}`] && 
+//     borderTop === cssDescriptors[`border-block-start-${p}`] &&
+//     borderTop === cssDescriptors[`border-inline-end-${p}`] &&
+//     borderTop === cssDescriptors[`border-inline-start-${p}`];
+// }
+
+//let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;

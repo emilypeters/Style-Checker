@@ -75,10 +75,10 @@ captureButton.addEventListener("click", async () => {
                                 
                         if (prevHighlight != targetHighlight) {
                             if (prevHighlight != null) {
-                                prevHighlight.classList.remove('highlight'); // Remove highlight from element that user's mouse "left"
+                                prevHighlight.classList.remove('highlight-sc'); // Remove highlight from element that user's mouse "left"
                             }
                     
-                            targetHighlight.classList.add('highlight'); // Add highlighting to current element
+                            targetHighlight.classList.add('highlight-sc'); // Add highlighting to current element
                     
                             prevHighlight = targetHighlight;
                         } 
@@ -122,42 +122,23 @@ captureButton.addEventListener("click", async () => {
         
                         // Remove all visible highlighting from page
                         document.querySelectorAll("*").forEach((element) => {
-                            element.classList.remove('highlight')
+                            element.classList.remove('highlight-sc')
                         });
         
                         if (element != null) {
                             var styles = window.getComputedStyle(element);
-                            //var inlineStyles = element.getAttribute('style')
+                            var inlineStyles = element.getAttribute('style')
+                            console.log(inlineStyles);
 
+                            // Get all CSS descriptors
                             var cssDescriptors = {};
                             for (var i = 0; i < styles.length; i++) {
                                 var key = styles[i];
                                 var value = styles.getPropertyValue(key);
-
-                                //element.style.setProperty(key, 'unset')
-
-                                // var unsetValue = styles.getPropertyValue(key)
-
-                                // if (inlineStyles)
-                                //     element.setAttribute('style', inlineStyles)
-                                // else
-                                //     element.removeAttribute('style')
-
-                                // if (unsetValue !== value)
                                 cssDescriptors[key] = value;
                             }
 
-                            // function thing(p) {
-                            //     let borderTop = cssDescriptors[`border-top-${p}`];
-                            //     return borderTop === cssDescriptors[`border-bottom-${p}`] &&
-                            //     borderTop === cssDescriptors[`border-left-${p}`] &&
-                            //     borderTop === cssDescriptors[`border-right-${p}`] &&
-                            //     borderTop === cssDescriptors[`border-block-end-${p}`] && 
-                            //     borderTop === cssDescriptors[`border-block-start-${p}`] &&
-                            //     borderTop === cssDescriptors[`border-inline-end-${p}`] &&
-                            //     borderTop === cssDescriptors[`border-inline-start-${p}`];
-                            // }
-
+                            // Core font CSS
                             let fontCss = [
                                 `font-family: ${cssDescriptors["font-family"]};`,
                                 `font-size: ${cssDescriptors["font-size"]};`,
@@ -165,11 +146,14 @@ captureButton.addEventListener("click", async () => {
                                 `font-weight: ${cssDescriptors["font-weight"]};`
                             ];
 
+                            // Core coloring CSS
                             let coloringCss = [
                                 `background-color: ${cssDescriptors["background-color"]};`,
                                 `color: ${cssDescriptors["color"]};`
                             ];
 
+                            // Core border CSS
+                            // TODO: Border capture fairly simple (assumes top border properties apply to entire border)
                             let borderCss = [
                                 `border-width: ${cssDescriptors["border-top-width"]};`,
                                 `border-color: ${cssDescriptors["border-top-color"]};`,
@@ -177,46 +161,24 @@ captureButton.addEventListener("click", async () => {
                                 `border-radius: ${cssDescriptors["border-top-right-radius"]};`
                             ];
 
-                            let positioningCss = [];
+                            // Core positioning CSS
+                            let positioningCss = [
+                                `text-align: ${cssDescriptors["text-align"]};`,
+                                `display: ${cssDescriptors["display"]};`
+                            ];
+
+                            // CSS that gets written to database
                             let pureCss = "";
 
-                            // if (thing("width")) {
-                            //     borderWidth = true;
-                            //     borderCss.push(`border-width: ${cssDescriptors["border-top-width"]};`);
-                            // }
-
-                            // if (thing("style")) {
-                            //     borderStyle = true;
-                            //     borderCss.push(`border-style: ${cssDescriptors["border-top-style"]};`);
-                            // }
-
-                            // if (thing("color")) {
-                            //     borderColor = true;
-                            //     borderCss.push(`border-color: ${cssDescriptors["border-top-color"]};`);
-                            // }
-
-                            //let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;
-                            let positioningregex = /^align-[^\s]+$|^margin-[^\s]+$|^padding-[^\s]+$|^justify-[^\s]+$|^text-align$|^display$/m;
+                            let positioningregex = /^align-[^\s]+$|^margin-[^\s^-]+$|^padding-[^\s^-]+$|^justify-[^\s]+$/m;
 
                             for (const key in cssDescriptors){
                                 let descriptor = `${key}: ${cssDescriptors[key]};`;
                                 let value = cssDescriptors[key];
-                               
-                                if (false) {
-                                    fontCss.push(descriptor);
-                                    pureCss += descriptor + "\n";
-                                } else if (false) {
-                                    coloringCss.push(descriptor);
-                                    pureCss += descriptor + "\n";
-                                } else if (false) {
-                                    borderCss.push(descriptor);
-                                    pureCss += descriptor + "\n";
-                                } else if (positioningregex.test(key)) {
-                                    if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") {
-                                       continue;
-                                    }
+                            
+                                if (positioningregex.test(key)) {
+                                    if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") continue;
                                     positioningCss.push(descriptor);
-                                    //pureCss += descriptor + "\n";
                                 }
                             }
 
@@ -255,7 +217,6 @@ captureButton.addEventListener("click", async () => {
                             cssDisplay.innerHTML += "</p>"; 
 
                             // Button to save styling
-                            // TODO: Close window on save
                             let saveButton = capturePopup.document.getElementById("save-style");
                             
                             saveButton.addEventListener('click', async() => {
@@ -283,6 +244,7 @@ captureButton.addEventListener("click", async () => {
                                     // Clear input
                                     capturePopup.document.getElementById("name").value = "";
                                 });
+                                capturePopup.close();
                             });                   
                         }
         
