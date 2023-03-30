@@ -1,6 +1,7 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
+let acknowledgeButton = document.getElementById("acknowledge");
 
 let sortButton = document.getElementById("sortbutton");
 let nameSortAscButton = document.getElementById("namesortascbutton");
@@ -17,6 +18,7 @@ const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
 const copyPopup = document.getElementById("copypopup");
+const disclaimer = document.getElementById("disclaimer");
 
 // Allow access to session storage
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
@@ -25,6 +27,17 @@ chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONT
 chrome.storage.session.get(["highlightingActive"]).then((result) => {
     if (result.highlightingActive) {
         captureButton.classList.add('active');
+    }
+});
+
+// Toggle disclaimer
+acknowledgeButton.addEventListener("click", async() => {
+    if (disclaimer.hidden) {
+        acknowledgeButton.innerText = "Hide Copyright Disclaimer"
+        disclaimer.hidden = false;
+    } else {
+        acknowledgeButton.innerText = "Show Copyright Disclaimer"
+        disclaimer.hidden = true;
     }
 });
 
