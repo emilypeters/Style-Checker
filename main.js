@@ -369,8 +369,9 @@ function displayStylesSorted(target, direction) {
                             }
                             .positioning {
                                 ${resultParsed.positioningCss}
-                                ${resultParsed.coloringCss}
-                                ${resultParsed.borderCss}
+                                border-width: 1px;
+                                border-color: black;
+                                border-style: solid;
                             }
                             .box {
                                 border-width: 1px;
@@ -441,7 +442,6 @@ function displayStylesSorted(target, direction) {
             });
 
             // Add a delete button to the div
-            // TODO: Perhaps stop mouse input when delete confirmation window is open
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
