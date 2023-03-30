@@ -158,12 +158,14 @@ captureButton.addEventListener("click", async () => {
                                 `font-style: ${cssDescriptors["font-style"]};`,
                                 `font-weight: ${cssDescriptors["font-weight"]};`
                             ];
+                            let fontPure = "";
 
                             // Core coloring CSS
                             let coloringCss = [
                                 `background-color: ${cssDescriptors["background-color"]};`,
                                 `color: ${cssDescriptors["color"]};`
                             ];
+                            let coloringPure = "";
 
                             // Core border CSS
                             // TODO: Border capture fairly simple (assumes top border properties apply to entire border)
@@ -173,15 +175,14 @@ captureButton.addEventListener("click", async () => {
                                 `border-style: ${cssDescriptors["border-top-style"]};`,
                                 `border-radius: ${cssDescriptors["border-top-right-radius"]};`
                             ];
+                            let borderPure = "";
 
                             // Core positioning CSS
                             let positioningCss = [
                                 `text-align: ${cssDescriptors["text-align"]};`,
                                 `display: ${cssDescriptors["display"]};`
                             ];
-
-                            // CSS that gets written to database
-                            let pureCss = "";
+                            let positioningPure = "";
 
                             let positioningregex = /^align-[^\s]+$|^margin-[^\s^-]+$|^padding-[^\s^-]+$|^justify-[^\s]+$/m;
 
@@ -203,28 +204,32 @@ captureButton.addEventListener("click", async () => {
                             
                             fontCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                pureCss += cssDescriptor + "\n";
+                                //pureCss += cssDescriptor + "\n";
+                                fontPure += cssDescriptor + "\n";
                             });
                             
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
                             
                             coloringCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                pureCss += cssDescriptor + "\n";
+                                //pureCss += cssDescriptor + "\n";
+                                coloringPure += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
                             
                             borderCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                pureCss += cssDescriptor + "\n";
+                                //pureCss += cssDescriptor + "\n";
+                                borderPure += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
                             
                             positioningCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                pureCss += cssDescriptor + "\n";
+                                //pureCss += cssDescriptor + "\n";
+                                positioningPure += cssDescriptor + "\n";
                             });
 
                             cssDisplay.innerHTML += "</p>"; 
@@ -237,7 +242,7 @@ captureButton.addEventListener("click", async () => {
                                 let currentDate = new Date().toISOString();
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCss };
+                                let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
@@ -350,16 +355,68 @@ function displayStylesSorted(target, direction) {
                                 padding: 20px;
                                 margin: 20px;
                             }
-                            div {
-                                ${resultParsed.cssRaw}
+                            p {
+                                font-weight: bold;
+                            }
+                            .fonts {
+                                ${resultParsed.fontCss}
+                            }
+                            .colors {
+                                ${resultParsed.coloringCss}
+                            }
+                            .bordering {
+                                ${resultParsed.borderCss}
+                            }
+                            .positioning {
+                                ${resultParsed.positioningCss}
+                                ${resultParsed.coloringCss}
+                                ${resultParsed.borderCss}
+                            }
+                            .box {
+                                border-width: 1px;
+                                border-color: black;
+                                border-style: solid;
+                                height: 20px;
+                                width: 100%;
+                                background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M100 0 L0 100 ' stroke='black' stroke-width='3'/><path d='M0 0 L100 100 ' stroke='black' stroke-width='3'/></svg>");
+                                background-repeat: no-repeat;
+                                background-position: center center;
+                                background-size: 100% 100%, auto;
+                                background-color: white;
+                            }
+                            .empty {
+                                height: 20px;
+                            }
+                            .final {
+                                ${resultParsed.fontCss}
+                                ${resultParsed.coloringCss}
+                                ${resultParsed.borderCss}
+                                ${resultParsed.positioningCss}
                             }
                         </style>
                     </head>
                     <body>
-                        <div>
-                            This is some text
-                            <input placeholder="This is an input" type="text">
-                            <button> This is a button </button>
+                        <p>FONTS:</p>
+                        <div class="fonts">
+                            Sample Text.
+                        </div>
+                        <p>COLORS:</p>
+                        <div class="colors">
+                            Sample Text.
+                        </div>
+                        <p>BORDERING:</p>
+                        <div class="bordering">
+                            <div class="empty"></div>
+                        </div>
+                        <p>PADDING, MARGINS, AND ALIGNMENT:</p>
+                        <div class="positioning">
+                            <div class="box">
+                                Sample Text.
+                            </div>
+                        </div>
+                        <p>FINAL RESULT:</p>
+                        <div class="final">
+                            Sample Text.
                         </div>
                     </body>
                     </html>
@@ -376,7 +433,7 @@ function displayStylesSorted(target, direction) {
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(resultParsed.cssRaw);
+                navigator.clipboard.writeText(resultParsed.fontCss); // TODO: Change copy to be per-category, perhaps move this to the preview window
                 copyPopup.classList.add("show");
                 setTimeout(() => {
                     copyPopup.classList.remove("show");  
