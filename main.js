@@ -353,11 +353,63 @@ function displayStylesSorted(target, direction) {
                         <style>
                             body {
                                 padding: 20px;
-                                margin: 20px;
+                                --margin: 20px;
+                                max-width: 400px;
+                                min-width: 200px;
                             }
-                            p {
+                            .label {
                                 font-weight: bold;
+                                text-align: left;
+                                display: inline-block;
+                                width: 50%;
                             }
+                            .button-container {
+                                text-align: right;
+                                display: inline-block;
+                                width: 50%;
+                            }
+                            .header {
+                                display: flex;
+                                align-items: center;
+                            }
+                            .button-simple {
+                                padding: 5px;
+                                background-color: white;
+                                border-radius: 6px;
+                                border-width: 0;
+                                border-style: none;
+                            }
+                            .button-simple:hover {
+                                background-color: rgb(222, 222, 222);
+                            }
+                            .button-simple:active {
+                                background-color: rgb(198, 198, 198);
+                            }
+                            .dropdown {
+                                position: absolute;
+                                transition: all 0.1s cubic-bezier(0.16, 1, 0.5, 1);
+                                background-color: white;
+                                border-color: black;
+                                border-style: solid;
+                                border-width: 1px;
+                                border-radius: 4px;
+                                padding: 4px;
+                                transform: translateY(0.5rem);
+                                visibility: hidden;
+                                opacity: 0;
+                              }
+                            .dropdown-copy {
+                                width: 80px;
+                                margin-top: 2%;
+                                margin-left: 65px;
+                                text-align: center;
+                              }
+                              
+                              .show {
+                                transform: translateY(0rem);
+                                visibility: visible;
+                                opacity: 1;
+                              }
                             .fonts {
                                 ${resultParsed.fontCss}
                             }
@@ -396,32 +448,111 @@ function displayStylesSorted(target, direction) {
                             }
                         </style>
                     </head>
+                    <div id="copypopup" class="dropdown dropdown-copy">
+                        CSS copied to clipboard
+                    </div>
                     <body>
-                        <p>FONTS:</p>
+                        <div class="header">
+                            <p class="label">FONTS:</p>
+                            <div class="button-container">
+                                <button id="copy-fonts" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="fonts">
                             Sample Text.
                         </div>
-                        <p>COLORS:</p>
+                        <div class="header">
+                            <p class="label">COLORS:</p>
+                            <div class="button-container">
+                                <button id="copy-colors" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="colors">
                             Sample Text.
                         </div>
-                        <p>BORDERING:</p>
+                        <div class="header">
+                            <p class="label">BORDERING:</p>
+                            <div class="button-container">
+                                <button id="copy-bordering" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="bordering">
                             <div class="empty"></div>
                         </div>
-                        <p>PADDING, MARGINS, AND ALIGNMENT:</p>
+                        <div class="header">
+                            <p class="label">PADDING, MARGINS, AND ALIGNMENT:</p>
+                            <div class="button-container">
+                                <button id="copy-positioning" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="positioning">
                             <div class="box">
                                 Sample Text.
                             </div>
                         </div>
-                        <p>FINAL RESULT:</p>
+                        <div class="header">
+                            <p class="label">FINAL RESULT:</p>
+                            <div class="button-container">
+                                <button id="copy-all" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="final">
                             Sample Text.
                         </div>
                     </body>
                     </html>
                 `;
+
+                const copyPop = previewPopup.document.getElementById("copypopup");
+
+                previewPopup.document.getElementById("copy-fonts").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.fontCss);
+                    copyPop.classList.add("show");
+                    setTimeout(() => {
+                        copyPop.classList.remove("show");  
+                    }, 1500);
+                });
+
+                previewPopup.document.getElementById("copy-colors").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.coloringCss);
+                });
+
+                previewPopup.document.getElementById("copy-bordering").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.borderCss);
+                });
+
+                previewPopup.document.getElementById("copy-positioning").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.positioningCss);
+                });
+
+                previewPopup.document.getElementById("copy-all").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
+                });
             });
 
             // Add a copy to clipboard button to the div
