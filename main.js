@@ -1,7 +1,7 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
 let libraryButton = document.getElementById("librarybutton");
-let acknowledgeButton = document.getElementById("acknowledge");
+let disclaimerButton = document.getElementById("disclaimerbutton");
 
 let sortButton = document.getElementById("sortbutton");
 let nameSortAscButton = document.getElementById("namesortascbutton");
@@ -284,6 +284,16 @@ libraryButton.addEventListener("click", async() => {
     libraryButton.classList.toggle('active');
     library.hidden = library.hidden ? false : true;
 });
+
+//button to remove disclaimer
+disclaimerButton.addEventListener("click", async () => {
+    disclaimer.hidden = disclaimer.hidden ? false : true;
+    if (disclaimerButton.innerText == "See Disclaimer") {
+        disclaimerButton.innerText = "Exit Disclaimer";
+    } else {
+        disclaimerButton.innerText = "See Disclaimer";
+    }
+})
 
 function displayStylesSorted(target, direction) {
     chrome.storage.local.get(null, async function(items) { // Start by getting all the keys of the database
