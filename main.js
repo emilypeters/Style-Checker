@@ -397,19 +397,20 @@ function displayStylesSorted(target, direction) {
                                 transform: translateY(0.5rem);
                                 visibility: hidden;
                                 opacity: 0;
-                              }
+                            }
                             .dropdown-copy {
                                 width: 80px;
-                                margin-top: 2%;
-                                margin-left: 65px;
+                                top: 10px;
+                                left: 0;
+                                right: 0;
+                                margin: 0 auto;
                                 text-align: center;
-                              }
-                              
-                              .show {
+                            }  
+                            .show {
                                 transform: translateY(0rem);
                                 visibility: visible;
                                 opacity: 1;
-                              }
+                            }
                             .fonts {
                                 ${resultParsed.fontCss}
                             }
@@ -528,30 +529,46 @@ function displayStylesSorted(target, direction) {
                     </html>
                 `;
 
-                const copyPop = previewPopup.document.getElementById("copypopup");
+                const copyPopupPreview = previewPopup.document.getElementById("copypopup");
 
                 previewPopup.document.getElementById("copy-fonts").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.fontCss);
-                    copyPop.classList.add("show");
+                    copyPopupPreview.classList.add("show");
                     setTimeout(() => {
-                        copyPop.classList.remove("show");  
+                        copyPopupPreview.classList.remove("show");  
                     }, 1500);
                 });
 
                 previewPopup.document.getElementById("copy-colors").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.coloringCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
                 });
 
                 previewPopup.document.getElementById("copy-bordering").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.borderCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
                 });
 
                 previewPopup.document.getElementById("copy-positioning").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.positioningCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
                 });
 
                 previewPopup.document.getElementById("copy-all").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
                 });
             });
 
@@ -565,7 +582,7 @@ function displayStylesSorted(target, direction) {
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(resultParsed.fontCss); // TODO: Change copy to be per-category, perhaps move this to the preview window
+                navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss); // TODO: Change copy to be per-category, then remove this or make it a copy all button
                 copyPopup.classList.add("show");
                 setTimeout(() => {
                     copyPopup.classList.remove("show");  
