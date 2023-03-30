@@ -31,12 +31,12 @@ chrome.storage.session.get(["highlightingActive"]).then((result) => {
 });
 
 // Toggle disclaimer
-acknowledgeButton.addEventListener("click", async() => {
+disclaimerButton.addEventListener("click", async() => {
     if (disclaimer.hidden) {
-        acknowledgeButton.innerText = "Hide Copyright Disclaimer"
+        disclaimerButton.innerText = "Hide Disclaimer"
         disclaimer.hidden = false;
     } else {
-        acknowledgeButton.innerText = "Show Copyright Disclaimer"
+        disclaimerButton.innerText = "Show Disclaimer"
         disclaimer.hidden = true;
     }
 });
@@ -285,16 +285,6 @@ libraryButton.addEventListener("click", async() => {
     library.hidden = library.hidden ? false : true;
 });
 
-//button to remove disclaimer
-disclaimerButton.addEventListener("click", async () => {
-    disclaimer.hidden = disclaimer.hidden ? false : true;
-    if (disclaimerButton.innerText == "See Disclaimer") {
-        disclaimerButton.innerText = "Exit Disclaimer";
-    } else {
-        disclaimerButton.innerText = "See Disclaimer";
-    }
-})
-
 function displayStylesSorted(target, direction) {
     chrome.storage.local.get(null, async function(items) { // Start by getting all the keys of the database
         // Empty style display div
@@ -311,7 +301,7 @@ function displayStylesSorted(target, direction) {
             results.push(result);
         }
 
-        //Sort the styles
+        // Sort the styles
         if (direction === "asc") {
             results.sort((a, b) => JSON.parse(a.result)[target].localeCompare(JSON.parse(b.result)[target]));
         } else if (direction === "desc") {
