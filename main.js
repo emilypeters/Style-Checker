@@ -70,6 +70,7 @@ captureButton.addEventListener("click", async () => {
                     // Also Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
         
                     // Function to disable mouse clicks (or any other behavior)
+                    // TODO: Pause hovering effects as well
                     function stopClicks(e) {
                         e.preventDefault();
                         return false;
