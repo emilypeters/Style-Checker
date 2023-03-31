@@ -63,6 +63,9 @@ captureButton.addEventListener("click", async () => {
 
             captureButton.classList.add('active');
 
+            // TODO: Temporary fix for issue where user has to click twice on element they want to capture
+            window.close();
+
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 function: () => {
@@ -316,12 +319,12 @@ function displayStylesSorted(target, direction) {
             const key = result.key;
 
             // Create div with the style's name
+            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const styleDiv = document.createElement("div");
             styleDiv.classList.add("style");
-            styleDiv.style = "display: flex;";
+            styleDiv.style = "display: flex; align-items: center;";
             
             // Add style name
-            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const text = document.createElement("p");
             text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
