@@ -531,6 +531,7 @@ function displayStylesSorted(target, direction) {
 
                 const copyPopupPreview = previewPopup.document.getElementById("copypopup");
 
+                // Copy font CSS to clipboard
                 previewPopup.document.getElementById("copy-fonts").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.fontCss);
                     copyPopupPreview.classList.add("show");
@@ -539,6 +540,7 @@ function displayStylesSorted(target, direction) {
                     }, 1500);
                 });
 
+                // Copy coloring CSS to clipboard
                 previewPopup.document.getElementById("copy-colors").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.coloringCss);
                     copyPopupPreview.classList.add("show");
@@ -547,6 +549,7 @@ function displayStylesSorted(target, direction) {
                     }, 1500);
                 });
 
+                // Copy bordering CSS to clipboard
                 previewPopup.document.getElementById("copy-bordering").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.borderCss);
                     copyPopupPreview.classList.add("show");
@@ -555,6 +558,7 @@ function displayStylesSorted(target, direction) {
                     }, 1500);
                 });
 
+                // Copy positioning CSS to clipboard
                 previewPopup.document.getElementById("copy-positioning").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.positioningCss);
                     copyPopupPreview.classList.add("show");
@@ -563,6 +567,7 @@ function displayStylesSorted(target, direction) {
                     }, 1500);
                 });
 
+                // Copy all CSS to clipboard
                 previewPopup.document.getElementById("copy-all").addEventListener("click", async() => {
                     previewPopup.navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
                     copyPopupPreview.classList.add("show");
@@ -582,7 +587,7 @@ function displayStylesSorted(target, direction) {
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss); // TODO: Change copy to be per-category, then remove this or make it a copy all button
+                navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
                 copyPopup.classList.add("show");
                 setTimeout(() => {
                     copyPopup.classList.remove("show");  
