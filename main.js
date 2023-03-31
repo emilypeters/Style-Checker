@@ -204,7 +204,6 @@ captureButton.addEventListener("click", async () => {
                             
                             fontCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                //pureCss += cssDescriptor + "\n";
                                 fontPure += cssDescriptor + "\n";
                             });
                             
@@ -212,7 +211,6 @@ captureButton.addEventListener("click", async () => {
                             
                             coloringCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                //pureCss += cssDescriptor + "\n";
                                 coloringPure += cssDescriptor + "\n";
                             });
 
@@ -220,7 +218,6 @@ captureButton.addEventListener("click", async () => {
                             
                             borderCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                //pureCss += cssDescriptor + "\n";
                                 borderPure += cssDescriptor + "\n";
                             });
 
@@ -228,7 +225,6 @@ captureButton.addEventListener("click", async () => {
                             
                             positioningCss.forEach((cssDescriptor) => {
                                 cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                //pureCss += cssDescriptor + "\n";
                                 positioningPure += cssDescriptor + "\n";
                             });
 
