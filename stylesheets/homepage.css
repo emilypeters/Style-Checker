@@ -48,6 +48,15 @@
   color: white;
 }
 
+.sortbutton-content {
+  display: flex;
+  align-items: center;
+}
+
+span {
+  margin-left: 5px;
+}
+
 .searchsort {
   display: flex;
   padding: 5px 0px 5px 0px;
