@@ -194,6 +194,7 @@ captureButton.addEventListener("click", async () => {
                                 let value = cssDescriptors[key];
                             
                                 if (positioningregex.test(key)) {
+                                    // Ignore descriptors that are just defaults or zero
                                     if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") continue;
                                     positioningCss.push(descriptor);
                                 }
