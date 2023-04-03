@@ -1,6 +1,5 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
-let libraryButton = document.getElementById("librarybutton");
 let disclaimerButton = document.getElementById("disclaimerbutton");
 
 let sortButton = document.getElementById("sortbutton");

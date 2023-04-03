@@ -9,6 +9,10 @@ hr {
   background-color: black;
 }
 
+span {
+  margin-left: 5px;
+}
+
 .text-bold {
   font-weight: bold;
 }
@@ -67,10 +71,6 @@ hr {
   align-items: center;
 }
 
-span {
-  margin-left: 5px;
-}
-
 .searchsort {
   display: flex;
   padding-bottom: 5px;
@@ -123,7 +123,7 @@ body {
 
 .dropdown-copy {
   width: 80px;
-  margin-top: 1%;
+  top: 10px;
   margin-left: 65px;
   text-align: center;
 }
