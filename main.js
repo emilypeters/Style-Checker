@@ -104,7 +104,7 @@ captureButton.addEventListener("click", async () => {
                     document.addEventListener('click', function (e) {
                         let element = e.target;
         
-                        var capturePopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                        var capturePopup = window.open("", "", "width=350,height=400,toolbar=no,menubar=no");
                         capturePopup.document.body.innerHTML = `
                             <!DOCTYPE html>
                             <html lang="en">
@@ -116,19 +116,48 @@ captureButton.addEventListener("click", async () => {
                                         font-family: Helvetica, sans-serif;
                                     }
                                     body {
+                                        max-width: 350px;
+                                        min-width: 300px;
+                                    }
+                                    .styling {
                                         background-color: #e7e7e7;
                                         padding: 10px;
                                         border: 1px solid #ccc;
+                                        border-radius: 4px;
                                         text-align: left;
+                                        overflow: auto;
+                                        max-height: 300px;
+                                    }
+                                    .button-simple {
+                                        margin-left: 5px;
+                                        padding: 4px;
+                                        background-color: royalblue;
+                                        border-radius: 6px;
+                                        border-width: 0;
+                                        border-style: none;
+                                        color: white;
+                                    } 
+                                    .button-simple:hover {
+                                        background-color: rgb(65, 105, 175);
+                                    }
+                                    .button-simple:active {
+                                        background-color: rgb(65, 105, 145);
+                                    }
+                                    .buttoncontainer {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        padding: 5px;
+                                        height: 50px;
                                     }
                                 </style>
                             </head>
                             <body>
-                                <div id="styling">
+                                <div id="styling" class="styling">
                                 </div>
-                                <div>
-                                    <input id="name" type="text">
-                                    <button id="save-style">Save Styling</button>
+                                <div class="buttoncontainer">
+                                    <input id="name" type="text" placeholder="Enter style name...">
+                                    <button id="save-style" class="button-simple">Save Styling</button>
                                 </div>
                             </body>
                             </html>
@@ -238,6 +267,8 @@ captureButton.addEventListener("click", async () => {
                             saveButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
+
+                                if (!styleName.length) return;
         
                                 // Store style info in JSON
                                 let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
