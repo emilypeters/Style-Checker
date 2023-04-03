@@ -17,6 +17,11 @@ hr {
   padding: 5px;
 }
 
+.small {
+  text-align: center;
+  font-size: xx-small;
+}
+
 .button-simple {
   padding: 4px;
   background-color: white;
@@ -55,6 +60,15 @@ hr {
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.sortbutton-content {
+  display: flex;
+  align-items: center;
+}
+
+span {
+  margin-left: 5px;
 }
 
 .searchsort {
