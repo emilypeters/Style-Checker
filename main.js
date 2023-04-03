@@ -111,7 +111,8 @@ captureButton.addEventListener("click", async () => {
                                 </div>
                                 <div>
                                     <input id="name" type="text">
-                                    <button id="save-style">Save Styling</button>
+                                    <button id="save-style">Save Template Styling</button>
+                                    <button id ="save-template-style">Save Styling
                                 </div>
                             </body>
                             </html>
@@ -210,7 +211,38 @@ captureButton.addEventListener("click", async () => {
 
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
+
+                            let saveTButton = capturePopup.document.getElementById("save-template-style");
+
+                            cssDisplay.innerHTML += '';
                             
+                            saveTButton.addEventListener('click', async() => {
+                                let styleName = capturePopup.document.getElementById("name").value;
+                                let currentDate = new Date().toISOString();
+        
+                                // Store style info in JSON
+                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich }; //pureCssRich should be changed to a selected font
+                
+                                chrome.storage.local.get(null, function(items) {
+                                    var allKeys = Object.keys(items);
+                                    
+                                    // Get unique key for style (basically like autoincrement in SQL)
+                                    let maxKey = 0;
+                                    for (key in allKeys) {
+                                        const keyInt = parseInt(allKeys[key]);
+                                        if (keyInt > maxKey) maxKey = keyInt;
+                                    }
+        
+                                    // Save style
+                                    var obj= {};
+                                    obj[maxKey+1] = JSON.stringify(style);
+                                    chrome.storage.local.set(obj);
+            
+                                    // Clear input
+                                    capturePopup.document.getElementById("name").value = "";
+                                });
+                            });
+
                             saveButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
