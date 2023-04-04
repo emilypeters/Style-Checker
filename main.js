@@ -154,6 +154,10 @@ captureButton.addEventListener("click", async () => {
                             </head>
                             <body>
                                 <div id="styling" class="styling">
+                                    <p style="font-weight: bold;">PREVIEW:</p>
+                                    <div id="preview" class="preview">
+                                        Sample Text.
+                                    </div>
                                 </div>
                                 <div class="buttoncontainer">
                                     <input id="name" type="text" placeholder="Enter style name...">
@@ -170,8 +174,8 @@ captureButton.addEventListener("click", async () => {
         
                         if (element != null) {
                             var styles = window.getComputedStyle(element);
-                            var inlineStyles = element.getAttribute('style')
-                            console.log(inlineStyles);
+                            // TODO: Maintain inline styles?
+                            //var inlineStyles = element.getAttribute('style')
 
                             // Get all CSS descriptors
                             var cssDescriptors = {};
@@ -260,6 +264,8 @@ captureButton.addEventListener("click", async () => {
                             });
 
                             cssDisplay.innerHTML += "</p>"; 
+
+                            capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
