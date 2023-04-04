@@ -349,7 +349,7 @@ function displayStylesSorted(target, direction) {
     
         // Display the styles
         for (const result of results) {
-            const resultParsed = JSON.parse(result.result);
+            let resultParsed = JSON.parse(result.result); //for edit to update, had to change to let
             const key = result.key;
 
             // Create div with the style's name
@@ -365,6 +365,57 @@ function displayStylesSorted(target, direction) {
 
             const buttonContainer = document.createElement("div");
             buttonContainer.style = "text-align: right; display: inline-block; width: 50%;";
+
+            // Add edit button
+            const editButton = document.createElement("button");
+            editButton.innerHTML = `Edit`;
+            editButton.classList.add("button-simple");
+            editButton.addEventListener("click", async () => {
+                var editPopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                editPopup.document.body.innerHTML = `
+                     <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>Preview Style</title>
+                        <meta charset="utf-8">
+                    </head>
+                    <body>
+                        <p> ${resultParsed.fontCss}</p>
+                        <p> ${resultParsed.coloringCss}</p>
+                        <p> ${resultParsed.borderCss}</p>
+                        <p> ${resultParsed.positioningCss}</p>
+                         <form id="delete_form">
+                            <label>Remove : <input id="delete_txt" type="text"/></label>
+                            <button type="submit" id="submit_btn">Submit</button>
+                         </form>
+                    </body>
+                    </html>
+                    `;
+
+                let input_answer = editPopup.document.getElementById("delete_txt");
+                let submitButton = editPopup.document.getElementById("submit_btn");
+                submitButton.addEventListener("click", async () => {
+
+                    editPopup.close();
+
+                    const deleteInputField = input_answer.value;
+                    var match_delete_regex = new RegExp(deleteInputField);
+                    let result_parsed_string = JSON.stringify(resultParsed);
+                    var modified_style = result_parsed_string;
+
+                    //if the user enters a valid css element to delete
+                    if (match_delete_regex.test(result_parsed_string)) {
+                        modified_style = modified_style.replace(match_delete_regex, "");
+                        chrome.storage.local.get(key, function (val) {
+                            val[key] = modified_style
+                            // Save data
+                            chrome.storage.local.set(val);
+                            resultParsed = JSON.parse(val[key]);
+                        });
+                    }
+                });
+            });
+
 
             //Add a preview button to the div
             const previewButton = document.createElement("button");
@@ -654,6 +705,7 @@ function displayStylesSorted(target, direction) {
             buttonContainer.appendChild(copyButton);
             buttonContainer.appendChild(deleteButton);
             buttonContainer.appendChild(previewButton);
+            buttonContainer.appendChild(editButton);
             styleDiv.appendChild(buttonContainer);
             styleDisplay.appendChild(styleDiv);
         }
