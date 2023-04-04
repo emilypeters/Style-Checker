@@ -1,5 +1,7 @@
 // Get buttons
 let captureButton = document.getElementById("capturebutton");
+let disclaimerButton = document.getElementById("disclaimerbutton");
+
 let sortButton = document.getElementById("sortbutton");
 let nameSortAscButton = document.getElementById("namesortascbutton");
 let dateSortAscButton = document.getElementById("datesortascbutton");
@@ -14,6 +16,7 @@ const styleDisplay = document.getElementById("saved-styles");
 const searchBar = document.getElementById("searchbar");
 const deletePopup = document.getElementById("deletepopup");
 const copyPopup = document.getElementById("copypopup");
+const disclaimer = document.getElementById("disclaimer");
 
 // Allow access to session storage
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' });
@@ -22,6 +25,17 @@ chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONT
 chrome.storage.session.get(["highlightingActive"]).then((result) => {
     if (result.highlightingActive) {
         captureButton.classList.add('active');
+    }
+});
+
+// Toggle disclaimer
+disclaimerButton.addEventListener("click", async() => {
+    if (disclaimer.hidden) {
+        disclaimerButton.innerText = "Hide Disclaimer"
+        disclaimer.hidden = false;
+    } else {
+        disclaimerButton.innerText = "Show Disclaimer"
+        disclaimer.hidden = true;
     }
 });
 
@@ -46,6 +60,9 @@ captureButton.addEventListener("click", async () => {
             chrome.storage.session.set({ highlightingActive: true });
 
             captureButton.classList.add('active');
+
+            // TODO: Temporary fix for issue where user has to click twice on element they want to capture
+            window.close();
 
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
@@ -72,10 +89,10 @@ captureButton.addEventListener("click", async () => {
                                 
                         if (prevHighlight != targetHighlight) {
                             if (prevHighlight != null) {
-                                prevHighlight.classList.remove('highlight'); // Remove highlight from element that user's mouse "left"
+                                prevHighlight.classList.remove('highlight-sc'); // Remove highlight from element that user's mouse "left"
                             }
                     
-                            targetHighlight.classList.add('highlight'); // Add highlighting to current element
+                            targetHighlight.classList.add('highlight-sc'); // Add highlighting to current element
                     
                             prevHighlight = targetHighlight;
                         } 
@@ -87,7 +104,7 @@ captureButton.addEventListener("click", async () => {
                     document.addEventListener('click', function (e) {
                         let element = e.target;
         
-                        var capturePopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                        var capturePopup = window.open("", "", "width=350,height=400,toolbar=no,menubar=no");
                         capturePopup.document.body.innerHTML = `
                             <!DOCTYPE html>
                             <html lang="en">
@@ -99,20 +116,53 @@ captureButton.addEventListener("click", async () => {
                                         font-family: Helvetica, sans-serif;
                                     }
                                     body {
+                                        max-width: 350px;
+                                        min-width: 300px;
+                                    }
+                                    .styling {
                                         background-color: #e7e7e7;
                                         padding: 10px;
                                         border: 1px solid #ccc;
-                                        text-align: center;
+                                        border-radius: 4px;
+                                        text-align: left;
+                                        overflow: auto;
+                                        max-height: 300px;
+                                    }
+                                    .button-simple {
+                                        margin-left: 5px;
+                                        padding: 4px;
+                                        background-color: royalblue;
+                                        border-radius: 6px;
+                                        border-width: 0;
+                                        border-style: none;
+                                        color: white;
+                                    } 
+                                    .button-simple:hover {
+                                        background-color: rgb(65, 105, 175);
+                                    }
+                                    .button-simple:active {
+                                        background-color: rgb(65, 105, 145);
+                                    }
+                                    .buttoncontainer {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        padding: 5px;
+                                        height: 50px;
                                     }
                                 </style>
                             </head>
                             <body>
-                                <div id="styling">
+                                <div id="styling" class="styling">
+                                    <p style="font-weight: bold;">PREVIEW:</p>
+                                    <div id="preview" class="preview">
+                                        Sample Text.
+                                    </div>
                                 </div>
-                                <div>
-                                    <input id="name" type="text">
-                                    <button id="save-style">Save Template Styling</button>
-                                    <button id ="save-template-style">Save Styling
+                                <div class="buttoncontainer">
+                                    <input id="name" type="text" placeholder="Enter style name...">
+                                    <button id="save-style" class="button-simple">Save Styling</button>
+                                    <button id="save-template-style" class="button-simple">Save Template</button>
                                 </div>
                             </body>
                             </html>
@@ -120,98 +170,102 @@ captureButton.addEventListener("click", async () => {
         
                         // Remove all visible highlighting from page
                         document.querySelectorAll("*").forEach((element) => {
-                            element.classList.remove('highlight')
+                            element.classList.remove('highlight-sc')
                         });
         
                         if (element != null) {
-                            // Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
-                            // ***********************************************************************************************************
-        
-                            var slice = Function.call.bind(Array.prototype.slice);
-                            
-                            var elementMatchCSSRule = function(element, cssRule) {
-                                return element.matches(cssRule.selectorText);
-                            };
-                            
-                            var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
-                                return rules.concat(slice(styleSheet.cssRules));
-                            }, []);
-                            
-                            // Returns applied CSS of element (both from CSS files and from inline styles)
-                            function getAppliedCss(element) {
-                                var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
-                                var rules =[];
-        
-                                if (elementRules.length > 0) { // Get styling from external stylesheets
-                                    for (var i = 0; i < elementRules.length; i++) {
-                                        var e = elementRules[i];
-                                        rules.push(e.cssText)
-                                    }		
-                                }
-                                
-                                if (element.getAttribute('style')) { // Get styling from inline styles
-                                    rules.push(element.getAttribute('style'))
-                                }
-        
-                                return rules;
-                            }
-        
-                            // ***********************************************************************************************************	
-                            
-                            let pureCssMain = []; // CSS descriptors of selected element
-                            let pureCssParents = []; // CSS descriptors of parent elements
-                            let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+                            var styles = window.getComputedStyle(element);
+                            // TODO: Maintain inline styles?
+                            //var inlineStyles = element.getAttribute('style')
 
-                            // Regex for matching CSS descriptors
-                            let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
-        
-                            // Get styling of element
-                            var rules = getAppliedCss(element);
-                            for (var i = 0; i < rules.length; i++) {
-                                // Extract only the CSS descriptors
-                                for (const match of rules[i].matchAll(regex)) {
-                                    pureCssMain.push(match[0]);
-                                    pureCssRich += match[0] + "\n";
-                                }
+                            // Get all CSS descriptors
+                            var cssDescriptors = {};
+                            for (var i = 0; i < styles.length; i++) {
+                                var key = styles[i];
+                                var value = styles.getPropertyValue(key);
+                                cssDescriptors[key] = value;
                             }
-        
-                            // Get styling of element's parents
-                            let parentElement = element.parentElement;
-                            while (parentElement) {
-                                var rules = getAppliedCss(parentElement);
+
+                            // Core font CSS
+                            let fontCss = [
+                                `font-family: ${cssDescriptors["font-family"]};`,
+                                `font-size: ${cssDescriptors["font-size"]};`,
+                                `font-style: ${cssDescriptors["font-style"]};`,
+                                `font-weight: ${cssDescriptors["font-weight"]};`
+                            ];
+                            let fontPure = "";
+
+                            // Core coloring CSS
+                            let coloringCss = [
+                                `background-color: ${cssDescriptors["background-color"]};`,
+                                `color: ${cssDescriptors["color"]};`
+                            ];
+                            let coloringPure = "";
+
+                            // Core border CSS
+                            // TODO: Border capture fairly simple (assumes top border properties apply to entire border)
+                            let borderCss = [
+                                `border-width: ${cssDescriptors["border-top-width"]};`,
+                                `border-color: ${cssDescriptors["border-top-color"]};`,
+                                `border-style: ${cssDescriptors["border-top-style"]};`,
+                                `border-radius: ${cssDescriptors["border-top-right-radius"]};`
+                            ];
+                            let borderPure = "";
+
+                            // Core positioning CSS
+                            let positioningCss = [
+                                `text-align: ${cssDescriptors["text-align"]};`,
+                                `display: ${cssDescriptors["display"]};`
+                            ];
+                            let positioningPure = "";
+
+                            let positioningregex = /^align-[^\s]+$|^margin-[^\s^-]+$|^padding-[^\s^-]+$|^justify-[^\s]+$/m;
+
+                            for (const key in cssDescriptors){
+                                let descriptor = `${key}: ${cssDescriptors[key]};`;
+                                let value = cssDescriptors[key];
                             
-                                for (var i = 0; i < rules.length; i++) {
-                                    // Extract only the CSS descriptors
-                                    for (const match of rules[i].matchAll(regex)) {
-                                        pureCssParents.push(match[0]);
-                                        pureCssRich += match[0] + "\n";
-                                    }
-                                }		
-                                
-                                parentElement = parentElement.parentElement;
+                                if (positioningregex.test(key)) {
+                                    // Ignore descriptors that are just defaults or zero
+                                    if (value === "0" || value === "0px" || value === "auto" || value === "none" || value === "normal") continue;
+                                    positioningCss.push(descriptor);
+                                }
                             }
 
                             // Output CSS to window
 
                             const cssDisplay = capturePopup.document.getElementById('styling');
-
-                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>STYLING:</p>";
-                            
-                            pureCssMain.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                            });
-                            
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>STYLING FROM PARENTS:</p>"; 
-                            
-                            pureCssParents.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
+                            fontCss.forEach((cssDescriptor) => {
+                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`; //Each "<span onclick" instance is allowing for us to click and ouput something like an explanation for the style or save the style to a variable later on
+                            fontPure += cssDescriptor + "\n";
                             });
 
-                            cssDisplay.innerHTML += "</p>"; 
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>";
+                            coloringCss.forEach((cssDescriptor) => {
+                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
+                            coloringPure += cssDescriptor + "\n";
+                            });
+
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>";
+                            borderCss.forEach((cssDescriptor) => {
+                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
+                            borderPure += cssDescriptor + "\n";
+                            });
+
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>";
+                            positioningCss.forEach((cssDescriptor) => {
+                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
+                            positioningPure += cssDescriptor + "\n";
+                            });
+
+                            cssDisplay.innerHTML += "</p>";
+
+                            capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
-
+                            
                             let saveTButton = capturePopup.document.getElementById("save-template-style");
 
                             cssDisplay.innerHTML += '';
@@ -219,9 +273,11 @@ captureButton.addEventListener("click", async () => {
                             saveTButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
+
+                                if (!styleName.length) return;
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich }; //pureCssRich should be changed to a selected font
+                                let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
@@ -241,14 +297,19 @@ captureButton.addEventListener("click", async () => {
                                     // Clear input
                                     capturePopup.document.getElementById("name").value = "";
                                 });
-                            });
+
+                                //close window
+                                capturePopup.close()
+                            }); 
 
                             saveButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
+
+                                if (!styleName.length) return;
         
                                 // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, cssRaw: pureCssRich };
+                                let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
                 
                                 chrome.storage.local.get(null, function(items) {
                                     var allKeys = Object.keys(items);
@@ -268,6 +329,9 @@ captureButton.addEventListener("click", async () => {
                                     // Clear input
                                     capturePopup.document.getElementById("name").value = "";
                                 });
+
+                                //close window
+                                capturePopup.close()
                             });                   
                         }
         
@@ -321,18 +385,263 @@ function displayStylesSorted(target, direction) {
             const key = result.key;
 
             // Create div with the style's name
+            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const styleDiv = document.createElement("div");
             styleDiv.classList.add("style");
-            styleDiv.style = "display: flex;";
+            styleDiv.style = "display: flex; align-items: center;";
             
             // Add style name
-            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const text = document.createElement("p");
             text.innerText = resultParsed.name
             text.style = "text-align: left; display: inline-block; width: 50%;";
 
             const buttonContainer = document.createElement("div");
             buttonContainer.style = "text-align: right; display: inline-block; width: 50%;";
+
+            //Add a preview button to the div
+            const previewButton = document.createElement("button");
+            previewButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                </svg>
+            `;
+            previewButton.classList.add("button-simple");
+            previewButton.addEventListener("click", async () => {
+                // When the preview button is clicked, show preview window
+                var previewPopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                previewPopup.document.body.innerHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>Preview Style</title>
+                        <meta charset="utf-8">
+                        <style>
+                            body {
+                                padding: 20px;
+                                --margin: 20px;
+                                max-width: 400px;
+                                min-width: 200px;
+                            }
+                            .label {
+                                font-weight: bold;
+                                text-align: left;
+                                display: inline-block;
+                                width: 50%;
+                            }
+                            .button-container {
+                                text-align: right;
+                                display: inline-block;
+                                width: 50%;
+                            }
+                            .header {
+                                display: flex;
+                                align-items: center;
+                            }
+                            .button-simple {
+                                padding: 5px;
+                                background-color: white;
+                                border-radius: 6px;
+                                border-width: 0;
+                                border-style: none;
+                            }
+                            .button-simple:hover {
+                                background-color: rgb(222, 222, 222);
+                            }
+                            .button-simple:active {
+                                background-color: rgb(198, 198, 198);
+                            }
+                            .dropdown {
+                                position: absolute;
+                                transition: all 0.1s cubic-bezier(0.16, 1, 0.5, 1);
+                                background-color: white;
+                                border-color: black;
+                                border-style: solid;
+                                border-width: 1px;
+                                border-radius: 4px;
+                                padding: 4px;
+                                transform: translateY(0.5rem);
+                                visibility: hidden;
+                                opacity: 0;
+                            }
+                            .dropdown-copy {
+                                width: 80px;
+                                top: 10px;
+                                left: 0;
+                                right: 0;
+                                margin: 0 auto;
+                                text-align: center;
+                            }  
+                            .show {
+                                transform: translateY(0rem);
+                                visibility: visible;
+                                opacity: 1;
+                            }
+                            .fonts {
+                                ${resultParsed.fontCss}
+                            }
+                            .colors {
+                                ${resultParsed.coloringCss}
+                            }
+                            .bordering {
+                                ${resultParsed.borderCss}
+                            }
+                            .positioning {
+                                ${resultParsed.positioningCss}
+                                border-width: 1px;
+                                border-color: black;
+                                border-style: solid;
+                            }
+                            .box {
+                                border-width: 1px;
+                                border-color: black;
+                                border-style: solid;
+                                height: 20px;
+                                width: 100%;
+                                background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M100 0 L0 100 ' stroke='black' stroke-width='3'/><path d='M0 0 L100 100 ' stroke='black' stroke-width='3'/></svg>");
+                                background-repeat: no-repeat;
+                                background-position: center center;
+                                background-size: 100% 100%, auto;
+                                background-color: white;
+                            }
+                            .empty {
+                                height: 20px;
+                            }
+                            .final {
+                                ${resultParsed.fontCss}
+                                ${resultParsed.coloringCss}
+                                ${resultParsed.borderCss}
+                                ${resultParsed.positioningCss}
+                            }
+                        </style>
+                    </head>
+                    <div id="copypopup" class="dropdown dropdown-copy">
+                        CSS copied to clipboard
+                    </div>
+                    <body>
+                        <div class="header">
+                            <p class="label">FONTS:</p>
+                            <div class="button-container">
+                                <button id="copy-fonts" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="fonts">
+                            Sample Text.
+                        </div>
+                        <div class="header">
+                            <p class="label">COLORS:</p>
+                            <div class="button-container">
+                                <button id="copy-colors" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="colors">
+                            Sample Text.
+                        </div>
+                        <div class="header">
+                            <p class="label">BORDERING:</p>
+                            <div class="button-container">
+                                <button id="copy-bordering" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bordering">
+                            <div class="empty"></div>
+                        </div>
+                        <div class="header">
+                            <p class="label">PADDING, MARGINS, AND ALIGNMENT:</p>
+                            <div class="button-container">
+                                <button id="copy-positioning" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="positioning">
+                            <div class="box">
+                                Sample Text.
+                            </div>
+                        </div>
+                        <div class="header">
+                            <p class="label">FINAL RESULT:</p>
+                            <div class="button-container">
+                                <button id="copy-all" class="button-simple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="final">
+                            Sample Text.
+                        </div>
+                    </body>
+                    </html>
+                `;
+
+                const copyPopupPreview = previewPopup.document.getElementById("copypopup");
+
+                // Copy font CSS to clipboard
+                previewPopup.document.getElementById("copy-fonts").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.fontCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
+                });
+
+                // Copy coloring CSS to clipboard
+                previewPopup.document.getElementById("copy-colors").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.coloringCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
+                });
+
+                // Copy bordering CSS to clipboard
+                previewPopup.document.getElementById("copy-bordering").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.borderCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
+                });
+
+                // Copy positioning CSS to clipboard
+                previewPopup.document.getElementById("copy-positioning").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.positioningCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
+                });
+
+                // Copy all CSS to clipboard
+                previewPopup.document.getElementById("copy-all").addEventListener("click", async() => {
+                    previewPopup.navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
+                    copyPopupPreview.classList.add("show");
+                    setTimeout(() => {
+                        copyPopupPreview.classList.remove("show");  
+                    }, 1500);
+                });
+            });
 
             // Add a copy to clipboard button to the div
             const copyButton = document.createElement("button");
@@ -344,7 +653,7 @@ function displayStylesSorted(target, direction) {
             `;
             copyButton.classList.add("button-simple");
             copyButton.addEventListener("click", async() => {
-                navigator.clipboard.writeText(resultParsed.cssRaw);
+                navigator.clipboard.writeText(resultParsed.fontCss + resultParsed.coloringCss + resultParsed.borderCss + resultParsed.positioningCss);
                 copyPopup.classList.add("show");
                 setTimeout(() => {
                     copyPopup.classList.remove("show");  
@@ -352,7 +661,6 @@ function displayStylesSorted(target, direction) {
             });
 
             // Add a delete button to the div
-            // TODO: Perhaps stop mouse input when delete confirmation window is open
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -377,6 +685,7 @@ function displayStylesSorted(target, direction) {
             styleDiv.appendChild(text);
             buttonContainer.appendChild(copyButton);
             buttonContainer.appendChild(deleteButton);
+            buttonContainer.appendChild(previewButton);
             styleDiv.appendChild(buttonContainer);
             styleDisplay.appendChild(styleDiv);
         }

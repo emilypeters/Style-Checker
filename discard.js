@@ -67,3 +67,98 @@ btn1.addEventListener("click", async () => {
 })
 
 /* End code block */
+
+/* Begin code block - Code to get applied styles (like from stylesheets), only works on certain webpages */
+
+// Following code referenced from this stack overflow: https://stackoverflow.com/questions/42025329/how-to-get-the-applied-style-from-an-element-excluding-the-default-user-agent-s
+// ***********************************************************************************************************
+
+// var slice = Function.call.bind(Array.prototype.slice);
+
+// var elementMatchCSSRule = function(element, cssRule) {
+//     return element.matches(cssRule.selectorText);
+// };
+
+// var cssRules = slice(document.styleSheets).reduce(function(rules, styleSheet) {
+//     return rules.concat(slice(styleSheet.cssRules));
+// }, []);
+
+// // Returns applied CSS of element (both from CSS files and from inline styles)
+// function getAppliedCss(element) {
+//     var elementRules = cssRules.filter(elementMatchCSSRule.bind(null, element));
+//     var rules =[];
+
+//     if (elementRules.length > 0) { // Get styling from external stylesheets
+//         for (var i = 0; i < elementRules.length; i++) {
+//             var e = elementRules[i];
+//             rules.push(e.cssText)
+//         }		
+//     }
+    
+//     if (element.getAttribute('style')) { // Get styling from inline styles
+//         rules.push(element.getAttribute('style'))
+//     }
+
+//     return rules;
+// }
+
+// ***********************************************************************************************************	
+
+// let pureCssMain = []; // CSS descriptors of selected element
+// let pureCssParents = []; // CSS descriptors of parent elements
+// let pureCssRich = ""; // CSS in a text format (this is what is saved to database)
+
+// let descriptorNames = []; // Keeps track of descriptor names so that the CSS of the main element will take priority
+
+// // Regex for matching CSS descriptors
+// let regex = /[^\s]+: [^;]+;/gm; // Previous regex: /((\S*):\s*"*\w*[,*\w ]*"*;)/mg
+
+// // Get styling of element
+// var rules = getAppliedCss(element);
+// for (var i = 0; i < rules.length; i++) {
+//     // Extract only the CSS descriptors
+//     for (const match of rules[i].matchAll(regex)) {
+//         let cssDescriptor = match[0];
+//         if (!pureCssMain.includes(cssDescriptor)) {
+//             pureCssMain.push(cssDescriptor);
+//             descriptorNames.push(cssDescriptor.slice(0, cssDescriptor.indexOf(':')));
+//             pureCssRich += cssDescriptor + "\n";
+//         }
+//     }
+// }
+
+// // Get styling of element's parents
+// let parentElement = element.parentElement;
+// while (parentElement) {
+//     var rules = getAppliedCss(parentElement);
+
+//     for (var i = 0; i < rules.length; i++) {
+//         // Extract only the CSS descriptors
+//         for (const match of rules[i].matchAll(regex)) {
+//             let cssDescriptor = match[0];
+//             if (!pureCssParents.includes(cssDescriptor) && !descriptorNames.includes(cssDescriptor.slice(0, cssDescriptor.indexOf(':')))) {
+//                 pureCssParents.push(cssDescriptor);
+//                 pureCssRich += cssDescriptor + "\n";
+//             }
+//         }
+//     }		
+    
+//     parentElement = parentElement.parentElement;
+// }
+
+/* End code block */
+
+/* Begin code block - Code to filter by specific styling */
+
+// function thing(p) {
+//     let borderTop = cssDescriptors[`border-top-${p}`];
+//     return borderTop === cssDescriptors[`border-bottom-${p}`] &&
+//     borderTop === cssDescriptors[`border-left-${p}`] &&
+//     borderTop === cssDescriptors[`border-right-${p}`] &&
+//     borderTop === cssDescriptors[`border-block-end-${p}`] && 
+//     borderTop === cssDescriptors[`border-block-start-${p}`] &&
+//     borderTop === cssDescriptors[`border-inline-end-${p}`] &&
+//     borderTop === cssDescriptors[`border-inline-start-${p}`];
+// }
+
+//let borderregex = /^border-block-[^\s]+$|^border-inline-[^\s]+$|^border-top-[^\s]+$|^border-bottom-[^\s]+$|^border-left-[^\s]+$|^border-right-[^\s]+$/m;

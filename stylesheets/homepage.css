@@ -9,12 +9,21 @@ hr {
   background-color: black;
 }
 
+span {
+  margin-left: 5px;
+}
+
 .text-bold {
   font-weight: bold;
 }
 
 .text-padded {
   padding: 5px;
+}
+
+.small {
+  text-align: center;
+  font-size: xx-small;
 }
 
 .button-simple {
@@ -55,6 +64,11 @@ hr {
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.sortbutton-content {
+  display: flex;
+  align-items: center;
 }
 
 .searchsort {
@@ -102,14 +116,14 @@ body {
 
 .dropdown-delete {
   width: 150px;
-  margin-top: 50%;
+  margin-top: 45%;
   margin-left: 30px;
   text-align: center;
 }
 
 .dropdown-copy {
   width: 80px;
-  margin-top: 1%;
+  top: 10px;
   margin-left: 65px;
   text-align: center;
 }
