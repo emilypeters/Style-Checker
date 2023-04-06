@@ -61,7 +61,6 @@ captureButton.addEventListener("click", async () => {
 
             captureButton.classList.add('active');
 
-            // TODO: Temporary fix for issue where user has to click twice on element they want to capture
             window.close();
 
             chrome.scripting.executeScript({
@@ -174,8 +173,6 @@ captureButton.addEventListener("click", async () => {
         
                         if (element != null) {
                             var styles = window.getComputedStyle(element);
-                            // TODO: Maintain inline styles?
-                            //var inlineStyles = element.getAttribute('style')
 
                             // Get all CSS descriptors
                             var cssDescriptors = {};
@@ -202,7 +199,6 @@ captureButton.addEventListener("click", async () => {
                             let coloringPure = "";
 
                             // Core border CSS
-                            // TODO: Border capture fairly simple (assumes top border properties apply to entire border)
                             let borderCss = [
                                 `border-width: ${cssDescriptors["border-top-width"]};`,
                                 `border-color: ${cssDescriptors["border-top-color"]};`,
