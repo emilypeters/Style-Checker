@@ -55,6 +55,18 @@ span {
   background-color: rgb(140, 34, 34) !important;
 }
 
+.button-blue {
+  background-color: royalblue;
+  color: white;
+}
+
+.button-blue:hover {
+  background-color: rgb(65, 105, 175) !important;
+}
+.button-blue:active {
+  background-color: rgb(65, 105, 145) !important;
+}
+
 .active {
   background-color: rgb(222, 222, 222);
 }
@@ -125,6 +137,13 @@ body {
   width: 80px;
   top: 10px;
   margin-left: 65px;
+  text-align: center;
+}
+
+.dropdown-rename {
+  width: 160px;
+  margin-top: 45%;
+  margin-left: 25px;
   text-align: center;
 }
 
