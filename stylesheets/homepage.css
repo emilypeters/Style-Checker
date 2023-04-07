@@ -21,7 +21,14 @@ span {
   padding: 5px;
 }
 
-.small {
+.text-tight {
+  padding: 2px;
+  margin: 0px;
+  font-size: x-small;
+  text-align: left;
+}
+
+.text-small {
   text-align: center;
   font-size: xx-small;
 }

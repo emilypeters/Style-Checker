@@ -352,11 +352,18 @@ function displayStylesSorted(target, direction) {
             const resultParsed = JSON.parse(result.result);
             const key = result.key;
 
+            // Wrapper for buttons and dropdown of buttons
+            const wrapper = document.createElement("div");
+            wrapper.style = "text-align: right;"
+
             // Create div with the style's name
-            // TODO: extrapolate this and other styling to the dedicated CSS file (homepage.css)
             const styleDiv = document.createElement("div");
             styleDiv.classList.add("style");
             styleDiv.style = "display: flex; align-items: center;";
+
+            // Dropdown for additional buttons
+            const expansion = document.createElement("div");
+            expansion.hidden = true;
             
             // Add style name
             const text = document.createElement("p");
@@ -651,7 +658,6 @@ function displayStylesSorted(target, direction) {
             });
 
             // Add a rename button to the div
-            // TODO: Too many buttons per line
             const renameButton = document.createElement("button");
             renameButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -665,6 +671,8 @@ function displayStylesSorted(target, direction) {
                 nameInput.value = resultParsed.name;
                 
                 saveNameButton.addEventListener("click", async() => {
+                    if (!nameInput.value.length) return;
+
                     let styleNew = { name: nameInput.value, dateSaved: resultParsed.dateSaved, fontCss: resultParsed.fontCss, coloringCss: resultParsed.coloringCss, borderCss: resultParsed.borderCss, positioningCss: resultParsed.positioningCss };
                     var obj= {};
                     obj[key] = JSON.stringify(styleNew);
@@ -681,13 +689,45 @@ function displayStylesSorted(target, direction) {
                 renamePopup.classList.add("show");
             });
 
-            styleDiv.appendChild(text);
+            const expandButton = document.createElement("button");
+            expandButton.style = "font-size: x-small;"
+            let caretLeft = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+                    <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
+                </svg>
+            `;
+            let caretDown = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                    <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                </svg>
+            `;
+            expandButton.innerHTML = caretLeft;
+            expandButton.classList.add("button-simple");
+            expandButton.addEventListener("click", async() => {
+                if (expansion.hidden) {
+                    expansion.hidden = false;
+                    expandButton.innerHTML = caretDown;
+                } else {
+                    expansion.hidden = true;
+                    expandButton.innerHTML = caretLeft;
+                }
+            });
+
+            expansion.appendChild(renameButton);
+            expansion.appendChild(deleteButton);
+
             buttonContainer.appendChild(copyButton);
-            buttonContainer.appendChild(deleteButton);
             buttonContainer.appendChild(previewButton);
-            buttonContainer.appendChild(renameButton);
+            buttonContainer.appendChild(expandButton);
+
+            styleDiv.appendChild(text);
             styleDiv.appendChild(buttonContainer);
-            styleDisplay.appendChild(styleDiv);
+
+            wrapper.appendChild(styleDiv);
+            wrapper.appendChild(expansion);
+
+            styleDisplay.appendChild(wrapper);
+            //styleDisplay.appendChild(styleDiv);
         }
     });
 }
