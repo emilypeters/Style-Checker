@@ -661,21 +661,25 @@ function displayStylesSorted(target, direction) {
             renameButton.addEventListener("click", async() => {
                 let nameInput = document.getElementById("nameinput");
                 nameInput.value = resultParsed.name;
-                
-                saveNameButton.addEventListener("click", async() => {
+
+                function rename() {
+                    const name = nameInput.value;
                     if (!nameInput.value.length) return;
 
-                    let styleNew = { name: nameInput.value, dateSaved: resultParsed.dateSaved, fontCss: resultParsed.fontCss, coloringCss: resultParsed.coloringCss, borderCss: resultParsed.borderCss, positioningCss: resultParsed.positioningCss };
+                    let styleNew = { name: name, dateSaved: resultParsed.dateSaved, fontCss: resultParsed.fontCss, coloringCss: resultParsed.coloringCss, borderCss: resultParsed.borderCss, positioningCss: resultParsed.positioningCss };
                     var obj= {};
                     obj[key] = JSON.stringify(styleNew);
                     chrome.storage.local.set(obj);
 
-                    text.innerText = nameInput.value;
+                    text.innerText = name;
                     renamePopup.classList.remove("show");
-                });
+                }
+                
+                saveNameButton.addEventListener("click", rename);
 
                 cancelNameButton.addEventListener("click", async() => {
                     renamePopup.classList.remove("show");
+                    saveNameButton.removeEventListener("click", rename);
                 });
 
                 renamePopup.classList.add("show");
