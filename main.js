@@ -636,14 +636,17 @@ function displayStylesSorted(target, direction) {
             `;
             deleteButton.classList.add("button-simple");
             deleteButton.addEventListener("click", async() => {
-                confirmDeleteButton.addEventListener("click", async() => {
+                function deleteStyle() {
                     chrome.storage.local.remove([key]);
                     styleDiv.remove();
                     deletePopup.classList.remove("show");
-                });
+                }
+
+                confirmDeleteButton.addEventListener("click", deleteStyle);
 
                 cancelDeleteButton.addEventListener("click", async() => {
                     deletePopup.classList.remove("show");
+                    confirmDeleteButton.removeEventListener("click", deleteStyle);
                 });
 
                 deletePopup.classList.add("show");
@@ -662,7 +665,7 @@ function displayStylesSorted(target, direction) {
                 let nameInput = document.getElementById("nameinput");
                 nameInput.value = resultParsed.name;
 
-                function rename() {
+                function renameStyle() {
                     const name = nameInput.value;
                     if (!nameInput.value.length) return;
 
@@ -675,11 +678,11 @@ function displayStylesSorted(target, direction) {
                     renamePopup.classList.remove("show");
                 }
                 
-                saveNameButton.addEventListener("click", rename);
+                saveNameButton.addEventListener("click", renameStyle);
 
                 cancelNameButton.addEventListener("click", async() => {
                     renamePopup.classList.remove("show");
-                    saveNameButton.removeEventListener("click", rename);
+                    saveNameButton.removeEventListener("click", renameStyle);
                 });
 
                 renamePopup.classList.add("show");
