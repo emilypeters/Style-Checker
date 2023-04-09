@@ -71,7 +71,7 @@ captureButton.addEventListener("click", async () => {
                 target: { tabId: tab.id },
                 function: () => {
                     // Highlighting referenced from https://hospodarets.com/highlight_element_with_page_fading
-                    // Also Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
+                    // Referenced from this stack overflow: https://stackoverflow.com/questions/4445102/google-chrome-extension-highlight-the-div-that-the-mouse-is-hovering-over
         
                     // Function to disable mouse clicks (or any other behavior)
                     function stopClicks(e) {

@@ -1,18 +1,29 @@
 # Style-Checker
 
-Updated basic extension to have some functionality for retrieving background colors from web pages. Using a js file it gets the current tab and executes a script which queries all elements and if they have a valid background colors, prints it in a new popup window. Does not account for duplicate entries and may not display background colors for all webpages (still examining). Mainly just a start at getting content from a webpage - will need to correct the functionality so that the content retrieved is not just fixed to the background color.
+A Chrome extension to save and organize webpage styling (CSS).
 
-To test it on a site that I used during testing go to:
-https://ravimashru.dev/blog/2021-04-14-executescript-chrome-extension/ 
+---
 
-this is the output I got when I clicked on the extension:
-![Background colors returned by the site](/assets/background-colors-extension.png)
+### How to install the extension
 
-Anyone can feel free to edit this if you find a more efficient way of fetching this info, have another idea, or want to extend the js file to have more functionality
+1. Download the code from Github as a zip file.
 
-index.html contains the text that is displayed when the extension icon is clicked\
-manifest.json sets up the default icon, what html page is shown, and other specs\
-\
-you can download / clone my code and use the following tutorial to get the extension working locally on your computers\
-https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/ \
-the "loading an unpacked extension" section will show you how to work with extensions in developer mode
+![Github page](/assets/guide-1-github.png)
+
+2. Extract the zip to the destination folder, which can be anywhere on your computer.
+
+3. In Chrome, open the settings pane.
+
+![Opening chrome settings page](/assets/guide-2-chromehome.png)
+
+4. Select the extensions menu.
+
+![Selecting extensions menu](/assets/guide-3-settings.png)
+
+5. In the extensions menu, make sure that developer mode is active. Then, click "Load upacked".
+
+![Loading extension](/assets/guide-4-extensions.png)
+
+6. Finally, select the Style Checker directory. On your computer, this should be called "Style-Checker-master".
+
+![Selecting extension directory](/assets/guide-5-selecting.png)
