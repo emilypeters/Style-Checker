@@ -466,16 +466,24 @@ function displayStylesSorted(target, direction) {
 
                     editPopup.close();
 
+                    //escape special characters
                     function escapeRegex(string) {
-                       return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); //doesn't account for ""?
+                        return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); 
                     }
 
+                    //escape double quotes
                     function escapeQuotes(string) {
-                        return string.replace(/\"/g, '\\"');
+                        return string.replace(/"/g, '\\"');
                     }
 
-                    const deleteInputField = input_answer.value; 
-                    var match_delete_regex = new RegExp(escapeQuotes(escapeRegex(deleteInputField)));
+                    let deleteInputField = input_answer.value; 
+
+                    //if there is a quote in the field, need to use special regex
+                    if (deleteInputField.indexOf('"') >= 0) {
+                        deleteInputField = escapeQuotes(deleteInputField);
+                    }
+
+                    var match_delete_regex = new RegExp(escapeRegex(deleteInputField));
                     let result_parsed_string = JSON.stringify(resultParsed);
                     var modified_style = result_parsed_string;
 
