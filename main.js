@@ -150,15 +150,28 @@ captureButton.addEventListener("click", async () => {
                                         padding: 5px;
                                         height: 50px;
                                     }
+                                    .css-desc{
+                                        margin-top:2px;
+                                        margin-bottom:2px;
+                                    }
+                                    .cssDiv{
+                                        color:black;
+                                    }
+                                    .cssDiv .cssInfo{
+                                        margin-top:0px;
+                                        margin-bottom:0px;
+                                        display: none;
+                                        font-size:10px;
+                                    }
+
+                                    .cssDiv:hover .cssInfo{
+                                        display:block;
+                                        color:grey;
+                                    }
                                 </style>
                             </head>
                             <body>
-                                <div id="styling" class="styling">
-                                    <p style="font-weight: bold;">PREVIEW:</p>
-                                    <div id="preview" class="preview">
-                                        Sample Text.
-                                    </div>
-                                </div>
+    
                                 <div class="buttoncontainer">
                                     <input id="name" type="text" placeholder="Enter style name...">
                                     <button id="save-style" class="button-simple">Save Styling</button>
@@ -231,45 +244,146 @@ captureButton.addEventListener("click", async () => {
                                     positioningCss.push(descriptor);
                                 }
                             }
+                            
+                            //checking what element on the page is being clicked
+                            // capturePopup.document.addEventListener('click', function(e){
+                            //     const p3 = capturePopup.document.createElement("p");
+                            //     const ptex3 = capturePopup.document.createTextNode(e.target);
+                            //     p3.appendChild(ptex3);
+                            //     capturePopup.document.body.appendChild(p3);
+                            //     console.log(p3);
+                            // });
+
+                            // //example of onclick code working
+                            // const p1 = capturePopup.document.createElement("p");
+                            // const ptext1 = capturePopup.document.createTextNode("hello world");
+
+                            // function changeColor(){
+                            //     const p2 = capturePopup.document.createElement("p");
+                            //     const ptex2 = capturePopup.document.createTextNode("hello world!");
+                            //     p2.appendChild(ptex2);
+                            //     capturePopup.document.body.appendChild(p2);
+                            //     console.log(p2);
+                            // }
+
+                            // p1.onclick = changeColor;
+                            // p1.appendChild(ptext1);
+                            // capturePopup.document.body.appendChild(p1);
+                            // console.log(p1);
 
                             // Output CSS to window
 
-                            const cssDisplay = capturePopup.document.getElementById('styling');
-                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
-                            fontCss.forEach((cssDescriptor) => {
-                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`; //Each "<span onclick" instance is allowing for us to click and ouput something like an explanation for the style or save the style to a variable later on
-                            fontPure += cssDescriptor + "\n";
+                            // The code below dynamically writes the html for displaying the css which has more capabilties than our previous
+                            // implementation
+                            const cssDisplay = capturePopup.document.createElement('div');
+                            cssDisplay.className = 'styling';
+                            cssDisplay.id = 'styling';
+
+                            const p = capturePopup.document.createElement("p");
+                            p.style.fontWeight = "bold";
+                            const ptext = capturePopup.document.createTextNode("PREVIEW:");
+                            p.appendChild(ptext);
+                            cssDisplay.appendChild(p);
+
+                            const d = capturePopup.document.createElement("div");
+                            d.id = "preview";
+                            d.className = "preview";
+                            const dtext = capturePopup.document.createTextNode("Sample Text");
+
+                            d.appendChild(dtext);
+                            cssDisplay.appendChild(d);
+
+                            const fonts = capturePopup.document.createElement("p");
+                            fonts.style.fontWeight = "bold";
+                            const fontsText = capturePopup.document.createTextNode("FONTS:");
+                            fonts.appendChild(fontsText);
+                            cssDisplay.appendChild(fonts);
+
+                            fontCss.forEach(cssDescriptor => {
+                                const cssDiv = capturePopup.document.createElement("div");
+                                cssDiv.className = 'cssDiv';
+                            
+                                const cssPar = capturePopup.document.createElement("p");
+                                cssPar.className = "css-desc";
+                                const cssText = capturePopup.document.createTextNode(cssDescriptor);
+                                cssPar.appendChild(cssText);
+                                cssDiv.appendChild(cssPar);
+                            
+                                const cssInfo = capturePopup.document.createElement("p");
+                                cssInfo.className = 'cssInfo';
+                                let csiText;
+                                if(cssDescriptor.includes('font-family')){
+                                    csiText = capturePopup.document.createTextNode('This css property decides which fonts will be displayed');
+                                }
+                                else if(cssDescriptor.includes('font-size')){
+                                    csiText = capturePopup.document.createTextNode('This css property decides the size of the font');
+                                }
+                                else{
+                                    csiText = capturePopup.document.createTextNode('this css property modifies the html code font'); 
+                                }
+                                cssInfo.appendChild(csiText);
+                                cssDiv.appendChild(cssInfo);
+                            
+                                cssDisplay.appendChild(cssDiv);
                             });
 
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>";
+                            capturePopup.document.body.appendChild(cssDisplay);
+                            console.log(cssDisplay);
+                            
+                            //legacy code, still needs to be updated
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
+                            
                             coloringCss.forEach((cssDescriptor) => {
-                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
-                            coloringPure += cssDescriptor + "\n";
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                coloringPure += cssDescriptor + "\n";
                             });
 
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>";
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
+                            
                             borderCss.forEach((cssDescriptor) => {
-                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
-                            borderPure += cssDescriptor + "\n";
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                borderPure += cssDescriptor + "\n";
                             });
 
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>";
+                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
+                            
                             positioningCss.forEach((cssDescriptor) => {
-                            cssDisplay.innerHTML += `<span onclick="console.log('test')">${cssDescriptor}</span><br>`;
-                            positioningPure += cssDescriptor + "\n";
+                                cssDisplay.innerHTML += cssDescriptor + "<br>";
+                                positioningPure += cssDescriptor + "\n";
                             });
 
-                            cssDisplay.innerHTML += "</p>";
-
+                            cssDisplay.innerHTML += "</p>"; 
+                            
+                            //Apply preview styling
                             capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
                             // Button to save styling
                             let saveButton = capturePopup.document.getElementById("save-style");
-                            
                             let saveTButton = capturePopup.document.getElementById("save-template-style");
 
                             cssDisplay.innerHTML += '';
                             
+                            // capturePopup.document.addEventListener('click', () => {
+                                // console.log("domcontentloaded");
+                                // cssDisplay.style.backgroundColor = "red";
+                                // capturePopup.document.body.style.backgroundColor = "red";
+                                // cssDisplay.addEventListener('click', (event) => {
+                                //     cssDisplay.styles.backgroundColor = "red";
+                                //     console.log(event.target);
+                                //     if (event.target.classList.contains('css-desc')) {
+                                //         let clickedText = event.target.innerHTML;
+                                //         let clickedTextElement = capturePopup.document.getElementById('clicked-text');
+                                //         clickedTextElement.innerHTML = clickedText;
+                                //         console.log('test');
+                                //         // Save clicked text to a variable
+                                //         // You can replace 'clickedTextVar' with your desired variable name
+                                //         let clickedTextVar = clickedText;
+                                //         cssDisplay.innerHTML += clickedTextVar;
+                                //     }
+                                // });
+                            // });
+
+
                             saveTButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
