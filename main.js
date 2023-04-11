@@ -293,6 +293,7 @@ captureButton.addEventListener("click", async () => {
                             d.appendChild(dtext);
                             cssDisplay.appendChild(d);
 
+                            //Font Code
                             const fonts = capturePopup.document.createElement("p");
                             fonts.style.fontWeight = "bold";
                             const fontsText = capturePopup.document.createTextNode("FONTS:");
@@ -324,35 +325,156 @@ captureButton.addEventListener("click", async () => {
                                 cssInfo.appendChild(csiText);
                                 cssDiv.appendChild(cssInfo);
                             
+                                //This works.... experimenting with this
+                                // cssDisplay.addEventListener('click', async(event) => {
+                                //     if(event.target==cssDisplay){
+                                //     let styleName = capturePopup.document.getElementById("name").value;
+                                //     let currentDate = new Date().toISOString();
+    
+                                //     if (!styleName.length) return;
+            
+                                //     // Store style info in JSON
+                                //     let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
+                    
+                                //     chrome.storage.local.get(null, function(items) {
+                                //         var allKeys = Object.keys(items);
+                                        
+                                //         // Get unique key for style (basically like autoincrement in SQL)
+                                //         let maxKey = 0;
+                                //         for (key in allKeys) {
+                                //             const keyInt = parseInt(allKeys[key]);
+                                //             if (keyInt > maxKey) maxKey = keyInt;
+                                //         }
+            
+                                //         // Save style
+                                //         var obj= {};
+                                //         obj[maxKey+1] = JSON.stringify(style);
+                                //         chrome.storage.local.set(obj);
+                
+                                //         // Clear input
+                                //         capturePopup.document.getElementById("name").value = "";
+                                //     });
+    
+                                //     //close window
+                                //     capturePopup.close()
+                                //     }
+                                // }); 
+                                //end of experiment
+
                                 cssDisplay.appendChild(cssDiv);
+
                             });
+
+                            //Coloring Code
+                            const coloring = capturePopup.document.createElement("p");
+                            coloring.style.fontWeight = "bold";
+                            const colorText = capturePopup.document.createTextNode("COLORS:");
+                            coloring.appendChild(colorText);
+                            cssDisplay.appendChild(coloring);
+
+                            coloringCss.forEach(cssDescriptor => {
+                                const cssDiv2 = capturePopup.document.createElement("div");
+                                cssDiv2.className = 'cssDiv';
+                            
+                                const cssPar2 = capturePopup.document.createElement("p");
+                                cssPar2.className = "css-desc";
+                                const cssText2 = capturePopup.document.createTextNode(cssDescriptor);
+                                cssPar2.appendChild(cssText2);
+                                cssDiv2.appendChild(cssPar2);
+                            
+                                const cssInfo2 = capturePopup.document.createElement("p");
+                                cssInfo2.className = 'cssInfo';
+                                let csiText2;
+                                if(cssDescriptor.includes('background-color')){
+                                    csiText2 = capturePopup.document.createTextNode('This css property decides the background color of the selected element');
+                                }
+                                else if(cssDescriptor.includes('color')){
+                                    csiText2 = capturePopup.document.createTextNode('This css property decides the color of the element');
+                                }
+                                else{
+                                    csiText2 = capturePopup.document.createTextNode('this css property modifies the html code colors'); 
+                                }
+                                cssInfo2.appendChild(csiText2);
+                                cssDiv2.appendChild(cssInfo2);
+
+                                cssDisplay.appendChild(cssDiv2);
+
+                            });
+
+                            //Border Code
+                            const borders = capturePopup.document.createElement("p");
+                            borders.style.fontWeight = "bold";
+                            const borderText = capturePopup.document.createTextNode("BORDER:");
+                            borders.appendChild(borderText);
+                            cssDisplay.appendChild(borders);
+
+                            borderCss.forEach(cssDescriptor => {
+                                const cssDiv3 = capturePopup.document.createElement("div");
+                                cssDiv3.className = 'cssDiv';
+                            
+                                const cssPar3 = capturePopup.document.createElement("p");
+                                cssPar3.className = "css-desc";
+                                const cssText3 = capturePopup.document.createTextNode(cssDescriptor);
+                                cssPar3.appendChild(cssText3);
+                                cssDiv3.appendChild(cssPar3);
+                            
+                                const cssInfo3 = capturePopup.document.createElement("p");
+                                cssInfo3.className = 'cssInfo';
+                                let csiText3;
+                                if(cssDescriptor.includes('border-width')){
+                                    csiText3 = capturePopup.document.createTextNode('This css property decides the width of the element border');
+                                }
+                                else if(cssDescriptor.includes('border-color')){
+                                    csiText3 = capturePopup.document.createTextNode('This css property decides the color of the border');
+                                }
+                                else{
+                                    csiText3 = capturePopup.document.createTextNode('this css property modifies the html page borders'); 
+                                }
+                                cssInfo3.appendChild(csiText3);
+                                cssDiv3.appendChild(cssInfo3);
+
+                                cssDisplay.appendChild(cssDiv3);
+
+                            });
+
+                             //Positioning Code
+                             const positioning = capturePopup.document.createElement("p");
+                             positioning.style.fontWeight = "bold";
+                             const posText = capturePopup.document.createTextNode("POSITIONING:");
+                             positioning.appendChild(posText);
+                             cssDisplay.appendChild(positioning);
+ 
+                             positioningCss.forEach(cssDescriptor => {
+                                 const cssDiv4 = capturePopup.document.createElement("div");
+                                 cssDiv4.className = 'cssDiv';
+                             
+                                 const cssPar4 = capturePopup.document.createElement("p");
+                                 cssPar4.className = "css-desc";
+                                 const cssText4 = capturePopup.document.createTextNode(cssDescriptor);
+                                 cssPar4.appendChild(cssText4);
+                                 cssDiv4.appendChild(cssPar4);
+                             
+                                 const cssInfo4 = capturePopup.document.createElement("p");
+                                 cssInfo4.className = 'cssInfo';
+                                 let csiText4;
+                                 if(cssDescriptor.includes('text-align')){
+                                     csiText4 = capturePopup.document.createTextNode('This css property determins how the text is centered or aligned');
+                                 }
+                                 else if(cssDescriptor.includes('display')){
+                                     csiText4 = capturePopup.document.createTextNode('This css property decides the genera layout rules of elements on the screen');
+                                 }
+                                 else{
+                                     csiText4 = capturePopup.document.createTextNode('this css property modifies the html pages element positioning'); 
+                                 }
+                                 cssInfo4.appendChild(csiText4);
+                                 cssDiv4.appendChild(cssInfo4);
+ 
+                                 cssDisplay.appendChild(cssDiv4);
+                             });
+
 
                             capturePopup.document.body.appendChild(cssDisplay);
                             console.log(cssDisplay);
-                            
-                            //legacy code, still needs to be updated
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
-                            
-                            coloringCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                coloringPure += cssDescriptor + "\n";
-                            });
-
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
-                            
-                            borderCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                borderPure += cssDescriptor + "\n";
-                            });
-
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
-                            
-                            positioningCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                positioningPure += cssDescriptor + "\n";
-                            });
-
-                            cssDisplay.innerHTML += "</p>"; 
                             
                             //Apply preview styling
                             capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
@@ -362,27 +484,6 @@ captureButton.addEventListener("click", async () => {
                             let saveTButton = capturePopup.document.getElementById("save-template-style");
 
                             cssDisplay.innerHTML += '';
-                            
-                            // capturePopup.document.addEventListener('click', () => {
-                                // console.log("domcontentloaded");
-                                // cssDisplay.style.backgroundColor = "red";
-                                // capturePopup.document.body.style.backgroundColor = "red";
-                                // cssDisplay.addEventListener('click', (event) => {
-                                //     cssDisplay.styles.backgroundColor = "red";
-                                //     console.log(event.target);
-                                //     if (event.target.classList.contains('css-desc')) {
-                                //         let clickedText = event.target.innerHTML;
-                                //         let clickedTextElement = capturePopup.document.getElementById('clicked-text');
-                                //         clickedTextElement.innerHTML = clickedText;
-                                //         console.log('test');
-                                //         // Save clicked text to a variable
-                                //         // You can replace 'clickedTextVar' with your desired variable name
-                                //         let clickedTextVar = clickedText;
-                                //         cssDisplay.innerHTML += clickedTextVar;
-                                //     }
-                                // });
-                            // });
-
 
                             saveTButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
