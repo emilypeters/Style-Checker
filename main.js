@@ -426,14 +426,6 @@ function displayStylesSorted(target, direction) {
                     </html>
                 `;
 
-                //if it contains <br> tag
-                // if (!resultParsed.fontCss.includes("<br>")) {
-                //     resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";", "g"), ';<br>');
-                //     resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";", "g"), ';<br>');
-                //     resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";", "g"), ';<br>');
-                //     resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";", "g"), ';<br>');
-                // }
-
                 const editDisplay = editPopup.document.getElementById("content");
 
                 // Fonts
@@ -531,58 +523,6 @@ function displayStylesSorted(target, direction) {
 
                     editPopup.close();
                 });
-
-                //colors
-
-                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>COLORING:</p>";
-                // editPopup.document.getElementById("content").innerHTML += resultParsed.coloringCss;
-
-                // //border
-
-                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>BORDER:</p>";
-                // editPopup.document.getElementById("content").innerHTML += resultParsed.borderCss;
-
-                // //positioning
-
-                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>";
-                // editPopup.document.getElementById("content").innerHTML += resultParsed.positioningCss;
-
-                //clean out all the added <br>
-                // resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";<br>", "g"), ';');
-                // resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";<br>", "g"), ';');
-                // resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";<br>", "g"), ';');
-                // resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";<br>", "g"), ';');
-
-                // let input_answer = editPopup.document.getElementById("delete_txt");
-                // let submitButton = editPopup.document.getElementById("submit_btn");
-
-                // submitButton.addEventListener("click", async () => {
-                //     editPopup.close();
-
-                //     // function escapeRegex(string) {
-                //     //    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); //doesn't account for ""?
-                //     // }
-
-                //     // function escapeQuotes(string) {
-                //     //     return string.replace(/\"/g, '\\"');
-                //     // }
-
-                //     // const deleteInputField = input_answer.value; 
-                //     // var match_delete_regex = new RegExp(escapeQuotes(escapeRegex(deleteInputField)));
-                //     // let result_parsed_string = JSON.stringify(resultParsed);
-                //     // var modified_style = result_parsed_string;
-
-                //     // //if the user enters a valid css element to delete
-                //     // if (match_delete_regex.test(result_parsed_string)) {
-                //     //     modified_style = modified_style.replace(match_delete_regex, "");
-                //     //     chrome.storage.local.get(key, function (val) {
-                //     //         val[key] = modified_style;
-                //     //         // Save data
-                //     //         chrome.storage.local.set(val);
-                //     //         resultParsed = JSON.parse(val[key]);
-                //     //     });
-                //     // }
-                // });
             });
 
             //Add a preview button to the div
