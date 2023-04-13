@@ -375,139 +375,216 @@ function displayStylesSorted(target, direction) {
             `;
             editButton.classList.add("button-simple");
             editButton.addEventListener("click", async () => {
-                var editPopup = window.open("", "", "width=400,height=400,toolbar=no,menubar=no");
+                var editPopup = window.open("", "", "width=350,height=400,toolbar=no,menubar=no");
                 editPopup.document.body.innerHTML = `
-                     <!DOCTYPE html>
+                    <!DOCTYPE html>
                     <html lang="en">
                     <head>
                         <title>Edit Style</title>
                         <meta charset="utf-8">
                         <style>
-                         .styling {
-                             background-color: #e7e7e7;
-                             padding: 10px;
-                             border: 1px solid #ccc;
-                             border-radius: 4px;
-                             text-align: left;
-                             overflow: auto;
-                             max-height: 300px;
-                          }
-                         .button-simple {
-                             margin-left: 5px;
-                             padding: 4px;
-                             background-color: royalblue;
-                             border-radius: 6px;
-                             border-width: 0;
-                             border-style: none;
-                             color: white;
-                          } 
-                          .button-simple:hover {
-                             background-color: rgb(65, 105, 175);
-                          }
-                          .button-simple:active {
-                             background-color: rgb(65, 105, 145);
-                          }
-                           .buttoncontainer {
-                             display: flex;
-                             padding-top: 20px;
-                             height: 50px;
-                          }
-                          #remove-btn {
-                             font-size: 15px;
-                          }
-                          #notice {
-                             font-weight: bold;
-                          }
+                            body {
+                                min-width: 300px;
+                                max-width: 350px;
+                            }
+                            .styling {
+                                background-color: #e7e7e7;
+                                padding: 10px;
+                                border: 1px solid #ccc;
+                                border-radius: 4px;
+                                text-align: left;
+                                overflow: auto;
+                                max-height: 300px;
+                            }
+                            .button-simple {
+                                margin-left: 5px;
+                                padding: 4px;
+                                background-color: royalblue;
+                                border-radius: 6px;
+                                border-width: 0;
+                                border-style: none;
+                                color: white;
+                            } 
+                            .button-simple:hover {
+                                background-color: rgb(65, 105, 175);
+                            }
+                            .button-simple:active {
+                                background-color: rgb(65, 105, 145);
+                            }
+                            .buttoncontainer {
+                                padding: 5px;
+                                display: flex;
+                                justify-content: center;
+                            }
                        </style>
                     </head>
-                    <body class="styling">
-                         <div id="content"></div>
-                         <p id="notice">Note: entering multiple lines of code is not supported</p>
+                    <body>
+                         <div id="content" class="styling"></div>
                          <div class="buttoncontainer">
-                            <form id="delete_form">
-                                <label id="remove-btn">Remove: <input id="delete_txt" type="text" placeholder="Ex. font-size: 13px;"/></label>
-                                <button type="submit" id="submit_btn" class="button-simple">Submit</button>
-                            </form>
+                            <button id="save" class="button-simple">Keep Selected Only</button>
                          </div>
                     </body>
                     </html>
-                    `;
+                `;
 
                 //if it contains <br> tag
-                if (!resultParsed.fontCss.includes("<br>")) {
-                    resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";", "g"), ';<br>');
-                    resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";", "g"), ';<br>');
-                    resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";", "g"), ';<br>');
-                    resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";", "g"), ';<br>');
+                // if (!resultParsed.fontCss.includes("<br>")) {
+                //     resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";", "g"), ';<br>');
+                //     resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";", "g"), ';<br>');
+                //     resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";", "g"), ';<br>');
+                //     resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";", "g"), ';<br>');
+                // }
+
+                const editDisplay = editPopup.document.getElementById("content");
+
+                // Fonts
+
+                editDisplay.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
+                
+                let fontDescriptors = resultParsed.fontCss.split("\n");
+                let newFontCss = resultParsed.fontCss;
+
+                for (const descriptorKey in fontDescriptors) {
+                    let descriptor = fontDescriptors[descriptorKey];
+                    if (descriptor === "") continue;
+                    editDisplay.innerHTML += `<div style="display: flex; align-items: center;"><input checked key='${descriptorKey}' type='checkbox' css='fonts'>${descriptor}</div>`;
                 }
 
-                //fonts
+                // Coloring
 
-                editPopup.document.getElementById("content").innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
-                editPopup.document.getElementById("content").innerHTML += resultParsed.fontCss;
+                editDisplay.innerHTML += "<p> <p style='font-weight: bold;'>COLORING:</p>";
+                
+                let coloringDescriptors = resultParsed.coloringCss.split("\n");
+                let newColoringCss = resultParsed.coloringCss;
+
+                for (const descriptorKey in coloringDescriptors) {
+                    let descriptor = coloringDescriptors[descriptorKey];
+                    if (descriptor === "") continue;
+                    editDisplay.innerHTML += `<div style="display: flex; align-items: center;"><input checked key='${descriptorKey}' type='checkbox' css='coloring'>${descriptor}</div>`;
+                }
+
+                // Border
+
+                editDisplay.innerHTML += "<p> <p style='font-weight: bold;'>BORDER:</p>";
+                
+                let borderDescriptors = resultParsed.borderCss.split("\n");
+                let newBorderCss = resultParsed.borderCss;
+
+                for (const descriptorKey in borderDescriptors) {
+                    let descriptor = borderDescriptors[descriptorKey];
+                    if (descriptor === "") continue;
+                    editDisplay.innerHTML += `<div style="display: flex; align-items: center;"><input checked key='${descriptorKey}' type='checkbox' css='border'>${descriptor}</div>`;
+                }
+
+                // Positioning
+
+                editDisplay.innerHTML += "<p> <p style='font-weight: bold;'>POSITIONING:</p>";
+                
+                let positioningDescriptors = resultParsed.positioningCss.split("\n");
+                let newPositioningCss = resultParsed.positioningCss;
+
+                for (const descriptorKey in positioningDescriptors) {
+                    let descriptor = positioningDescriptors[descriptorKey];
+                    if (descriptor === "") continue;
+                    editDisplay.innerHTML += `<div style="display: flex; align-items: center;"><input checked key='${descriptorKey}' type='checkbox' css='positioning'>${descriptor}</div>`;
+                }
+
+                // Save button
+
+                let saveButton = editPopup.document.getElementById("save");
+                saveButton.addEventListener("click", async () => {
+                    let fontCheckBoxes = editPopup.document.querySelectorAll('input[type="checkbox"][css="fonts"]');
+                    fontCheckBoxes.forEach((checkBox) => {
+                        const descriptorKey = checkBox.getAttribute("key");
+                        if (!checkBox.checked) {
+                            newFontCss = newFontCss.replace(fontDescriptors[descriptorKey] + "\n", "");
+                        }
+                    });
+
+                    let coloringCheckBoxes = editPopup.document.querySelectorAll('input[type="checkbox"][css="coloring"]');
+                    coloringCheckBoxes.forEach((checkBox) => {
+                        const descriptorKey = checkBox.getAttribute("key");
+                        if (!checkBox.checked) {
+                            newColoringCss = newColoringCss.replace(coloringDescriptors[descriptorKey] + "\n", "");
+                        }
+                    });
+
+                    let borderCheckBoxes = editPopup.document.querySelectorAll('input[type="checkbox"][css="border"]');
+                    borderCheckBoxes.forEach((checkBox) => {
+                        const descriptorKey = checkBox.getAttribute("key");
+                        if (!checkBox.checked) {
+                            newBorderCss = newBorderCss.replace(borderDescriptors[descriptorKey] + "\n", "");
+                        }
+                    });
+
+                    let positioningCheckBoxes = editPopup.document.querySelectorAll('input[type="checkbox"][css="positioning"]');
+                    positioningCheckBoxes.forEach((checkBox) => {
+                        const descriptorKey = checkBox.getAttribute("key");
+                        if (!checkBox.checked) {
+                            newPositioningCss = newPositioningCss.replace(positioningDescriptors[descriptorKey] + "\n", "");
+                        }
+                    });
+
+                    let styleNew = { name: resultParsed.name, dateSaved: resultParsed.dateSaved, fontCss: newFontCss, coloringCss: newColoringCss, borderCss: newBorderCss, positioningCss: newPositioningCss };
+                    var obj= {};
+                    obj[key] = JSON.stringify(styleNew);
+                    chrome.storage.local.set(obj);
+
+                    editPopup.close();
+                });
 
                 //colors
 
-                editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>COLORING:</p>";
-                editPopup.document.getElementById("content").innerHTML += resultParsed.coloringCss;
+                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>COLORING:</p>";
+                // editPopup.document.getElementById("content").innerHTML += resultParsed.coloringCss;
 
-                //border
+                // //border
 
-                editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>BORDER:</p>";
-                editPopup.document.getElementById("content").innerHTML += resultParsed.borderCss;
+                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>BORDER:</p>";
+                // editPopup.document.getElementById("content").innerHTML += resultParsed.borderCss;
 
-                //positioning
+                // //positioning
 
-                editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>";
-                editPopup.document.getElementById("content").innerHTML += resultParsed.positioningCss;
+                // editPopup.document.getElementById("content").innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>";
+                // editPopup.document.getElementById("content").innerHTML += resultParsed.positioningCss;
 
                 //clean out all the added <br>
-                resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";<br>", "g"), ';');
-                resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";<br>", "g"), ';');
-                resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";<br>", "g"), ';');
-                resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";<br>", "g"), ';');
+                // resultParsed.fontCss = resultParsed.fontCss.replace(new RegExp(";<br>", "g"), ';');
+                // resultParsed.coloringCss = resultParsed.coloringCss.replace(new RegExp(";<br>", "g"), ';');
+                // resultParsed.borderCss = resultParsed.borderCss.replace(new RegExp(";<br>", "g"), ';');
+                // resultParsed.positioningCss = resultParsed.positioningCss.replace(new RegExp(";<br>", "g"), ';');
 
-                let input_answer = editPopup.document.getElementById("delete_txt");
-                let submitButton = editPopup.document.getElementById("submit_btn");
+                // let input_answer = editPopup.document.getElementById("delete_txt");
+                // let submitButton = editPopup.document.getElementById("submit_btn");
 
-                submitButton.addEventListener("click", async () => {
+                // submitButton.addEventListener("click", async () => {
+                //     editPopup.close();
 
-                    editPopup.close();
+                //     // function escapeRegex(string) {
+                //     //    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); //doesn't account for ""?
+                //     // }
 
-                    //escape special characters
-                    function escapeRegex(string) {
-                        return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); 
-                    }
+                //     // function escapeQuotes(string) {
+                //     //     return string.replace(/\"/g, '\\"');
+                //     // }
 
-                    //escape double quotes
-                    function escapeQuotes(string) {
-                        return string.replace(/"/g, '\\"');
-                    }
+                //     // const deleteInputField = input_answer.value; 
+                //     // var match_delete_regex = new RegExp(escapeQuotes(escapeRegex(deleteInputField)));
+                //     // let result_parsed_string = JSON.stringify(resultParsed);
+                //     // var modified_style = result_parsed_string;
 
-                    let deleteInputField = input_answer.value; 
-
-                    //if there is a quote in the field, need to use special regex
-                    if (deleteInputField.indexOf('"') >= 0) {
-                        deleteInputField = escapeQuotes(deleteInputField);
-                    }
-
-                    var match_delete_regex = new RegExp(escapeRegex(deleteInputField));
-                    let result_parsed_string = JSON.stringify(resultParsed);
-                    var modified_style = result_parsed_string;
-
-                    //if the user enters a valid css element to delete
-                    if (match_delete_regex.test(result_parsed_string)) {
-                        modified_style = modified_style.replace(match_delete_regex, "");
-                        chrome.storage.local.get(key, function (val) {
-                            val[key] = modified_style;
-                            // Save data
-                            chrome.storage.local.set(val);
-                            resultParsed = JSON.parse(val[key]);
-                        });
-                    }
-                });
+                //     // //if the user enters a valid css element to delete
+                //     // if (match_delete_regex.test(result_parsed_string)) {
+                //     //     modified_style = modified_style.replace(match_delete_regex, "");
+                //     //     chrome.storage.local.get(key, function (val) {
+                //     //         val[key] = modified_style;
+                //     //         // Save data
+                //     //         chrome.storage.local.set(val);
+                //     //         resultParsed = JSON.parse(val[key]);
+                //     //     });
+                //     // }
+                // });
             });
-
 
             //Add a preview button to the div
             const previewButton = document.createElement("button");
