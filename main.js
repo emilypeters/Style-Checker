@@ -283,7 +283,7 @@ captureButton.addEventListener("click", async () => {
                                   const url = 'https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/font-family';
                                   xhr.open('GET', url, true);
                                 
-                                  // Function execute after request is successful
+                                  // Function execution after request is successful
                                   xhr.onreadystatechange = function () {
                                     if (this.readyState == 4 && this.status == 200) {
                                       const html = this.responseText;
@@ -291,28 +291,28 @@ captureButton.addEventListener("click", async () => {
                                     }
                                   };
                                 
-                                  // Sending our request
+                                  // Sending request
                                   xhr.send();
                                 });
                               }
 
-                            let ffhtml = ""; // Define ffhtml in the global scope
-
+                            let ffhtml = ""; 
+                            
+                            //Function which runs urlRegex()
                             async function fetchHtml() {
                             try {
                                 const html = await urlRegex();
                                 ffhtml = html; // Assign the fetched HTML to ffhtml
-                                //console.log(ffhtml); // Now you can access the HTML content
+                                console.log(ffhtml); // Now you can access the HTML content
                             } catch (error) {
                                 console.error(error);
                             }
                             }
                             
-                            exampleRE = /description"\s+content="([^"]+)"/gm;
+                            exampleRE = /description"\s+content="([^"]+)"/gm; //regex for mozilla page, captures description we want
 
-                            fetchHtml().then(() => {
-                                // Now you can access ffhtml outside of the fetchHtml() function
-                                console.log(ffhtml);
+                            fetchHtml().then(() => { // Allows you to access ffhtml outside of the fetchHtml() function
+                                console.log(ffhtml);  
                                 testMatch = [...ffhtml.matchAll(exampleRE)];
                                 console.log(testMatch[0][1]);
                               });
