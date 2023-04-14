@@ -354,11 +354,11 @@ function displayStylesSorted(target, direction) {
 
             // Wrapper for buttons and dropdown of buttons
             const wrapper = document.createElement("div");
+            wrapper.classList.add("style");
             wrapper.style = "text-align: right;"
 
             // Create div with the style's name
             const styleDiv = document.createElement("div");
-            styleDiv.classList.add("style");
             styleDiv.style = "display: flex; align-items: center;";
 
             // Dropdown for additional buttons
@@ -912,7 +912,7 @@ searchBar.addEventListener("input", async() => {
         if (!element.querySelector("p").innerText.toLowerCase().includes(searchTerm.toLowerCase())) {
             element.style.display = "none";
         } else {
-            element.style.display = "flex";
+            element.style.display = "block";
         }
     });
 });
