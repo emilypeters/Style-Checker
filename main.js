@@ -174,7 +174,7 @@ captureButton.addEventListener("click", async () => {
     
                                 <div class="buttoncontainer">
                                     <input id="name" type="text" placeholder="Enter style name...">
-                                    <button id="save-style" class="button-simple">Save Styling</button>
+                                    
                                     <button id="save-template-style" class="button-simple">Save Template</button>
                                 </div>
                             </body>
@@ -273,6 +273,50 @@ captureButton.addEventListener("click", async () => {
 
                             // Output CSS to window
 
+                        
+                            function urlRegex() {
+                                return new Promise((resolve, reject) => {
+                                  // Creating an XMLHttpRequest object
+                                  const xhr = new XMLHttpRequest();
+                                
+                                  // URL with a proxy as a prefix so that it doesn't get blocked
+                                  const url = 'https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/font-family';
+                                  xhr.open('GET', url, true);
+                                
+                                  // Function execute after request is successful
+                                  xhr.onreadystatechange = function () {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                      const html = this.responseText;
+                                      resolve(html);
+                                    }
+                                  };
+                                
+                                  // Sending our request
+                                  xhr.send();
+                                });
+                              }
+
+                            let ffhtml = ""; // Define ffhtml in the global scope
+
+                            async function fetchHtml() {
+                            try {
+                                const html = await urlRegex();
+                                ffhtml = html; // Assign the fetched HTML to ffhtml
+                                //console.log(ffhtml); // Now you can access the HTML content
+                            } catch (error) {
+                                console.error(error);
+                            }
+                            }
+                            
+                            exampleRE = /description"\s+content="([^"]+)"/gm;
+
+                            fetchHtml().then(() => {
+                                // Now you can access ffhtml outside of the fetchHtml() function
+                                console.log(ffhtml);
+                                testMatch = [...ffhtml.matchAll(exampleRE)];
+                                console.log(testMatch[0][1]);
+                              });
+                            
                             // The code below dynamically writes the html for displaying the css which has more capabilties than our previous
                             // implementation
                             const cssDisplay = capturePopup.document.createElement('div');
@@ -471,7 +515,47 @@ captureButton.addEventListener("click", async () => {
  
                                  cssDisplay.appendChild(cssDiv4);
                              });
-
+                            
+                            //testing onclick with button
+                            // const testButton = capturePopup.document.createElement("button");
+                            // testButton.id ='testbtn';
+                            // testButton.className = 'button-simple';
+                            // btntxt = capturePopup.document.createTextNode("test");
+                            // testButton.appendChild(btntxt);
+                            // capturePopup.document.body.appendChild(testButton);
+                            // testButton.addEventListener('click', async(event) => {
+                            //         if(event.target==testButton){
+                            //         let styleName = capturePopup.document.getElementById("name").value;
+                            //         let currentDate = new Date().toISOString();
+    
+                            //         if (!styleName.length) return;
+            
+                            //         // Store style info in JSON
+                            //         let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
+                    
+                            //         chrome.storage.local.get(null, function(items) {
+                            //             var allKeys = Object.keys(items);
+                                        
+                            //             // Get unique key for style (basically like autoincrement in SQL)
+                            //             let maxKey = 0;
+                            //             for (key in allKeys) {
+                            //                 const keyInt = parseInt(allKeys[key]);
+                            //                 if (keyInt > maxKey) maxKey = keyInt;
+                            //             }
+            
+                            //             // Save style
+                            //             var obj= {};
+                            //             obj[maxKey+1] = JSON.stringify(style);
+                            //             chrome.storage.local.set(obj);
+                
+                            //             // Clear input
+                            //             capturePopup.document.getElementById("name").value = "";
+                            //         });
+    
+                            //         //close window
+                            //         capturePopup.close()
+                            //         }
+                            //     }); 
 
                             capturePopup.document.body.appendChild(cssDisplay);
                             console.log(cssDisplay);
@@ -480,7 +564,7 @@ captureButton.addEventListener("click", async () => {
                             capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
                             // Button to save styling
-                            let saveButton = capturePopup.document.getElementById("save-style");
+                            // let saveButton = capturePopup.document.getElementById("save-style");
                             let saveTButton = capturePopup.document.getElementById("save-template-style");
 
                             cssDisplay.innerHTML += '';
@@ -517,37 +601,37 @@ captureButton.addEventListener("click", async () => {
                                 capturePopup.close()
                             }); 
 
-                            saveButton.addEventListener('click', async() => {
-                                let styleName = capturePopup.document.getElementById("name").value;
-                                let currentDate = new Date().toISOString();
+                            // saveButton.addEventListener('click', async() => {
+                            //     let styleName = capturePopup.document.getElementById("name").value;
+                            //     let currentDate = new Date().toISOString();
 
-                                if (!styleName.length) return;
+                            //     if (!styleName.length) return;
         
-                                // Store style info in JSON
-                                let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
+                            //     // Store style info in JSON
+                            //     let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
                 
-                                chrome.storage.local.get(null, function(items) {
-                                    var allKeys = Object.keys(items);
+                            //     chrome.storage.local.get(null, function(items) {
+                            //         var allKeys = Object.keys(items);
                                     
-                                    // Get unique key for style (basically like autoincrement in SQL)
-                                    let maxKey = 0;
-                                    for (key in allKeys) {
-                                        const keyInt = parseInt(allKeys[key]);
-                                        if (keyInt > maxKey) maxKey = keyInt;
-                                    }
+                            //         // Get unique key for style (basically like autoincrement in SQL)
+                            //         let maxKey = 0;
+                            //         for (key in allKeys) {
+                            //             const keyInt = parseInt(allKeys[key]);
+                            //             if (keyInt > maxKey) maxKey = keyInt;
+                            //         }
         
-                                    // Save style
-                                    var obj= {};
-                                    obj[maxKey+1] = JSON.stringify(style);
-                                    chrome.storage.local.set(obj);
+                            //         // Save style
+                            //         var obj= {};
+                            //         obj[maxKey+1] = JSON.stringify(style);
+                            //         chrome.storage.local.set(obj);
             
-                                    // Clear input
-                                    capturePopup.document.getElementById("name").value = "";
-                                });
+                            //         // Clear input
+                            //         capturePopup.document.getElementById("name").value = "";
+                            //     });
 
-                                //close window
-                                capturePopup.close()
-                            });                   
+                            //     //close window
+                            //     capturePopup.close()
+                            // });                   
                         }
         
                         // Enable mouse clicks again
