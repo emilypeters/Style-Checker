@@ -274,13 +274,13 @@ captureButton.addEventListener("click", async () => {
                             // Output CSS to window
 
                         
-                            function urlRegex() {
+                            function urlRegex(style) {
                                 return new Promise((resolve, reject) => {
                                   // Creating an XMLHttpRequest object
                                   const xhr = new XMLHttpRequest();
                                 
                                   // URL with a proxy as a prefix so that it doesn't get blocked
-                                  const url = 'https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/font-family';
+                                  const url = 'https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/' + style;
                                   xhr.open('GET', url, true);
                                 
                                   // Function execution after request is successful
@@ -297,25 +297,26 @@ captureButton.addEventListener("click", async () => {
                               }
 
                             let ffhtml = ""; 
+                            exStyle = 'border';
                             
                             //Function which runs urlRegex()
-                            async function fetchHtml() {
-                            try {
-                                const html = await urlRegex();
-                                ffhtml = html; // Assign the fetched HTML to ffhtml
-                                console.log(ffhtml); // Now you can access the HTML content
-                            } catch (error) {
-                                console.error(error);
-                            }
-                            }
+                            // async function fetchHtml(style) {
+                            // try {
+                            //     const html = await urlRegex(style);
+                            //     ffhtml = html; // Assign the fetched HTML to ffhtml
+                            //     console.log(ffhtml); // Now you can access the HTML content
+                            // } catch (error) {
+                            //     console.error(error);
+                            // }
+                            // }
                             
                             exampleRE = /description"\s+content="([^"]+)"/gm; //regex for mozilla page, captures description we want
 
-                            fetchHtml().then(() => { // Allows you to access ffhtml outside of the fetchHtml() function
-                                console.log(ffhtml);  
-                                testMatch = [...ffhtml.matchAll(exampleRE)];
-                                console.log(testMatch[0][1]);
-                              });
+                            // fetchHtml(exStyle).then(() => { // Allows you to access ffhtml outside of the fetchHtml() function
+                            //     console.log(ffhtml);  
+                            //     testMatch = [...ffhtml.matchAll(exampleRE)];
+                            //     console.log(testMatch[0][1]);
+                            //   });
                             
                             // The code below dynamically writes the html for displaying the css which has more capabilties than our previous
                             // implementation
@@ -357,55 +358,51 @@ captureButton.addEventListener("click", async () => {
                                 const cssInfo = capturePopup.document.createElement("p");
                                 cssInfo.className = 'cssInfo';
                                 let csiText;
-                                if(cssDescriptor.includes('font-family')){
-                                    csiText = capturePopup.document.createTextNode('This css property decides which fonts will be displayed');
-                                }
-                                else if(cssDescriptor.includes('font-size')){
-                                    csiText = capturePopup.document.createTextNode('This css property decides the size of the font');
-                                }
-                                else{
-                                    csiText = capturePopup.document.createTextNode('this css property modifies the html code font'); 
-                                }
-                                cssInfo.appendChild(csiText);
-                                cssDiv.appendChild(cssInfo);
-                            
-                                //This works.... experimenting with this
-                                // cssDisplay.addEventListener('click', async(event) => {
-                                //     if(event.target==cssDisplay){
-                                //     let styleName = capturePopup.document.getElementById("name").value;
-                                //     let currentDate = new Date().toISOString();
-    
-                                //     if (!styleName.length) return;
-            
-                                //     // Store style info in JSON
-                                //     let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
-                    
-                                //     chrome.storage.local.get(null, function(items) {
-                                //         var allKeys = Object.keys(items);
-                                        
-                                //         // Get unique key for style (basically like autoincrement in SQL)
-                                //         let maxKey = 0;
-                                //         for (key in allKeys) {
-                                //             const keyInt = parseInt(allKeys[key]);
-                                //             if (keyInt > maxKey) maxKey = keyInt;
-                                //         }
-            
-                                //         // Save style
-                                //         var obj= {};
-                                //         obj[maxKey+1] = JSON.stringify(style);
-                                //         chrome.storage.local.set(obj);
-                
-                                //         // Clear input
-                                //         capturePopup.document.getElementById("name").value = "";
-                                //     });
-    
-                                //     //close window
-                                //     capturePopup.close()
-                                //     }
-                                // }); 
-                                //end of experiment
+                                
+                                cssTypeRE = /^(\s*[^:\s]+)\s*:/gm
+                                //cssDescMatch = cssDescriptor.matchAll(cssTypeRE);
+                                csiT = '';
+                                //console.log(cssDescriptor);
+                                cssDescMatch = [...cssDescriptor.matchAll(cssTypeRE)];
+                                csiT = cssDescMatch[0][1];
 
-                                cssDisplay.appendChild(cssDiv);
+                                async function fetchHtml(style) {
+                                    try {
+                                      const html = await urlRegex(style);
+                                      ffhtml = html; // Assign the fetched HTML to ffhtml
+                                      console.log(ffhtml); // Now you can access the HTML content
+                                  
+                                      // Update cssInfo with the fetched data
+                                      testMatch = [...ffhtml.matchAll(exampleRE)];
+                                      console.log(testMatch[0][1]);
+                                      csiText = capturePopup.document.createTextNode(testMatch[0][1]);
+                                      cssInfo.appendChild(csiText);
+
+                                      cssDiv.appendChild(cssInfo);
+                                      //console.log(cssDiv);
+                                  
+                                      // Add cssDiv to cssDisplay
+                                      await cssDisplay.appendChild(cssDiv);
+                                      //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
+                                    
+                                    } catch (error) {
+                                      console.error(error);
+                                    }
+                                  }
+                                  
+                                  fetchHtml(csiT);
+
+                                  //console.log(cssDiv);
+                                  //console.log('heyo');
+                                  
+                                  // Move this line outside of the fetchHtml() function
+                                  //cssDisplay.appendChild(cssDiv);
+                                  
+
+                                  
+                                // cssDisplay.appendChild(cssDiv);
+                                // console.log(cssDisplay);
+                                // cssDisplay.appendChild(cssDiv);
 
                             });
 
