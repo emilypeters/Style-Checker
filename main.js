@@ -345,214 +345,254 @@ captureButton.addEventListener("click", async () => {
                             fonts.appendChild(fontsText);
                             cssDisplay.appendChild(fonts);
 
-                            fontCss.forEach(cssDescriptor => {
+                            // Use Promise.all() to wait for all fetch requests to complete
+                            Promise.all(fontCss.map(async cssDescriptor => {
                                 const cssDiv = capturePopup.document.createElement("div");
                                 cssDiv.className = 'cssDiv';
-                            
+
                                 const cssPar = capturePopup.document.createElement("p");
                                 cssPar.className = "css-desc";
                                 const cssText = capturePopup.document.createTextNode(cssDescriptor);
                                 cssPar.appendChild(cssText);
                                 cssDiv.appendChild(cssPar);
-                            
+
                                 const cssInfo = capturePopup.document.createElement("p");
                                 cssInfo.className = 'cssInfo';
                                 let csiText;
-                                
+
                                 cssTypeRE = /^(\s*[^:\s]+)\s*:/gm
-                                //cssDescMatch = cssDescriptor.matchAll(cssTypeRE);
                                 csiT = '';
-                                //console.log(cssDescriptor);
                                 cssDescMatch = [...cssDescriptor.matchAll(cssTypeRE)];
                                 csiT = cssDescMatch[0][1];
 
                                 async function fetchHtml(style) {
                                     try {
-                                      const html = await urlRegex(style);
-                                      ffhtml = html; // Assign the fetched HTML to ffhtml
-                                      console.log(ffhtml); // Now you can access the HTML content
-                                  
-                                      // Update cssInfo with the fetched data
-                                      testMatch = [...ffhtml.matchAll(exampleRE)];
-                                      console.log(testMatch[0][1]);
-                                      csiText = capturePopup.document.createTextNode(testMatch[0][1]);
-                                      cssInfo.appendChild(csiText);
+                                        const html = await urlRegex(style);
+                                        ffhtml = html; // Assign the fetched HTML to ffhtml
+                                        console.log(ffhtml); // Now you can access the HTML content
 
-                                      cssDiv.appendChild(cssInfo);
-                                      //console.log(cssDiv);
-                                  
-                                      // Add cssDiv to cssDisplay
-                                      await cssDisplay.appendChild(cssDiv);
-                                      //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
-                                    
+                                        // Update cssInfo with the fetched data
+                                        testMatch = [...ffhtml.matchAll(exampleRE)];
+                                        console.log(testMatch[0][1]);
+                                        csiText = capturePopup.document.createTextNode(testMatch[0][1]);
+                                        cssInfo.appendChild(csiText);
+
+                                        cssDiv.appendChild(cssInfo);
+                                        //console.log(cssDiv);
+
+                                        // Add cssDiv to cssDisplay
+                                        await cssDisplay.appendChild(cssDiv);
+                                        //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
+
                                     } catch (error) {
-                                      console.error(error);
+                                        console.error(error);
                                     }
-                                  }
-                                  
-                                  fetchHtml(csiT);
+                                }
 
-                                  //console.log(cssDiv);
-                                  //console.log('heyo');
-                                  
-                                  // Move this line outside of the fetchHtml() function
-                                  //cssDisplay.appendChild(cssDiv);
-                                  
+                                await fetchHtml(csiT);
 
-                                  
-                                // cssDisplay.appendChild(cssDiv);
-                                // console.log(cssDisplay);
-                                // cssDisplay.appendChild(cssDiv);
+                                // Move this line outside of the fetchHtml() function
+                                //cssDisplay.appendChild(cssDiv);
 
+                                return cssDiv; // Return cssDiv for Promise.all()
+                            })).then(cssDivs => {
+                                // Append all the cssDivs to cssDisplay after fetch requests complete
+                                cssDivs.forEach(cssDiv => {
+                                    cssDisplay.appendChild(cssDiv);
+                                });
                             });
 
-                            //Coloring Code
+                            // New Color Code
                             const coloring = capturePopup.document.createElement("p");
                             coloring.style.fontWeight = "bold";
-                            const colorText = capturePopup.document.createTextNode("COLORS:");
+                            const colorText = capturePopup.document.createTextNode("COLORING:");
                             coloring.appendChild(colorText);
                             cssDisplay.appendChild(coloring);
 
-                            coloringCss.forEach(cssDescriptor => {
+                            // Use Promise.all() to wait for all fetch requests to complete
+                            Promise.all(coloringCss.map(async cssDescriptor => {
                                 const cssDiv2 = capturePopup.document.createElement("div");
                                 cssDiv2.className = 'cssDiv';
-                            
+
                                 const cssPar2 = capturePopup.document.createElement("p");
                                 cssPar2.className = "css-desc";
                                 const cssText2 = capturePopup.document.createTextNode(cssDescriptor);
                                 cssPar2.appendChild(cssText2);
                                 cssDiv2.appendChild(cssPar2);
-                            
+
                                 const cssInfo2 = capturePopup.document.createElement("p");
                                 cssInfo2.className = 'cssInfo';
                                 let csiText2;
-                                if(cssDescriptor.includes('background-color')){
-                                    csiText2 = capturePopup.document.createTextNode('This css property decides the background color of the selected element');
-                                }
-                                else if(cssDescriptor.includes('color')){
-                                    csiText2 = capturePopup.document.createTextNode('This css property decides the color of the element');
-                                }
-                                else{
-                                    csiText2 = capturePopup.document.createTextNode('this css property modifies the html code colors'); 
-                                }
-                                cssInfo2.appendChild(csiText2);
-                                cssDiv2.appendChild(cssInfo2);
 
-                                cssDisplay.appendChild(cssDiv2);
+                                const cssTypeRE2 = /^(\s*[^:\s]+)\s*:/gm
+                                let csiT2 = '';
+                                const cssDescMatch2 = [...cssDescriptor.matchAll(cssTypeRE2)];
+                                csiT2 = cssDescMatch2[0][1];
 
+                                async function fetchHtml(style) {
+                                    try {
+                                        const html = await urlRegex(style);
+                                        ffhtml = html; // Assign the fetched HTML to ffhtml
+                                        console.log(ffhtml); // Now you can access the HTML content
+
+                                        // Update cssInfo with the fetched data
+                                        const testMatch2 = [...ffhtml.matchAll(exampleRE)];
+                                        console.log(testMatch2[0][1]);
+                                        csiText2 = capturePopup.document.createTextNode(testMatch2[0][1]);
+                                        cssInfo2.appendChild(csiText2);
+
+                                        cssDiv2.appendChild(cssInfo2);
+                                        //console.log(cssDiv);
+
+                                        // Add cssDiv to cssDisplay
+                                        await cssDisplay.appendChild(cssDiv2);
+                                        //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
+
+                                    } catch (error) {
+                                        console.error(error);
+                                    }
+                                }
+
+                                await fetchHtml(csiT2);
+
+                                // Move this line outside of the fetchHtml() function
+                                //cssDisplay.appendChild(cssDiv);
+
+                                return cssDiv2; // Return cssDiv for Promise.all()
+                            })).then(cssDivs => {
+                                // Append all the cssDivs to cssDisplay after fetch requests complete
+                                cssDivs.forEach(cssDiv2 => {
+                                    cssDisplay.appendChild(cssDiv2);
+                                });
                             });
 
-                            //Border Code
+                            // New Border Code
                             const borders = capturePopup.document.createElement("p");
                             borders.style.fontWeight = "bold";
-                            const borderText = capturePopup.document.createTextNode("BORDER:");
+                            const borderText = capturePopup.document.createTextNode("BORDERS:");
                             borders.appendChild(borderText);
                             cssDisplay.appendChild(borders);
 
-                            borderCss.forEach(cssDescriptor => {
+                            // Use Promise.all() to wait for all fetch requests to complete
+                            Promise.all(borderCss.map(async cssDescriptor => {
                                 const cssDiv3 = capturePopup.document.createElement("div");
                                 cssDiv3.className = 'cssDiv';
-                            
+
                                 const cssPar3 = capturePopup.document.createElement("p");
                                 cssPar3.className = "css-desc";
                                 const cssText3 = capturePopup.document.createTextNode(cssDescriptor);
                                 cssPar3.appendChild(cssText3);
                                 cssDiv3.appendChild(cssPar3);
-                            
+
                                 const cssInfo3 = capturePopup.document.createElement("p");
                                 cssInfo3.className = 'cssInfo';
                                 let csiText3;
-                                if(cssDescriptor.includes('border-width')){
-                                    csiText3 = capturePopup.document.createTextNode('This css property decides the width of the element border');
-                                }
-                                else if(cssDescriptor.includes('border-color')){
-                                    csiText3 = capturePopup.document.createTextNode('This css property decides the color of the border');
-                                }
-                                else{
-                                    csiText3 = capturePopup.document.createTextNode('this css property modifies the html page borders'); 
-                                }
-                                cssInfo3.appendChild(csiText3);
-                                cssDiv3.appendChild(cssInfo3);
 
-                                cssDisplay.appendChild(cssDiv3);
+                                const cssTypeRE3 = /^(\s*[^:\s]+)\s*:/gm
+                                let csiT3 = '';
+                                const cssDescMatch3 = [...cssDescriptor.matchAll(cssTypeRE3)];
+                                csiT3 = cssDescMatch3[0][1];
 
+                                async function fetchHtml(style) {
+                                    try {
+                                        const html = await urlRegex(style);
+                                        ffhtml = html; // Assign the fetched HTML to ffhtml
+                                        console.log(ffhtml); // Now you can access the HTML content
+
+                                        // Update cssInfo with the fetched data
+                                        const testMatch3 = [...ffhtml.matchAll(exampleRE)];
+                                        console.log(testMatch3[0][1]);
+                                        csiText3 = capturePopup.document.createTextNode(testMatch3[0][1]);
+                                        cssInfo3.appendChild(csiText3);
+
+                                        cssDiv3.appendChild(cssInfo3);
+                                        //console.log(cssDiv);
+
+                                        // Add cssDiv to cssDisplay
+                                        await cssDisplay.appendChild(cssDiv3);
+                                        //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
+
+                                    } catch (error) {
+                                        console.error(error);
+                                    }
+                                }
+
+                                await fetchHtml(csiT3);
+
+                                // Move this line outside of the fetchHtml() function
+                                //cssDisplay.appendChild(cssDiv);
+
+                                return cssDiv3; // Return cssDiv for Promise.all()
+                            })).then(cssDivs => {
+                                // Append all the cssDivs to cssDisplay after fetch requests complete
+                                cssDivs.forEach(cssDiv3 => {
+                                    cssDisplay.appendChild(cssDiv3);
+                                });
                             });
 
-                             //Positioning Code
-                             const positioning = capturePopup.document.createElement("p");
-                             positioning.style.fontWeight = "bold";
-                             const posText = capturePopup.document.createTextNode("POSITIONING:");
-                             positioning.appendChild(posText);
-                             cssDisplay.appendChild(positioning);
- 
-                             positioningCss.forEach(cssDescriptor => {
-                                 const cssDiv4 = capturePopup.document.createElement("div");
-                                 cssDiv4.className = 'cssDiv';
-                             
-                                 const cssPar4 = capturePopup.document.createElement("p");
-                                 cssPar4.className = "css-desc";
-                                 const cssText4 = capturePopup.document.createTextNode(cssDescriptor);
-                                 cssPar4.appendChild(cssText4);
-                                 cssDiv4.appendChild(cssPar4);
-                             
-                                 const cssInfo4 = capturePopup.document.createElement("p");
-                                 cssInfo4.className = 'cssInfo';
-                                 let csiText4;
-                                 if(cssDescriptor.includes('text-align')){
-                                     csiText4 = capturePopup.document.createTextNode('This css property determins how the text is centered or aligned');
-                                 }
-                                 else if(cssDescriptor.includes('display')){
-                                     csiText4 = capturePopup.document.createTextNode('This css property decides the genera layout rules of elements on the screen');
-                                 }
-                                 else{
-                                     csiText4 = capturePopup.document.createTextNode('this css property modifies the html pages element positioning'); 
-                                 }
-                                 cssInfo4.appendChild(csiText4);
-                                 cssDiv4.appendChild(cssInfo4);
- 
-                                 cssDisplay.appendChild(cssDiv4);
-                             });
-                            
-                            //testing onclick with button
-                            // const testButton = capturePopup.document.createElement("button");
-                            // testButton.id ='testbtn';
-                            // testButton.className = 'button-simple';
-                            // btntxt = capturePopup.document.createTextNode("test");
-                            // testButton.appendChild(btntxt);
-                            // capturePopup.document.body.appendChild(testButton);
-                            // testButton.addEventListener('click', async(event) => {
-                            //         if(event.target==testButton){
-                            //         let styleName = capturePopup.document.getElementById("name").value;
-                            //         let currentDate = new Date().toISOString();
-    
-                            //         if (!styleName.length) return;
-            
-                            //         // Store style info in JSON
-                            //         let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
-                    
-                            //         chrome.storage.local.get(null, function(items) {
-                            //             var allKeys = Object.keys(items);
-                                        
-                            //             // Get unique key for style (basically like autoincrement in SQL)
-                            //             let maxKey = 0;
-                            //             for (key in allKeys) {
-                            //                 const keyInt = parseInt(allKeys[key]);
-                            //                 if (keyInt > maxKey) maxKey = keyInt;
-                            //             }
-            
-                            //             // Save style
-                            //             var obj= {};
-                            //             obj[maxKey+1] = JSON.stringify(style);
-                            //             chrome.storage.local.set(obj);
-                
-                            //             // Clear input
-                            //             capturePopup.document.getElementById("name").value = "";
-                            //         });
-    
-                            //         //close window
-                            //         capturePopup.close()
-                            //         }
-                            //     }); 
+                            // New Positioning Code
+                            const positioning = capturePopup.document.createElement("p");
+                            positioning.style.fontWeight = "bold";
+                            const posText = capturePopup.document.createTextNode("POSITIONING:");
+                            positioning.appendChild(posText);
+                            cssDisplay.appendChild(positioning);
+
+                            // Use Promise.all() to wait for all fetch requests to complete
+                            Promise.all(positioningCss.map(async cssDescriptor => {
+                                const cssDiv4 = capturePopup.document.createElement("div");
+                                cssDiv4.className = 'cssDiv';
+
+                                const cssPar4 = capturePopup.document.createElement("p");
+                                cssPar4.className = "css-desc";
+                                const cssText4 = capturePopup.document.createTextNode(cssDescriptor);
+                                cssPar4.appendChild(cssText4);
+                                cssDiv4.appendChild(cssPar4);
+
+                                const cssInfo4 = capturePopup.document.createElement("p");
+                                cssInfo4.className = 'cssInfo';
+                                let csiText4;
+
+                                const cssTypeRE4 = /^(\s*[^:\s]+)\s*:/gm
+                                let csiT4 = '';
+                                const cssDescMatch4 = [...cssDescriptor.matchAll(cssTypeRE4)];
+                                csiT4 = cssDescMatch4[0][1];
+
+                                async function fetchHtml(style) {
+                                    try {
+                                        const html = await urlRegex(style);
+                                        ffhtml = html; // Assign the fetched HTML to ffhtml
+                                        console.log(ffhtml); // Now you can access the HTML content
+
+                                        // Update cssInfo with the fetched data
+                                        const testMatch4 = [...ffhtml.matchAll(exampleRE)];
+                                        console.log(testMatch4[0][1]);
+                                        csiText4 = capturePopup.document.createTextNode(testMatch4[0][1]);
+                                        cssInfo4.appendChild(csiText4);
+
+                                        cssDiv4.appendChild(cssInfo4);
+                                        //console.log(cssDiv);
+
+                                        // Add cssDiv to cssDisplay
+                                        await cssDisplay.appendChild(cssDiv4);
+                                        //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
+
+                                    } catch (error) {
+                                        console.error(error);
+                                    }
+                                }
+
+                                await fetchHtml(csiT4);
+
+                                // Move this line outside of the fetchHtml() function
+                                //cssDisplay.appendChild(cssDiv);
+
+                                return cssDiv4; // Return cssDiv for Promise.all()
+                            })).then(cssDivs => {
+                                // Append all the cssDivs to cssDisplay after fetch requests complete
+                                cssDivs.forEach(cssDiv4 => {
+                                    cssDisplay.appendChild(cssDiv4);
+                                });
+                            });
 
                             capturePopup.document.body.appendChild(cssDisplay);
                             console.log(cssDisplay);
