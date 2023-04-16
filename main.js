@@ -171,12 +171,24 @@ captureButton.addEventListener("click", async () => {
                                 </style>
                             </head>
                             <body>
-    
                                 <div class="buttoncontainer">
                                     <input id="name" type="text" placeholder="Enter style name...">
-                                    
                                     <button id="save-template-style" class="button-simple">Save Template</button>
                                 </div>
+                                    <div class ="styling" id = "styling">
+                                        <div class = "cssDiv" id = "cssDiv">
+                                            <p style = "font-weight: bold"> FONTS: </p>
+                                        </div>
+                                        <div class = "cssDiv" id = "cssDiv2">
+                                            <p style = "font-weight: bold"> COLORING: </p>
+                                        </div>
+                                        <div class = "cssDiv" id = "cssDiv3">
+                                            <p style = "font-weight: bold"> BORDERS: </p>
+                                        </div>
+                                        <div class = "cssDiv" id = "cssDiv4">
+                                            <p style = "font-weight: bold"> POSITIONING: </p>
+                                        </div>
+                                    </div>
                             </body>
                             </html>
                         `;
@@ -320,9 +332,11 @@ captureButton.addEventListener("click", async () => {
                             
                             // The code below dynamically writes the html for displaying the css which has more capabilties than our previous
                             // implementation
-                            const cssDisplay = capturePopup.document.createElement('div');
-                            cssDisplay.className = 'styling';
-                            cssDisplay.id = 'styling';
+                            //const cssDisplay = capturePopup.document.createElement('div');
+
+                            const cssDisplay = capturePopup.document.getElementById("styling");
+                            // cssDisplay.className = 'styling';
+                            // cssDisplay.id = 'styling';
 
                             const p = capturePopup.document.createElement("p");
                             p.style.fontWeight = "bold";
@@ -339,80 +353,65 @@ captureButton.addEventListener("click", async () => {
                             cssDisplay.appendChild(d);
 
                             //Font Code
-                            const fonts = capturePopup.document.createElement("p");
-                            fonts.style.fontWeight = "bold";
-                            const fontsText = capturePopup.document.createTextNode("FONTS:");
-                            fonts.appendChild(fontsText);
-                            cssDisplay.appendChild(fonts);
-
+                            //const fonts = capturePopup.document.createElement("p");
+                            //fonts.style.fontWeight = "bold";
+                            //const cssDiv = capturePopup.document.getElementById("cssDiv");
+                            //const fontsText = capturePopup.document.createTextNode("FONTS:");
+                            //fonts.appendChild(fontsText);
+                            //cssDiv.appendChild(fonts);
+                            //cssDisplay.appendChild(cssDiv);
+                            const cssDiv = capturePopup.document.getElementById("cssDiv");
                             // Use Promise.all() to wait for all fetch requests to complete
                             Promise.all(fontCss.map(async cssDescriptor => {
-                                const cssDiv = capturePopup.document.createElement("div");
-                                cssDiv.className = 'cssDiv';
-
                                 const cssPar = capturePopup.document.createElement("p");
                                 cssPar.className = "css-desc";
                                 const cssText = capturePopup.document.createTextNode(cssDescriptor);
                                 cssPar.appendChild(cssText);
+                                
                                 cssDiv.appendChild(cssPar);
-
+                              
                                 const cssInfo = capturePopup.document.createElement("p");
                                 cssInfo.className = 'cssInfo';
-                                let csiText;
-
+                              
                                 cssTypeRE = /^(\s*[^:\s]+)\s*:/gm
-                                csiT = '';
                                 cssDescMatch = [...cssDescriptor.matchAll(cssTypeRE)];
                                 csiT = cssDescMatch[0][1];
-
+                              
                                 async function fetchHtml(style) {
-                                    try {
-                                        const html = await urlRegex(style);
-                                        ffhtml = html; // Assign the fetched HTML to ffhtml
-                                        console.log(ffhtml); // Now you can access the HTML content
-
-                                        // Update cssInfo with the fetched data
-                                        testMatch = [...ffhtml.matchAll(exampleRE)];
-                                        console.log(testMatch[0][1]);
-                                        csiText = capturePopup.document.createTextNode(testMatch[0][1]);
-                                        cssInfo.appendChild(csiText);
-
-                                        cssDiv.appendChild(cssInfo);
-                                        //console.log(cssDiv);
-
-                                        // Add cssDiv to cssDisplay
-                                        await cssDisplay.appendChild(cssDiv);
-                                        //console.log(cssDisplay); //cssdiv isnt showing cssinfo inside of it.
-
-                                    } catch (error) {
-                                        console.error(error);
-                                    }
+                                  try {
+                                    const html = await urlRegex(style);
+                                    ffhtml = html;
+                              
+                                    testMatch = [...ffhtml.matchAll(exampleRE)];
+                                    csiText = capturePopup.document.createTextNode(testMatch[0][1]);
+                                    cssInfo.appendChild(csiText);
+                                  } catch (error) {
+                                    console.error(error);
+                                  }
                                 }
-
+                              
                                 await fetchHtml(csiT);
-
-                                // Move this line outside of the fetchHtml() function
-                                //cssDisplay.appendChild(cssDiv);
-
-                                return cssDiv; // Return cssDiv for Promise.all()
-                            })).then(cssDivs => {
-                                // Append all the cssDivs to cssDisplay after fetch requests complete
+                                cssPar.appendChild(cssInfo);
+                              
+                                return cssDiv;
+                              })).then(cssDivs => {
                                 cssDivs.forEach(cssDiv => {
-                                    cssDisplay.appendChild(cssDiv);
+                                  cssDisplay.appendChild(cssDiv);
                                 });
-                            });
+                              });
+                              
 
                             // New Color Code
-                            const coloring = capturePopup.document.createElement("p");
-                            coloring.style.fontWeight = "bold";
-                            const colorText = capturePopup.document.createTextNode("COLORING:");
-                            coloring.appendChild(colorText);
-                            cssDisplay.appendChild(coloring);
-
+                            // const coloring = capturePopup.document.createElement("p");
+                            // coloring.style.fontWeight = "bold";
+                            // const colorText = capturePopup.document.createTextNode("COLORING:");
+                            // coloring.appendChild(colorText);
+                            // cssDisplay.appendChild(coloring);
+                            const cssDiv2 = capturePopup.document.getElementById("cssDiv2");
                             // Use Promise.all() to wait for all fetch requests to complete
                             Promise.all(coloringCss.map(async cssDescriptor => {
-                                const cssDiv2 = capturePopup.document.createElement("div");
-                                cssDiv2.className = 'cssDiv';
+                                
+                                //cssDiv2.className = 'cssDiv';
 
                                 const cssPar2 = capturePopup.document.createElement("p");
                                 cssPar2.className = "css-desc";
@@ -441,7 +440,7 @@ captureButton.addEventListener("click", async () => {
                                         csiText2 = capturePopup.document.createTextNode(testMatch2[0][1]);
                                         cssInfo2.appendChild(csiText2);
 
-                                        cssDiv2.appendChild(cssInfo2);
+                                        cssPar2.appendChild(cssInfo2);
                                         //console.log(cssDiv);
 
                                         // Add cssDiv to cssDisplay
@@ -467,15 +466,15 @@ captureButton.addEventListener("click", async () => {
                             });
 
                             // New Border Code
-                            const borders = capturePopup.document.createElement("p");
-                            borders.style.fontWeight = "bold";
-                            const borderText = capturePopup.document.createTextNode("BORDERS:");
-                            borders.appendChild(borderText);
-                            cssDisplay.appendChild(borders);
-
+                            // const borders = capturePopup.document.createElement("p");
+                            // borders.style.fontWeight = "bold";
+                            // const borderText = capturePopup.document.createTextNode("BORDERS:");
+                            // borders.appendChild(borderText);
+                            // cssDisplay.appendChild(borders);
+                            const cssDiv3 = capturePopup.document.getElementById("cssDiv3");
                             // Use Promise.all() to wait for all fetch requests to complete
                             Promise.all(borderCss.map(async cssDescriptor => {
-                                const cssDiv3 = capturePopup.document.createElement("div");
+                                
                                 cssDiv3.className = 'cssDiv';
 
                                 const cssPar3 = capturePopup.document.createElement("p");
@@ -505,7 +504,7 @@ captureButton.addEventListener("click", async () => {
                                         csiText3 = capturePopup.document.createTextNode(testMatch3[0][1]);
                                         cssInfo3.appendChild(csiText3);
 
-                                        cssDiv3.appendChild(cssInfo3);
+                                        cssPar3.appendChild(cssInfo3);
                                         //console.log(cssDiv);
 
                                         // Add cssDiv to cssDisplay
@@ -531,16 +530,16 @@ captureButton.addEventListener("click", async () => {
                             });
 
                             // New Positioning Code
-                            const positioning = capturePopup.document.createElement("p");
-                            positioning.style.fontWeight = "bold";
-                            const posText = capturePopup.document.createTextNode("POSITIONING:");
-                            positioning.appendChild(posText);
-                            cssDisplay.appendChild(positioning);
-
+                            // const positioning = capturePopup.document.createElement("p");
+                            // positioning.style.fontWeight = "bold";
+                            // const posText = capturePopup.document.createTextNode("POSITIONING:");
+                            // positioning.appendChild(posText);
+                            // cssDisplay.appendChild(positioning);
+                            const cssDiv4 = capturePopup.document.getElementById("cssDiv4");
                             // Use Promise.all() to wait for all fetch requests to complete
                             Promise.all(positioningCss.map(async cssDescriptor => {
-                                const cssDiv4 = capturePopup.document.createElement("div");
-                                cssDiv4.className = 'cssDiv';
+                                
+                                //cssDiv4.className = 'cssDiv';
 
                                 const cssPar4 = capturePopup.document.createElement("p");
                                 cssPar4.className = "css-desc";
@@ -569,7 +568,7 @@ captureButton.addEventListener("click", async () => {
                                         csiText4 = capturePopup.document.createTextNode(testMatch4[0][1]);
                                         cssInfo4.appendChild(csiText4);
 
-                                        cssDiv4.appendChild(cssInfo4);
+                                        cssPar4.appendChild(cssInfo4);
                                         //console.log(cssDiv);
 
                                         // Add cssDiv to cssDisplay
