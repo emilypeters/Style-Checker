@@ -294,11 +294,11 @@ captureButton.addEventListener("click", async () => {
                                 let text = capturePopup.document.createElement("div");
                                 text.innerHTML += cssDescriptor + "<br>";
                                 text.className = "style";
+                                
                                 let description = capturePopup.document.createElement("p");
                                 description.className = "cssDiv";
 
                                 let descriptorName = cssDescriptor.substring(0, cssDescriptor.indexOf(":"));
-                                        
                                 let descriptionText = await fetchDescription(descriptorName, description);
                                 description.innerText = descriptionText;
 
