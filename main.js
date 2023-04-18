@@ -268,6 +268,7 @@ captureButton.addEventListener("click", async () => {
                                 });
                             }
 
+                            // Format HTML to get rid of entities
                             function decodeHtml(html) {
                                 var txt = document.createElement("textarea");
                                 txt.innerHTML = html;
@@ -291,20 +292,22 @@ captureButton.addEventListener("click", async () => {
                                 else if (pureSource === 3) borderPure += cssDescriptor + "\n";
                                 else if (pureSource === 4) positioningPure += cssDescriptor + "\n";
 
-                                // TODO: Hover behavior is wonky on scroll
-                                let text = capturePopup.document.createElement("div");
+                                let container = capturePopup.document.createElement("div");
+                                container.className="style";
+
+                                let text = capturePopup.document.createElement("span");
                                 text.innerHTML += cssDescriptor + "<br>";
                                 text.className = "style";
                                 
                                 let description = capturePopup.document.createElement("p");
                                 description.className = "cssDiv";
-
                                 let descriptorName = cssDescriptor.substring(0, cssDescriptor.indexOf(":"));
                                 let descriptionText = await fetchDescription(descriptorName, description);
                                 description.innerText = descriptionText;
-
-                                outputBuffer.appendChild(text);
-                                outputBuffer.appendChild(description);                     
+                                
+                                container.appendChild(text);
+                                container.appendChild(description)
+                                outputBuffer.appendChild(container);
                             }
 
                             // Output CSS to window
