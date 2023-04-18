@@ -153,6 +153,19 @@ captureButton.addEventListener("click", async () => {
                                         padding: 5px;
                                         height: 50px;
                                     }
+                                    .style:hover + .cssDiv {
+                                        display: block;
+                                    }
+                                    .cssDiv {
+                                        display: none;
+                                        margin-top:2px;
+                                        margin-bottom:2px;
+                                        color:black;
+                                        font-size:10px;
+                                    } 
+                                    .cssDiv:hover {
+                                        display: block;
+                                    }   
                                 </style>
                             </head>
                             <body>
@@ -231,40 +244,116 @@ captureButton.addEventListener("click", async () => {
                                 }
                             }
 
+                            // Helper functions
+
+                            function fetchDescriptorApi(style) {
+                                return new Promise((resolve, reject) => {
+                                    // Creating an XMLHttpRequest object
+                                    const xhr = new XMLHttpRequest();
+                                
+                                    // URL with a proxy as a prefix so that it doesn't get blocked
+                                    const url = `https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/${style}`;
+                                    xhr.open('GET', url, true);
+                                    
+                                    // Function execution after request is successful
+                                    xhr.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            const html = this.responseText;
+                                            resolve(html);
+                                        }
+                                    };
+                                    
+                                    // Sending request
+                                    xhr.send();
+                                });
+                            }
+
+                            function decodeHtml(html) {
+                                var txt = document.createElement("textarea");
+                                txt.innerHTML = html;
+                                return txt.value;
+                            }
+
+                            async function fetchDescription(style) {
+                                let descriptionRegex = /description"\s+content="([^"]+)"/gm;
+
+                                try {
+                                    const html = await fetchDescriptorApi(style);
+                                    return decodeHtml([...html.matchAll(descriptionRegex)][0][1]);
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            }
+
+                            async function outputStyle(cssDescriptor, pureSource, outputBuffer) {
+                                if (pureSource === 1)  fontPure += cssDescriptor + "\n";
+                                else if (pureSource === 2) coloringPure += cssDescriptor + "\n";
+                                else if (pureSource === 3) borderPure += cssDescriptor + "\n";
+                                else if (pureSource === 4) positioningPure += cssDescriptor + "\n";
+
+                                // TODO: Hover behavior is wonky on scroll
+                                let text = capturePopup.document.createElement("div");
+                                text.innerHTML += cssDescriptor + "<br>";
+                                text.className = "style";
+                                
+                                let description = capturePopup.document.createElement("p");
+                                description.className = "cssDiv";
+
+                                let descriptorName = cssDescriptor.substring(0, cssDescriptor.indexOf(":"));
+                                let descriptionText = await fetchDescription(descriptorName, description);
+                                description.innerText = descriptionText;
+
+                                outputBuffer.appendChild(text);
+                                outputBuffer.appendChild(description);                     
+                            }
+
                             // Output CSS to window
 
                             const cssDisplay = capturePopup.document.getElementById('styling');
-
-                            cssDisplay.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
                             
-                            fontCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                fontPure += cssDescriptor + "\n";
-                            });
-                            
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>COLORING:</p>"; 
-                            
-                            coloringCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                coloringPure += cssDescriptor + "\n";
-                            });
+                            // Fonts
+                            const fontOutputBuffer = capturePopup.document.createElement("div");
 
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>BORDER:</p>"; 
+                            const fontHeader = capturePopup.document.createElement("div");
+                            fontHeader.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
+                            fontOutputBuffer.appendChild(fontHeader);
+
+                            fontCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 1, fontOutputBuffer));
+
+                            // Coloring
+                            const coloringOutputBuffer = capturePopup.document.createElement("div");
+
+                            const coloringHeader = capturePopup.document.createElement("div");
+                            coloringHeader.innerHTML += "<p> <p style='font-weight: bold;'>COLORING:</p>";
+                            coloringOutputBuffer.appendChild(coloringHeader);
+
+                            coloringCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 2, coloringOutputBuffer));
                             
-                            borderCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                borderPure += cssDescriptor + "\n";
-                            });
+                            // Border
+                            const borderOutputBuffer = capturePopup.document.createElement("div");
 
-                            cssDisplay.innerHTML += "<p style='font-weight: bold;'>POSITIONING:</p>"; 
-                            
-                            positioningCss.forEach((cssDescriptor) => {
-                                cssDisplay.innerHTML += cssDescriptor + "<br>";
-                                positioningPure += cssDescriptor + "\n";
-                            });
+                            const borderHeader = capturePopup.document.createElement("div");
+                            borderHeader.innerHTML += "<p> <p style='font-weight: bold;'>BORDER:</p>";
+                            borderOutputBuffer.appendChild(borderHeader);
 
-                            cssDisplay.innerHTML += "</p>"; 
+                            borderCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 3, borderOutputBuffer));
 
+                            // Positioning
+                            const positioningOutputBuffer = capturePopup.document.createElement("div");
+
+                            const positioningHeader = capturePopup.document.createElement("div");
+                            positioningHeader.innerHTML += "<p> <p style='font-weight: bold;'>POSITIONING:</p>";
+                            positioningOutputBuffer.appendChild(positioningHeader);
+
+                            positioningCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 4, positioningOutputBuffer));
+
+                            // Output each buffer to display
+                            cssDisplay.appendChild(fontOutputBuffer);
+                            cssDisplay.appendChild(coloringOutputBuffer);
+                            cssDisplay.appendChild(borderOutputBuffer);
+                            cssDisplay.appendChild(positioningOutputBuffer);
+
+                            // Add CSS to preview
                             capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
                             // Button to save styling
@@ -298,9 +387,9 @@ captureButton.addEventListener("click", async () => {
                                     capturePopup.document.getElementById("name").value = "";
                                 });
 
-                                //close window
+                                // Close window
                                 capturePopup.close()
-                            });                   
+                            });   
                         }
         
                         // Enable mouse clicks again
