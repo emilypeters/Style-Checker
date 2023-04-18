@@ -27,3 +27,17 @@ A Chrome extension to save and organize webpage styling (CSS).
 6. Finally, select the Style Checker directory. On your computer, this should be called "Style-Checker-master".
 
 ![Selecting extension directory](/assets/guide-5-selecting.png)
+
+---
+
+### Conducting the test
+
+##### Familizarize yourself with the Style Checker
+
+Our style
+
+1. 
+
+##### Familizarize yourself with Chrome Web Inspector
+
+##### Perform the tasks

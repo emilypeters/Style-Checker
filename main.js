@@ -938,7 +938,7 @@ function displayStylesSorted(target, direction) {
                     renamePopup.classList.remove("show");
                 }
                 
-                saveNameButton.addEventListener("click", renameStyle);
+                saveNameButton.addEventListener("click", renameStyle, { once: true });
 
                 cancelNameButton.addEventListener("click", async() => {
                     renamePopup.classList.remove("show");
