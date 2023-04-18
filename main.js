@@ -150,34 +150,32 @@ captureButton.addEventListener("click", async () => {
                                         padding: 5px;
                                         height: 50px;
                                     }
-                                    .css-desc{
+                                    .style:hover + .cssDiv {
+                                        display: block;
+                                    }
+                                    .cssDiv {
+                                        display: none;
                                         margin-top:2px;
                                         margin-bottom:2px;
-                                    }
-                                    .cssDiv{
                                         color:black;
-                                    }
-                                    .cssDiv .cssInfo{
-                                        margin-top:0px;
-                                        margin-bottom:0px;
-                                        display: none;
                                         font-size:10px;
-                                    }
-
-                                    .cssDiv:hover .cssInfo{
-                                        display:block;
-                                        color:grey;
-                                    }
+                                    } 
+                                    .cssDiv:hover {
+                                        display: block;
+                                    }                 
                                 </style>
                             </head>
                             <body>
+                                <div id="styling" class="styling">
+                                    <p style="font-weight: bold;">PREVIEW:</p>
+                                    <div id="preview" class="preview">
+                                        Sample Text.
+                                    </div>
+                                </div>
                                 <div class="buttoncontainer">
                                     <input id="name" type="text" placeholder="Enter style name...">
-                                    <button id="save-template-style" class="button-simple">Save Template</button>
+                                    <button id="save-style" class="button-simple">Save Styling</button>
                                 </div>
-                                    
-                                        
-                                    
                             </body>
                             </html>
                         `;
@@ -217,7 +215,6 @@ captureButton.addEventListener("click", async () => {
                             let coloringPure = "";
 
                             // Core border CSS
-                            // TODO: Border capture fairly simple (assumes top border properties apply to entire border)
                             let borderCss = [
                                 `border-width: ${cssDescriptors["border-top-width"]};`,
                                 `border-color: ${cssDescriptors["border-top-color"]};`,
@@ -245,272 +242,123 @@ captureButton.addEventListener("click", async () => {
                                     positioningCss.push(descriptor);
                                 }
                             }
-                        
+
+                            // Helper functions
+
+                            function fetchDescriptorApi(style) {
+                                return new Promise((resolve, reject) => {
+                                    // Creating an XMLHttpRequest object
+                                    const xhr = new XMLHttpRequest();
+                                
+                                    // URL with a proxy as a prefix so that it doesn't get blocked
+                                    const url = `https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/${style}`;
+                                    xhr.open('GET', url, true);
+                                    
+                                    // Function execution after request is successful
+                                    xhr.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            const html = this.responseText;
+                                            resolve(html);
+                                        }
+                                    };
+                                    
+                                    // Sending request
+                                    xhr.send();
+                                });
+                            }
+
+                            function decodeHtml(html) {
+                                var txt = document.createElement("textarea");
+                                txt.innerHTML = html;
+                                return txt.value;
+                            }
+
+                            async function fetchDescription(style) {
+                                let descriptionRegex = /description"\s+content="([^"]+)"/gm;
+
+                                try {
+                                    const html = await fetchDescriptorApi(style);
+                                    return decodeHtml([...html.matchAll(descriptionRegex)][0][1]);
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            }
+
+                            async function outputStyle(cssDescriptor, pureSource, outputBuffer) {
+                                if (pureSource === 1)  fontPure += cssDescriptor + "\n";
+                                else if (pureSource === 2) coloringPure += cssDescriptor + "\n";
+                                else if (pureSource === 3) borderPure += cssDescriptor + "\n";
+                                else if (pureSource === 4) positioningPure += cssDescriptor + "\n";
+
+                                // TODO: Hover behavior is wonky on scroll
+                                let text = capturePopup.document.createElement("div");
+                                text.innerHTML += cssDescriptor + "<br>";
+                                text.className = "style";
+                                let description = capturePopup.document.createElement("p");
+                                description.className = "cssDiv";
+
+                                let descriptorName = cssDescriptor.substring(0, cssDescriptor.indexOf(":"));
+                                        
+                                let descriptionText = await fetchDescription(descriptorName, description);
+                                description.innerText = descriptionText;
+
+                                outputBuffer.appendChild(text);
+                                outputBuffer.appendChild(description);                     
+                            }
+
                             // Output CSS to window
 
-                            function urlRegex(style) {
-                                return new Promise((resolve, reject) => {
-                                  // Creating an XMLHttpRequest object
-                                  const xhr = new XMLHttpRequest();
-                                
-                                  // URL with a proxy as a prefix so that it doesn't get blocked
-                                  const url = 'https://api.allorigins.win/raw?url=https://developer.mozilla.org/en-US/docs/Web/CSS/' + style;
-                                  xhr.open('GET', url, true);
-                                
-                                  // Function execution after request is successful
-                                  xhr.onreadystatechange = function () {
-                                    if (this.readyState == 4 && this.status == 200) {
-                                      const html = this.responseText;
-                                      resolve(html);
-                                    }
-                                  };
-                                
-                                  // Sending request
-                                  xhr.send();
-                                });
-                              }
-
-                            let ffhtml = ""; 
-                            exStyle = 'border';
+                            const cssDisplay = capturePopup.document.getElementById('styling');
                             
-                            exampleRE = /description"\s+content="([^"]+)"/gm; //regex for mozilla page, captures description we want
+                            // Fonts
+                            const fontOutputBuffer = capturePopup.document.createElement("div");
 
-                            const cssDisplay = capturePopup.document.createElement("div");
-                            cssDisplay.id = "styling";
-                            cssDisplay.className = "styling";
+                            const fontHeader = capturePopup.document.createElement("div");
+                            fontHeader.innerHTML += "<p> <p style='font-weight: bold;'>FONTS:</p>";
+                            fontOutputBuffer.appendChild(fontHeader);
 
-                            const p = capturePopup.document.createElement("p");
-                            p.style.fontWeight = "bold";
-                            const ptext = capturePopup.document.createTextNode("PREVIEW:");
-                            p.appendChild(ptext);
-                            cssDisplay.appendChild(p);
+                            fontCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 1, fontOutputBuffer));
 
-                            const d = capturePopup.document.createElement("div");
-                            d.id = "preview";
-                            d.className = "preview";
-                            const dtext = capturePopup.document.createTextNode("Sample Text");
+                            // Coloring
+                            const coloringOutputBuffer = capturePopup.document.createElement("div");
 
-                            d.appendChild(dtext);
-                            cssDisplay.appendChild(d);
+                            const coloringHeader = capturePopup.document.createElement("div");
+                            coloringHeader.innerHTML += "<p> <p style='font-weight: bold;'>COLORING:</p>";
+                            coloringOutputBuffer.appendChild(coloringHeader);
 
-                            //Font Code
-                            const fonts = capturePopup.document.createElement("p");
-                            fonts.style.fontWeight = "bold";
-                            const cssDiv = capturePopup.document.createElement("div");
-                            cssDiv.id = "cssDiv";
-                            cssDiv.className = "cssDiv";
-                            const fontsText = capturePopup.document.createTextNode("FONTS:");
-                            fonts.appendChild(fontsText);
-                            cssDiv.appendChild(fonts);
-
-                            Promise.all(fontCss.map(async cssDescriptor => {
-                                //console.log(cssDisplay);
-                                const cssPar = capturePopup.document.createElement("p");
-                                cssPar.className = "css-desc";
-                                const cssText = capturePopup.document.createTextNode(cssDescriptor);
-                                cssPar.appendChild(cssText);
-                                
-                                const cssInfo = capturePopup.document.createElement("p");
-                                cssInfo.className = 'cssInfo';
-                              
-                                cssTypeRE = /^(\s*[^:\s]+)\s*:/gm
-                                cssDescMatch = [...cssDescriptor.matchAll(cssTypeRE)];
-                                csiT = cssDescMatch[0][1];
-                              
-                                async function fetchHtml(style) {
-                                  try {
-                                    const html = await urlRegex(style);
-                                    ffhtml = html;
-                              
-                                    testMatch = [...ffhtml.matchAll(exampleRE)];
-                                    csiText = capturePopup.document.createTextNode(testMatch[0][1]);
-                                    cssInfo.appendChild(csiText);
-
-                                    cssPar.appendChild(cssInfo);
-                                    cssDiv.appendChild(cssPar);
-                                  } catch (error) {
-                                    console.error(error);
-                                  }
-                                }
-                                
-                                await fetchHtml(csiT);
-
-                                return cssDiv;
-                                
-                              })).then(cssDivs => {
-                                cssDivs.forEach(cssDiv => {
-                                  cssDisplay.appendChild(cssDiv);
-                                });
-                              });
-                              
-
-                            // New Color Code
-                            const coloring = capturePopup.document.createElement("p");
-                            coloring.style.fontWeight = "bold";
-                            const cssDiv2 = capturePopup.document.createElement("div");
-                            cssDiv2.id = "cssDiv2";
-                            cssDiv2.className = "cssDiv";
-                            const colorText = capturePopup.document.createTextNode("COLORING:");
-                            coloring.appendChild(colorText);
-                            cssDiv2.appendChild(coloring);
-
-                            Promise.all(coloringCss.map(async cssDescriptor => {
-                                const cssPar2 = capturePopup.document.createElement("p");
-                                cssPar2.className = "css-desc";
-                                const cssText2 = capturePopup.document.createTextNode(cssDescriptor);
-                                cssPar2.appendChild(cssText2);
-
-                                const cssInfo2 = capturePopup.document.createElement("p");
-                                cssInfo2.className = 'cssInfo';
-
-                                const cssTypeRE2 = /^(\s*[^:\s]+)\s*:/gm
-                                const cssDescMatch2 = [...cssDescriptor.matchAll(cssTypeRE2)];
-                                csiT2 = cssDescMatch2[0][1];
-
-                                async function fetchHtml(style) {
-                                    try {
-                                        const html = await urlRegex(style);
-                                        ffhtml = html; // Assign the fetched HTML to ffhtml
-
-                                        // Update cssInfo with the fetched data from promise
-                                        testMatch2 = [...ffhtml.matchAll(exampleRE)];
-                                        csiText2 = capturePopup.document.createTextNode(testMatch2[0][1]);
-                                        cssInfo2.appendChild(csiText2);
-
-                                        cssPar2.appendChild(cssInfo2);
-                                        cssDiv2.appendChild(cssPar2);
-                                    } catch (error) {
-                                        console.error(error);
-                                    }
-                                }
-
-                                await fetchHtml(csiT2);
-
-                                // Move this line outside of the fetchHtml() function
-                                //cssDisplay.appendChild(cssDiv);
-
-                                return cssDiv2; // Return cssDiv for Promise.all()
-                            })).then(cssDivs => {
-                                // Append all the cssDivs to cssDisplay after fetch requests complete
-                                cssDivs.forEach(cssDiv2 => {
-                                    cssDisplay.appendChild(cssDiv2);
-                                });
-                            });
-
-                            // New Border Code
-                            const borders = capturePopup.document.createElement("p");
-                            borders.style.fontWeight = "bold";
-                            const cssDiv3 = capturePopup.document.createElement("div");
-                            cssDiv3.id = "cssDiv2";
-                            cssDiv3.className = "cssDiv";
-                            const borderText = capturePopup.document.createTextNode("BORDERS:");
-                            borders.appendChild(borderText);
-                            cssDiv3.appendChild(borders);
-
-                            Promise.all(borderCss.map(async cssDescriptor => {
-                                const cssPar3 = capturePopup.document.createElement("p");
-                                cssPar3.className = "css-desc";
-                                const cssText3 = capturePopup.document.createTextNode(cssDescriptor);
-                                cssPar3.appendChild(cssText3);
-
-                                const cssInfo3 = capturePopup.document.createElement("p");
-                                cssInfo3.className = 'cssInfo';
-
-                                const cssTypeRE3 = /^(\s*[^:\s]+)\s*:/gm
-                                const cssDescMatch3 = [...cssDescriptor.matchAll(cssTypeRE3)];
-                                csiT3 = cssDescMatch3[0][1];
-
-                                async function fetchHtml(style) {
-                                    try {
-                                        const html = await urlRegex(style);
-                                        ffhtml = html; // Assign the fetched HTML to ffhtml
-
-                                        // Update cssInfo with the fetched data
-                                        const testMatch3 = [...ffhtml.matchAll(exampleRE)];
-                                        //console.log(testMatch3[0][1]);
-                                        csiText3 = capturePopup.document.createTextNode(testMatch3[0][1]);
-                                        cssInfo3.appendChild(csiText3);
-
-                                        cssPar3.appendChild(cssInfo3);
-                                        cssDiv3.appendChild(cssPar3);
-
-                                    } catch (error) {
-                                        console.error(error);
-                                    }
-                                }
-
-                                await fetchHtml(csiT3);
-
-                                return cssDiv3; // Return cssDiv for Promise.all()
-                            })).then(cssDivs => {
-                                // Append all the cssDivs to cssDisplay after fetch requests from promise
-                                cssDivs.forEach(cssDiv3 => {
-                                    cssDisplay.appendChild(cssDiv3);
-                                });
-                            });
-
-                            // New Positioning Code
-                            const positioning = capturePopup.document.createElement("p");
-                            positioning.style.fontWeight = "bold";
-                            const cssDiv4 = capturePopup.document.createElement("div");
-                            cssDiv4.id = "cssDiv4";
-                            cssDiv4.className = "cssDiv";
-                            const posText = capturePopup.document.createTextNode("POSITIONING:");
-                            positioning.appendChild(posText);
-                            cssDiv4.appendChild(positioning);
-
-                            Promise.all(positioningCss.map(async cssDescriptor => {
-                                const cssPar4 = capturePopup.document.createElement("p");
-                                cssPar4.className = "css-desc";
-                                const cssText4 = capturePopup.document.createTextNode(cssDescriptor);
-                                cssPar4.appendChild(cssText4);
-
-                                const cssInfo4 = capturePopup.document.createElement("p");
-                                cssInfo4.className = 'cssInfo';
-
-                                const cssTypeRE4 = /^(\s*[^:\s]+)\s*:/gm
-                                const cssDescMatch4 = [...cssDescriptor.matchAll(cssTypeRE4)];
-                                csiT4 = cssDescMatch4[0][1];
-
-                                async function fetchHtml(style) {
-                                    try {
-                                        const html = await urlRegex(style);
-                                        ffhtml = html; // Assign the fetched HTML to ffhtml
-
-
-                                        // Update cssInfo with the fetched data from promise
-                                        const testMatch4 = [...ffhtml.matchAll(exampleRE)];
-                                        //console.log(testMatch4[0][1]);
-                                        csiText4 = capturePopup.document.createTextNode(testMatch4[0][1]);
-                                        cssInfo4.appendChild(csiText4);
-
-                                        cssPar4.appendChild(cssInfo4);
-                                        cssDiv4.appendChild(cssPar4);
-                                    } catch (error) {
-                                        console.error(error);
-                                    }
-                                }
-
-                                await fetchHtml(csiT4);
-
-                                return cssDiv4; 
-                            })).then(cssDivs => {
-                                // Append all the cssDivs to cssDisplay after fetch requests from promise
-                                cssDivs.forEach(cssDiv4 => {
-                                    cssDisplay.appendChild(cssDiv4);
-                                });
-                            });
-
-                            capturePopup.document.body.appendChild(cssDisplay);
+                            coloringCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 2, coloringOutputBuffer));
                             
-                            //Apply preview styling
+                            // Border
+                            const borderOutputBuffer = capturePopup.document.createElement("div");
+
+                            const borderHeader = capturePopup.document.createElement("div");
+                            borderHeader.innerHTML += "<p> <p style='font-weight: bold;'>BORDER:</p>";
+                            borderOutputBuffer.appendChild(borderHeader);
+
+                            borderCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 3, borderOutputBuffer));
+
+                            // Positioning
+                            const positioningOutputBuffer = capturePopup.document.createElement("div");
+
+                            const positioningHeader = capturePopup.document.createElement("div");
+                            positioningHeader.innerHTML += "<p> <p style='font-weight: bold;'>POSITIONING:</p>";
+                            positioningOutputBuffer.appendChild(positioningHeader);
+
+                            positioningCss.forEach((cssDescriptor) => outputStyle(cssDescriptor, 4, positioningOutputBuffer));
+
+                            // Output each buffer to display
+                            cssDisplay.appendChild(fontOutputBuffer);
+                            cssDisplay.appendChild(coloringOutputBuffer);
+                            cssDisplay.appendChild(borderOutputBuffer);
+                            cssDisplay.appendChild(positioningOutputBuffer);
+
+                            // Add CSS to preview
                             capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
 
-                            let saveTButton = capturePopup.document.getElementById("save-template-style");
-
-                            cssDisplay.innerHTML += '';
-
-                            saveTButton.addEventListener('click', async() => {
+                            // Button to save styling
+                            let saveButton = capturePopup.document.getElementById("save-style");
+                            
+                            saveButton.addEventListener('click', async() => {
                                 let styleName = capturePopup.document.getElementById("name").value;
                                 let currentDate = new Date().toISOString();
 
@@ -538,9 +386,283 @@ captureButton.addEventListener("click", async () => {
                                     capturePopup.document.getElementById("name").value = "";
                                 });
 
-                                //close window
+                                // Close window
                                 capturePopup.close()
-                            });               
+                            });
+                        
+                            // Output CSS to window
+
+                            // let ffhtml = ""; 
+                            // exStyle = 'border';
+                            
+                            // exampleRE = /description"\s+content="([^"]+)"/gm; //regex for mozilla page, captures description we want
+
+                            // //const cssDisplay = capturePopup.document.createElement("div");
+                            // cssDisplay.id = "styling";
+                            // cssDisplay.className = "styling";
+
+                            // const p = capturePopup.document.createElement("p");
+                            // p.style.fontWeight = "bold";
+                            // const ptext = capturePopup.document.createTextNode("PREVIEW:");
+                            // p.appendChild(ptext);
+                            // cssDisplay.appendChild(p);
+
+                            // const d = capturePopup.document.createElement("div");
+                            // d.id = "preview";
+                            // d.className = "preview";
+                            // const dtext = capturePopup.document.createTextNode("Sample Text");
+
+                            // d.appendChild(dtext);
+                            // cssDisplay.appendChild(d);
+
+                            // //Font Code
+                            // const fonts = capturePopup.document.createElement("p");
+                            // fonts.style.fontWeight = "bold";
+                            // const cssDiv = capturePopup.document.createElement("div");
+                            // cssDiv.id = "cssDiv";
+                            // cssDiv.className = "cssDiv";
+                            // const fontsText = capturePopup.document.createTextNode("FONTS:");
+                            // fonts.appendChild(fontsText);
+                            // cssDiv.appendChild(fonts);
+
+                            // Promise.all(fontCss.map(async cssDescriptor => {
+                            //     //console.log(cssDisplay);
+                            //     const cssPar = capturePopup.document.createElement("p");
+                            //     cssPar.className = "css-desc";
+                            //     const cssText = capturePopup.document.createTextNode(cssDescriptor);
+                            //     cssPar.appendChild(cssText);
+                                
+                            //     const cssInfo = capturePopup.document.createElement("p");
+                            //     cssInfo.className = 'cssInfo';
+                              
+                            //     cssTypeRE = /^(\s*[^:\s]+)\s*:/gm
+                            //     cssDescMatch = [...cssDescriptor.matchAll(cssTypeRE)];
+                            //     csiT = cssDescMatch[0][1];
+                              
+                            //     async function fetchHtml(style) {
+                            //       try {
+                            //         const html = await urlRegex(style);
+                            //         ffhtml = html;
+                              
+                            //         testMatch = [...ffhtml.matchAll(exampleRE)];
+                            //         csiText = capturePopup.document.createTextNode(testMatch[0][1]);
+                            //         cssInfo.appendChild(csiText);
+
+                            //         cssPar.appendChild(cssInfo);
+                            //         cssDiv.appendChild(cssPar);
+                            //       } catch (error) {
+                            //         console.error(error);
+                            //       }
+                            //     }
+                                
+                            //     await fetchHtml(csiT);
+
+                            //     return cssDiv;
+                                
+                            //   })).then(cssDivs => {
+                            //     cssDivs.forEach(cssDiv => {
+                            //       cssDisplay.appendChild(cssDiv);
+                            //     });
+                            //   });
+                              
+
+                            // // New Color Code
+                            // const coloring = capturePopup.document.createElement("p");
+                            // coloring.style.fontWeight = "bold";
+                            // const cssDiv2 = capturePopup.document.createElement("div");
+                            // cssDiv2.id = "cssDiv2";
+                            // cssDiv2.className = "cssDiv";
+                            // const colorText = capturePopup.document.createTextNode("COLORING:");
+                            // coloring.appendChild(colorText);
+                            // cssDiv2.appendChild(coloring);
+
+                            // Promise.all(coloringCss.map(async cssDescriptor => {
+                            //     const cssPar2 = capturePopup.document.createElement("p");
+                            //     cssPar2.className = "css-desc";
+                            //     const cssText2 = capturePopup.document.createTextNode(cssDescriptor);
+                            //     cssPar2.appendChild(cssText2);
+
+                            //     const cssInfo2 = capturePopup.document.createElement("p");
+                            //     cssInfo2.className = 'cssInfo';
+
+                            //     const cssTypeRE2 = /^(\s*[^:\s]+)\s*:/gm
+                            //     const cssDescMatch2 = [...cssDescriptor.matchAll(cssTypeRE2)];
+                            //     csiT2 = cssDescMatch2[0][1];
+
+                            //     async function fetchHtml(style) {
+                            //         try {
+                            //             const html = await urlRegex(style);
+                            //             ffhtml = html; // Assign the fetched HTML to ffhtml
+
+                            //             // Update cssInfo with the fetched data from promise
+                            //             testMatch2 = [...ffhtml.matchAll(exampleRE)];
+                            //             csiText2 = capturePopup.document.createTextNode(testMatch2[0][1]);
+                            //             cssInfo2.appendChild(csiText2);
+
+                            //             cssPar2.appendChild(cssInfo2);
+                            //             cssDiv2.appendChild(cssPar2);
+                            //         } catch (error) {
+                            //             console.error(error);
+                            //         }
+                            //     }
+
+                            //     await fetchHtml(csiT2);
+
+                            //     // Move this line outside of the fetchHtml() function
+                            //     //cssDisplay.appendChild(cssDiv);
+
+                            //     return cssDiv2; // Return cssDiv for Promise.all()
+                            // })).then(cssDivs => {
+                            //     // Append all the cssDivs to cssDisplay after fetch requests complete
+                            //     cssDivs.forEach(cssDiv2 => {
+                            //         cssDisplay.appendChild(cssDiv2);
+                            //     });
+                            // });
+
+                            // // New Border Code
+                            // const borders = capturePopup.document.createElement("p");
+                            // borders.style.fontWeight = "bold";
+                            // const cssDiv3 = capturePopup.document.createElement("div");
+                            // cssDiv3.id = "cssDiv2";
+                            // cssDiv3.className = "cssDiv";
+                            // const borderText = capturePopup.document.createTextNode("BORDERS:");
+                            // borders.appendChild(borderText);
+                            // cssDiv3.appendChild(borders);
+
+                            // Promise.all(borderCss.map(async cssDescriptor => {
+                            //     const cssPar3 = capturePopup.document.createElement("p");
+                            //     cssPar3.className = "css-desc";
+                            //     const cssText3 = capturePopup.document.createTextNode(cssDescriptor);
+                            //     cssPar3.appendChild(cssText3);
+
+                            //     const cssInfo3 = capturePopup.document.createElement("p");
+                            //     cssInfo3.className = 'cssInfo';
+
+                            //     const cssTypeRE3 = /^(\s*[^:\s]+)\s*:/gm
+                            //     const cssDescMatch3 = [...cssDescriptor.matchAll(cssTypeRE3)];
+                            //     csiT3 = cssDescMatch3[0][1];
+
+                            //     async function fetchHtml(style) {
+                            //         try {
+                            //             const html = await urlRegex(style);
+                            //             ffhtml = html; // Assign the fetched HTML to ffhtml
+
+                            //             // Update cssInfo with the fetched data
+                            //             const testMatch3 = [...ffhtml.matchAll(exampleRE)];
+                            //             //console.log(testMatch3[0][1]);
+                            //             csiText3 = capturePopup.document.createTextNode(testMatch3[0][1]);
+                            //             cssInfo3.appendChild(csiText3);
+
+                            //             cssPar3.appendChild(cssInfo3);
+                            //             cssDiv3.appendChild(cssPar3);
+
+                            //         } catch (error) {
+                            //             console.error(error);
+                            //         }
+                            //     }
+
+                            //     await fetchHtml(csiT3);
+
+                            //     return cssDiv3; // Return cssDiv for Promise.all()
+                            // })).then(cssDivs => {
+                            //     // Append all the cssDivs to cssDisplay after fetch requests from promise
+                            //     cssDivs.forEach(cssDiv3 => {
+                            //         cssDisplay.appendChild(cssDiv3);
+                            //     });
+                            // });
+
+                            // // New Positioning Code
+                            // const positioning = capturePopup.document.createElement("p");
+                            // positioning.style.fontWeight = "bold";
+                            // const cssDiv4 = capturePopup.document.createElement("div");
+                            // cssDiv4.id = "cssDiv4";
+                            // cssDiv4.className = "cssDiv";
+                            // const posText = capturePopup.document.createTextNode("POSITIONING:");
+                            // positioning.appendChild(posText);
+                            // cssDiv4.appendChild(positioning);
+
+                            // Promise.all(positioningCss.map(async cssDescriptor => {
+                            //     const cssPar4 = capturePopup.document.createElement("p");
+                            //     cssPar4.className = "css-desc";
+                            //     const cssText4 = capturePopup.document.createTextNode(cssDescriptor);
+                            //     cssPar4.appendChild(cssText4);
+
+                            //     const cssInfo4 = capturePopup.document.createElement("p");
+                            //     cssInfo4.className = 'cssInfo';
+
+                            //     const cssTypeRE4 = /^(\s*[^:\s]+)\s*:/gm
+                            //     const cssDescMatch4 = [...cssDescriptor.matchAll(cssTypeRE4)];
+                            //     csiT4 = cssDescMatch4[0][1];
+
+                            //     async function fetchHtml(style) {
+                            //         try {
+                            //             const html = await urlRegex(style);
+                            //             ffhtml = html; // Assign the fetched HTML to ffhtml
+
+
+                            //             // Update cssInfo with the fetched data from promise
+                            //             const testMatch4 = [...ffhtml.matchAll(exampleRE)];
+                            //             //console.log(testMatch4[0][1]);
+                            //             csiText4 = capturePopup.document.createTextNode(testMatch4[0][1]);
+                            //             cssInfo4.appendChild(csiText4);
+
+                            //             cssPar4.appendChild(cssInfo4);
+                            //             cssDiv4.appendChild(cssPar4);
+                            //         } catch (error) {
+                            //             console.error(error);
+                            //         }
+                            //     }
+
+                            //     await fetchHtml(csiT4);
+
+                            //     return cssDiv4; 
+                            // })).then(cssDivs => {
+                            //     // Append all the cssDivs to cssDisplay after fetch requests from promise
+                            //     cssDivs.forEach(cssDiv4 => {
+                            //         cssDisplay.appendChild(cssDiv4);
+                            //     });
+                            // });
+
+                            // capturePopup.document.body.appendChild(cssDisplay);
+                            
+                            // //Apply preview styling
+                            // capturePopup.document.getElementById("preview").style = fontPure + coloringPure + borderPure + positioningPure;
+
+                            // let saveTButton = capturePopup.document.getElementById("save-template-style");
+
+                            // cssDisplay.innerHTML += '';
+
+                            // saveTButton.addEventListener('click', async() => {
+                            //     let styleName = capturePopup.document.getElementById("name").value;
+                            //     let currentDate = new Date().toISOString();
+
+                            //     if (!styleName.length) return;
+        
+                            //     // Store style info in JSON
+                            //     let style = { name: styleName, dateSaved: currentDate, fontCss: fontPure, coloringCss: coloringPure, borderCss: borderPure, positioningCss: positioningPure };
+                
+                            //     chrome.storage.local.get(null, function(items) {
+                            //         var allKeys = Object.keys(items);
+                                    
+                            //         // Get unique key for style (basically like autoincrement in SQL)
+                            //         let maxKey = 0;
+                            //         for (key in allKeys) {
+                            //             const keyInt = parseInt(allKeys[key]);
+                            //             if (keyInt > maxKey) maxKey = keyInt;
+                            //         }
+        
+                            //         // Save style
+                            //         var obj= {};
+                            //         obj[maxKey+1] = JSON.stringify(style);
+                            //         chrome.storage.local.set(obj);
+            
+                            //         // Clear input
+                            //         capturePopup.document.getElementById("name").value = "";
+                            //     });
+
+                            //     //close window
+                            //     capturePopup.close()
+                            // });               
                         }
         
                         // Enable mouse clicks again
