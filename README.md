@@ -8,36 +8,98 @@ A Chrome extension to save and organize webpage styling (CSS).
 
 1. Download the code from Github as a zip file.
 
-![Github page](/assets/guide-1-github.png)
+![](/assets/guide-1-github.png)
 
 2. Extract the zip to the destination folder, which can be anywhere on your computer.
 
 3. In Chrome, open the settings pane.
 
-![Opening chrome settings page](/assets/guide-2-chromehome.png)
+![](/assets/guide-2-chromehome.png)
 
 4. Select the extensions menu.
 
-![Selecting extensions menu](/assets/guide-3-settings.png)
+![](/assets/guide-3-settings.png)
 
 5. In the extensions menu, make sure that developer mode is active. Then, click "Load upacked".
 
-![Loading extension](/assets/guide-4-extensions.png)
+![](/assets/guide-4-extensions.png)
 
 6. Finally, select the Style Checker directory. On your computer, this should be called "Style-Checker-master".
 
-![Selecting extension directory](/assets/guide-5-selecting.png)
+![](/assets/guide-5-selecting.png)
 
 ---
 
-### Conducting the test
+### Information for evaluation participants
 
-##### Familizarize yourself with the Style Checker
+#### Overview of the evaluation
 
-Our style
+The evaluation consists of completing three tasks in order to gauge the effectiveness of our Style Checker web extension. For each task you will be asked to make a recording of your screen, to be used in our post-test analysis. The evaluation concludes with a short questionnaire.
 
-1. 
+The expected time to complete this evaluation is approximately 15 minutes.
 
-##### Familizarize yourself with Chrome Web Inspector
+#### Table of contents
 
-##### Perform the tasks
+1. [Steps of the evaluation](#steps-of-the-evaluation)
+2. [Basics of our extension](#basics-of-the-style-checker-extension)
+3. [Task 1](#task-1)
+4. [Task 2](#task-2)
+5. [Task 3](#task-3)
+
+##### Steps of the evaluation
+
+The following is the steps of the evaluation. Follow these steps in order to complete the evaluation.
+
+1. Familiarize yourself with the Style Checker extension, as described [here](#basics-of-the-style-checker-extension).
+
+2. Spend some time experimenting with the extension to get a grasp of its behavior.
+
+3. Perform the three tasks, as described [here](#evaluation-tasks). Be prepared to record your screen as you complete them, using Xbox Game Bar on windows (win + alt + R) or the built in screen recording feature on MacOS (cmd + shift + 5). Alternatively, you can record your screen using Zoom by entering a Zoom room by yourself, screen sharing the browser window, and then recording the Zoom meeting. **For privacy reasons, you only need to record the browser screen itself.** After completing each task, jot down any notes you have regarding how the task went.
+
+5. Finally, once finished with the three tasks, complete  [this](https://docs.google.com/forms/d/e/1FAIpQLSfYSsjs3EtIzK4Jv2TiSwFV0p2UYDVXeDA2JUab2quzATNSRA/viewform?usp=sf_link) questionnaire on your experience with the extension and any final thoughts. The full link is below.
+
+https://docs.google.com/forms/d/e/1FAIpQLSfYSsjs3EtIzK4Jv2TiSwFV0p2UYDVXeDA2JUab2quzATNSRA/viewform?usp=sf_link
+
+##### Basics of the Style Checker Extension
+
+Our Style Checker tool has a few important features:
+
+- Highlight an HTML element on a webpage and click to retrieve its core CSS styling. The styling can be saved.
+
+![](/assets/capture.png)
+*<p style="text-align: center;">Extension window with capture button</p>*
+
+![](/assets/highlight.png)
+*<p style="text-align: center;">Highlighting mode when active</p>*
+
+![](/assets/summary.png)
+*<p style="text-align: center;">Popup window of retrieved styling, after clicking an element</p>*
+
+- Keep the styling of an element, which together is referred to as a "style", as a saved style in the style library.
+
+![](/assets/library.png)
+*<p style="text-align: center;">Extension window with style library at bottom</p>*
+
+- Preivew saved styles.
+
+
+
+- Find saved styles using search and sort.
+
+
+
+- Manage saved styles with deletion, renaming, and copying to clipboard.
+
+
+
+- Edit saved styles to remove unwanted CSS.
+
+
+
+#### Evaluation tasks
+
+##### Task 1
+
+##### Task 2
+
+##### Task 3
