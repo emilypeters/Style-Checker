@@ -46,10 +46,10 @@ The expected time to complete this evaluation is approximately 15 minutes.
 #### Table of contents
 
 1. [Steps of the evaluation](#steps-of-the-evaluation)
-2. [Basics of our extension](#basics-of-the-style-checker-extension)
-3. [Task 1](#task-1)
-4. [Task 2](#task-2)
-5. [Task 3](#task-3)
+2. [Task 1](#task-1)
+3. [Task 2](#task-2)
+4. [Task 3](#task-3)
+5. [Basics of our extension](#basics-of-the-style-checker-extension)
 
 ##### Steps of the evaluation
 
@@ -64,6 +64,36 @@ The following is the steps of the evaluation. Follow these steps in order to com
 5. Finally, once finished with the three tasks, complete  [this](https://docs.google.com/forms/d/e/1FAIpQLSfYSsjs3EtIzK4Jv2TiSwFV0p2UYDVXeDA2JUab2quzATNSRA/viewform?usp=sf_link) questionnaire on your experience with the extension and any final thoughts. The full link is below.
 
 https://docs.google.com/forms/d/e/1FAIpQLSfYSsjs3EtIzK4Jv2TiSwFV0p2UYDVXeDA2JUab2quzATNSRA/viewform?usp=sf_link
+
+#### Evaluation tasks
+
+Before proceeding to Task 1, please pull up [the Wikipedia homepage](https://en.wikipedia.org/wiki/Main_Page) in a new window. This is the web page you will be using to complete the evaluation tasks.
+
+##### Task 1: Use the highlight feature
+
+1. Open the Style Checker extension. 
+2. Use the capture mode to retreive the styling of an element. Give the style a name and save it to the library.
+3. This concludes task 1. Stop here and write down a few notes about your experience with the task.
+
+##### Task 2: Manage and browse styles
+
+1. Open the style library and locate the style you saved in task 1.
+2. Use the edit feature to remove 3 lines of CSS from the style.
+3. Create a blank text document on your computer. Reopen the style library and use the copy feature to copy the style into the text document.
+4. Using the same capture process from task 1, create and save 3 additional styles.
+5. Use the sorting feature to sort the saved styles.
+6. Search for the style from task 1.
+7. Rename the style from task 1.
+8. Delete a style from the library.
+9. This concludes task 2. Stop here and write down a few notes about your experience with task 2.
+
+##### Task 3: Preview a style
+
+1. Open the style library and choose a style.
+2. Preview the chosen style.
+3. Copy any part of the style to the text document created in task 2.
+4. Close the preview window and return to the style library.
+5. This concludes task 3. Stop here and write down a few notes about your experience with task 3.
 
 ##### Basics of the Style Checker Extension
 
@@ -120,33 +150,3 @@ Our Style Checker tool has a few important features:
 | ![](/assets/edit.png) |
 | :--: |
 | *Popup window with CSS removal feature, after pressing edit button* |
-
-#### Evaluation tasks
-
-Before proceeding to Task 1, please pull up [this Wikipedia page](https://en.wikipedia.org/wiki/Dog) in a new window. This is the web page you will be using to complete the evaluation tasks.
-
-##### Task 1
-
-1. Open the Style Checker extension. 
-2. Enter "highlight" mode and click an element on the page.
-3. Examine the information presented in the popup and save the style in the library.
-4. This is the end of Task 1. Stop here and write down a few notes about your experience with Task 1.
-
-##### Task 2
-
-1. Open the style library and locate the style you saved in Task 1.
-2. Use the edit feature and remove 3 lines of CSS from the file, then return to the style library.
-3. In a new tab, open up a blank google doc, then return to Wikipedia. Reopen the style library and use the copy feature to save the style to your clipboard, then navigate back to the google doc and paste the saved style there. Examine the information that has been pasted into the document, then return to Wikipedia.
-4. Using the same highlighting process from Task 1, create 2 more styles and save them to the style library.
-5. Test each of the 4 sorting features in the style library.
-6. Use the search bar to find the style from Task 1.
-7. Use the rename feature to give the style from Task 1 a new title.
-8. Delete one of the 3 styles in the library.
-9. This is the end of Task 2. Stop here and write down a few notes about your experience with Task 2.
-
-##### Task 3
-
-1. Open the style library and choose a style.
-2. Use the preview feature on the chosen style and examine it in the popup window.
-3. Close the popup window and return to the style library.
-4. This is the end of Task 3. Stop here and write down a few notes about your experience with Task 3.
