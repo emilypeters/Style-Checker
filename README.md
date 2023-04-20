@@ -93,7 +93,7 @@ Before proceeding to Task 1, please pull up [the Wikipedia homepage](https://en.
 4. Close the preview window and return to the style library.
 5. This concludes task 3. Stop here and write down a few notes about your experience with task 3.
 
-##### Basics of the Style Checker Extension
+#### Basics of the Style Checker Extension
 
 Our Style Checker tool has a few important features:
 
