@@ -102,26 +102,26 @@ Before proceeding to Task 1, please pull up [this Wikipedia page](https://en.wik
 
 ##### Task 1
 
-Open the Style Checker extension. 
-Enter "highlight" mode and click an element on the page.
-Examine the information presented in the popup and save the style in the library.
-This is the end of Task 1. Stop here and write down a few notes about your experience with Task 1.
+1. Open the Style Checker extension. 
+2. Enter "highlight" mode and click an element on the page.
+3. Examine the information presented in the popup and save the style in the library.
+4. This is the end of Task 1. Stop here and write down a few notes about your experience with Task 1.
 
 ##### Task 2
 
-Open the style library and locate the style you saved in Task 1.
-Use the edit feature and remove 3 lines of CSS from the file, then return to the style library.
-In a new tab, open up a blank google doc, then return to Wikipedia. Reopen the style library and use the copy feature to save the style to your clipboard, then navigate back to the google doc and paste the saved style there. Examine the information that has been pasted into the document, then return to Wikipedia.
-Using the same highlighting process from Task 1, create 2 more styles and save them to the style library.
-Test each of the 4 sorting features in the style library.
-Use the search bar to find the style from Task 1.
-Use the rename feature to give the style from Task 1 a new title.
-Delete one of the 3 styles in the library.
-This is the end of Task 2. Stop here and write down a few notes about your experience with Task 2.
+1. Open the style library and locate the style you saved in Task 1.
+2. Use the edit feature and remove 3 lines of CSS from the file, then return to the style library.
+3. In a new tab, open up a blank google doc, then return to Wikipedia. Reopen the style library and use the copy feature to save the style to your clipboard, then navigate back to the google doc and paste the saved style there. Examine the information that has been pasted into the document, then return to Wikipedia.
+4. Using the same highlighting process from Task 1, create 2 more styles and save them to the style library.
+5. Test each of the 4 sorting features in the style library.
+6. Use the search bar to find the style from Task 1.
+7. Use the rename feature to give the style from Task 1 a new title.
+8. Delete one of the 3 styles in the library.
+9. This is the end of Task 2. Stop here and write down a few notes about your experience with Task 2.
 
 ##### Task 3
 
-Open the style library and choose a style.
-Use the preview feature on the chosen style and examine it in the popup window.
-Close the popup window and return to the style library.
-This is the end of Task 3. Stop here and write down a few notes about your experience with Task 3.
+1. Open the style library and choose a style.
+2. Use the preview feature on the chosen style and examine it in the popup window.
+3. Close the popup window and return to the style library.
+4. This is the end of Task 3. Stop here and write down a few notes about your experience with Task 3.
