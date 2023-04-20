@@ -123,19 +123,19 @@ Our Style Checker tool has a few important features:
 
 #### Evaluation tasks
 
-Before proceeding to Task 1, please pull up [this Wikipedia page](https://en.wikipedia.org/wiki/Dog) in a new window. This is the web page you will be using to complete the evaluation tasks.
+Before proceeding to Task 1, please pull up [this Wikipedia page](https://en.wikipedia.org/wiki/Dog) in a new window. This is the web page you will be using to complete the evaluation tasks. Also please remember to record your screen while completing Tasks 1-3. After completing all tasks, please submit your recording to style.checker.evaluation@gmail.com. 
 
 ##### Task 1
 
 1. Open the Style Checker extension. 
-2. Enter "highlight" mode and click an element on the page.
+2. Enter highlight mode and click an element on the page.
 3. Examine the information presented in the popup and save the style in the library.
 4. This is the end of Task 1. Stop here and write down a few notes about your experience with Task 1.
 
 ##### Task 2
 
 1. Open the style library and locate the style you saved in Task 1.
-2. Use the edit feature and remove 3 lines of CSS from the file, then return to the style library.
+2. Use the edit feature and remove at least one line of CSS from the file, then return to the style library.
 3. In a new tab, open up a blank google doc, then return to Wikipedia. Reopen the style library and use the copy feature to save the style to your clipboard, then navigate back to the google doc and paste the saved style there. Examine the information that has been pasted into the document, then return to Wikipedia.
 4. Using the same highlighting process from Task 1, create 2 more styles and save them to the style library.
 5. Test each of the 4 sorting features in the style library.
