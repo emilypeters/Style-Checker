@@ -46,9 +46,9 @@ The expected time to complete this evaluation is approximately 15 minutes.
 #### Table of contents
 
 1. [Steps of the evaluation](#steps-of-the-evaluation)
-2. [Task 1](#task-1)
-3. [Task 2](#task-2)
-4. [Task 3](#task-3)
+2. [Task 1](#task-1-use-the-highlight-feature)
+3. [Task 2](#task-2-manage-and-browse-styles)
+4. [Task 3](#task-3-preview-a-style)
 5. [Basics of our extension](#basics-of-the-style-checker-extension)
 
 ##### Steps of the evaluation
