@@ -65,6 +65,8 @@ The following is the steps of the evaluation. Follow these steps in order to com
 
 https://docs.google.com/forms/d/e/1FAIpQLSfYSsjs3EtIzK4Jv2TiSwFV0p2UYDVXeDA2JUab2quzATNSRA/viewform?usp=sf_link
 
+Want to reach out to the team? Email us at style.checker.evaluation@gmail.com
+
 ##### Basics of the Style Checker Extension
 
 Our Style Checker tool has a few important features:
