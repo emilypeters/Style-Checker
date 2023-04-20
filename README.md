@@ -67,7 +67,7 @@ Our Style Checker tool has a few important features:
 - Highlight an HTML element on a webpage and click to retrieve its core CSS styling. The styling can be saved.
 
 ![](/assets/capture.png)
-*<p style="text-align: center;">Extension window with capture button</p>*
+*<p style="text-align: center;">Extension window, note the capture button</p>*
 
 ![](/assets/highlight.png)
 *<p style="text-align: center;">Highlighting mode when active</p>*
@@ -82,17 +82,29 @@ Our Style Checker tool has a few important features:
 
 - Preivew saved styles.
 
+![](/assets/previewbutton.png)
+*<p style="text-align: center;">Extension window, note preview button next to each style</p>*
 
+![](/assets/preview.png)
+*<p style="text-align: center;">Popup window with styling preview</p>*
 
 - Find saved styles using search and sort.
 
-
+![](/assets/searchsort.png)
+*<p style="text-align: center;">Extension window with sorting dropdown open</p>*
 
 - Manage saved styles with deletion, renaming, and copying to clipboard.
 
-
+![](/assets/dropdown.png)
+*<p style="text-align: center;">Extension window with a style dropdown open, note the copy to clipboard button above the dropdown</p>*
 
 - Edit saved styles to remove unwanted CSS.
+
+![](/assets/dropdownedit.png)
+*<p style="text-align: center;">Extension window, note the edit button in the action dropdown</p>*
+
+![](/assets/edit.png)
+*<p style="text-align: center;">Popup window with CSS removal feature</p>*
 
 
 
