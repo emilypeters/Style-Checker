@@ -96,7 +96,7 @@ Our Style Checker tool has a few important features:
 - Manage saved styles with deletion, renaming, and copying to clipboard.
 
 ![](/assets/dropdown.png)
-*<p style="text-align: center;">Extension window with a style dropdown open, note the copy to clipboard button above the dropdown</p>*
+*<p style="text-align: center;">Extension window with action dropdown open, note the copy to clipboard button above the dropdown</p>*
 
 - Edit saved styles to remove unwanted CSS.
 
