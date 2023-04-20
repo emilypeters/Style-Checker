@@ -8,25 +8,30 @@ A Chrome extension to save and organize webpage styling (CSS).
 
 1. Download the code from Github as a zip file.
 
-![](/assets/guide-1-github.png)
+| ![](/assets/guide-1-github.png) |
+| :--: |
 
 2. Extract the zip to the destination folder, which can be anywhere on your computer.
 
 3. In Chrome, open the settings pane.
 
-![](/assets/guide-2-chromehome.png)
+| ![](/assets/guide-2-chromehome.png) |
+| :--: |
 
 4. Select the extensions menu.
 
-![](/assets/guide-3-settings.png)
+| ![](/assets/guide-3-settings.png) |
+| :--: |
 
 5. In the extensions menu, make sure that developer mode is active. Then, click "Load upacked".
 
-![](/assets/guide-4-extensions.png)
+| ![](/assets/guide-4-extensions.png) |
+| :--: |
 
 6. Finally, select the Style Checker directory. On your computer, this should be called "Style-Checker-master".
 
-![](/assets/guide-5-selecting.png)
+| ![](/assets/guide-5-selecting.png) |
+| :--: |
 
 ---
 
@@ -66,47 +71,55 @@ Our Style Checker tool has a few important features:
 
 - Highlight an HTML element on a webpage and click to retrieve its core CSS styling. The styling can be saved.
 
-![](/assets/capture.png)
-*<p style="text-align: center;">Extension window, note the capture button</p>*
+| ![](/assets/capture.png) |
+| :--: |
+| *Extension window, note the capture button* |
 
-![](/assets/highlight.png)
-*<p style="text-align: center;">Highlighting mode when active</p>*
+| ![](/assets/highlight.png) |
+| :--: |
+| *Highlighting mode when active* |
 
-![](/assets/summary.png)
-*<p style="text-align: center;">Popup window of retrieved styling, after clicking an element</p>*
+|![](/assets/summary.png)|
+| :--: |
+| *Popup window of retrieved styling, after clicking an element* |
 
 - Keep the styling of an element, which together is referred to as a "style", as a saved style in the style library.
 
-![](/assets/library.png)
-*<p style="text-align: center;">Extension window with style library at bottom</p>*
+| ![](/assets/library.png) |
+| :--: |
+| *Extension window with style library at bottom* |
 
 - Preivew saved styles.
 
-![](/assets/previewbutton.png)
-*<p style="text-align: center;">Extension window, note preview button next to each style</p>*
+| ![](/assets/previewbutton.png) |
+| :--: |
+| *Extension window, note preview button next to each style* |
 
-![](/assets/preview.png)
-*<p style="text-align: center;">Popup window with styling preview</p>*
+| ![](/assets/preview.png) |
+| :--: |
+| *Popup window with styling preview, after pressing preview button* |
 
 - Find saved styles using search and sort.
 
-![](/assets/searchsort.png)
-*<p style="text-align: center;">Extension window with sorting dropdown open</p>*
+| ![](/assets/searchsort.png) |
+| :--: |
+| *Extension window with sorting dropdown open* |
 
 - Manage saved styles with deletion, renaming, and copying to clipboard.
 
-![](/assets/dropdown.png)
-*<p style="text-align: center;">Extension window with action dropdown open, note the copy to clipboard button above the dropdown</p>*
+| ![](/assets/dropdown.png) |
+| :--: |
+| *Extension window with action dropdown open, note the copy to clipboard button above the dropdown* |
 
 - Edit saved styles to remove unwanted CSS.
 
-![](/assets/dropdownedit.png)
-*<p style="text-align: center;">Extension window, note the edit button in the action dropdown</p>*
+| ![](/assets/dropdownedit.png) |
+| :--: |
+| *Extension window, note the edit button in the action dropdown* |
 
-![](/assets/edit.png)
-*<p style="text-align: center;">Popup window with CSS removal feature</p>*
-
-
+| ![](/assets/edit.png) |
+| :--: |
+| *Popup window with CSS removal feature, after pressing edit button* |
 
 #### Evaluation tasks
 
