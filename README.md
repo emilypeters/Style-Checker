@@ -76,7 +76,7 @@ Before proceeding to Task 1, please pull up [the Wikipedia homepage](https://en.
 ##### Task 2: Manage and browse styles
 
 1. Open the style library and locate the style you saved in task 1.
-2. Use the edit feature to remove 3 lines of CSS from the style.
+2. Use the edit feature to remove at least one line of CSS from the style.
 3. Create a blank text document on your computer. Reopen the style library and use the copy feature to copy the style into the text document.
 4. Using the same capture process from task 1, create and save 3 additional styles.
 5. Use the sorting feature to sort the saved styles.
